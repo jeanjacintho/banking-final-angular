@@ -1,3 +1,5 @@
+name: banking-angular
+
 services:
   postgres:
     image: postgres:16-alpine
@@ -19,7 +21,7 @@ services:
       dockerfile: infra/docker/Dockerfile.backend.dev
     container_name: banking-backend-dev
     environment:
-      SPRING_PROFILES_ACTIVE: development
+      SPRING_PROFILES_ACTIVE: development,docker
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/banking
       SPRING_DATASOURCE_USERNAME: banking_user
       SPRING_DATASOURCE_PASSWORD: banking_password

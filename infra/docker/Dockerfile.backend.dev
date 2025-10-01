@@ -19,4 +19,4 @@ COPY api/src ./src
 
 EXPOSE 8080
 
-CMD ["./mvnw", "spring-boot:run", "-Dspring-boot.run.jvmArguments=-Dspring.profiles.active=development"]
+CMD ["./mvnw", "spring-boot:run", "-Dspring-boot.run.jvmArguments=-Dspring.profiles.active=development -Djava.security.egd=file:/dev/./urandom"]
