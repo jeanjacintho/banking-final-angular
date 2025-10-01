@@ -13,7 +13,6 @@ web/node_modules/
 web/dist/
 web/.angular/
 web/.cache/
-web/package-lock.json
 web/yarn.lock
 
 # Angular build outputs
