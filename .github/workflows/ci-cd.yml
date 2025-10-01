@@ -55,7 +55,8 @@ jobs:
     - name: Install frontend dependencies
       run: |
         cd web
-        npm ci --cache .npm --prefer-offline
+        ls -la
+        npm ci
     
     - name: Run frontend tests
       run: |
