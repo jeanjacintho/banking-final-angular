@@ -25,9 +25,6 @@ web/.env.production.local
 # Spring Boot / Maven (api)
 api/target/
 
-# Maven wrapper downloads
-api/.mvn/wrapper/maven-wrapper.jar
-
 # IntelliJ IDEA
 .idea/
 *.iml
@@ -60,7 +57,6 @@ api/failsafe-reports/
 web/coverage/
 
 # Build artifacts
-*.jar
 *.war
 *.ear
 
