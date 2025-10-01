@@ -1,10 +1,10 @@
-package com.devstoblu.banking_system;
+package com.example.demo;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class BankingSystemApplicationTests {
+class DemoApplicationTests {
 
 	@Test
 	void contextLoads() {
