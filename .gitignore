@@ -24,9 +24,6 @@ web/.env.production.local
 
 # Spring Boot / Maven (api)
 api/target/
-api/.mvn/
-api/mvnw*
-api/mvnw.cmd
 
 # Maven wrapper downloads
 api/.mvn/wrapper/maven-wrapper.jar
