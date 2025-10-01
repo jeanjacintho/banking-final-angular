@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI Pipeline
 
 on:
   push:
@@ -81,17 +81,3 @@ jobs:
         cd api
         ./mvnw clean package -DskipTests
 
-  deploy:
-    needs: test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Deploy to Render
-      run: |
-        npm install -g @render/cli
-        render deploy --config infra/render/render.yaml
-      env:
-        RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
