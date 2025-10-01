@@ -37,8 +37,6 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20'
-        cache: 'npm'
-        cache-dependency-path: 'web/package-lock.json'
     
     - name: Cache Maven dependencies
       uses: actions/cache@v3
@@ -47,10 +45,17 @@ jobs:
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
     
+    - name: Cache Node.js dependencies
+      uses: actions/cache@v3
+      with:
+        path: web/node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('web/package-lock.json') }}
+        restore-keys: ${{ runner.os }}-node-
+    
     - name: Install frontend dependencies
       run: |
         cd web
-        npm ci
+        npm ci --cache .npm --prefer-offline
     
     - name: Run frontend tests
       run: |
