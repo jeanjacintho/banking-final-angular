@@ -42,4 +42,11 @@ public class CreditCardService {
         throw new EntityNotFoundException("Cartão não encontrado");
     }
 
+    public String delete(Long id) {
+        Optional<CreditCard> card = repository.findById(id);
+        if (card.isEmpty()) throw new EntityNotFoundException("Cartão não encontrado");
+        repository.delete(card.get());
+        return "Cartão excluído com sucesso!";
+    }
+
 }

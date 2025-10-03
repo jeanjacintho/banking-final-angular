@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/credit-card")
+@RequestMapping("/api/credit-cards")
 public class CreditCardController {
     private final CreditCardService service;
 
@@ -21,7 +21,7 @@ public class CreditCardController {
         return ResponseEntity.ok(service.getAll());
     }
 
-    @GetMapping("/{cardNumber}")
+    @GetMapping("/number/{cardNumber}")
     public ResponseEntity<CreditCard> getByCardNumber(@PathVariable String cardNumber) {
         return ResponseEntity.ok(service.getByCardNumber(cardNumber));
     }
@@ -40,4 +40,10 @@ public class CreditCardController {
     public ResponseEntity<CreditCard> update(@PathVariable Long id, @RequestBody CreditCard updatedCard){
         return ResponseEntity.ok(service.update(id, updatedCard));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable Long id) {
+        return ResponseEntity.ok(service.delete(id));
+    }
+
 }
