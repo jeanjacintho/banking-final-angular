@@ -1,0 +1,24 @@
+<div class="w-96 h-56 rounded-xl p-6 text-white bg-gradient-to-br from-blue-700 to-purple-700 shadow-xl flex flex-col justify-between">
+    <!-- Top Row -->
+    <div class="flex justify-between items-center">
+        <div class="text-lg font-bold tracking-wider">{{ creditCard.brand || 'CARD' }}</div>
+        <div class="w-12 h-8 rounded-md bg-gradient-to-br from-gray-200 to-gray-400 shadow-inner"></div>
+    </div>
+
+    <!-- Card Number -->
+    <div class="text-center text-2xl tracking-widest font-mono">
+        {{ maskCardNumber(creditCard.cardNumber) || '' }}
+    </div>
+
+    <!-- Bottom Row -->
+    <div class="flex justify-between items-end text-sm">
+        <div>
+            <div class="uppercase text-xs opacity-75">CARD HOLDER</div>
+            <div class="font-semibold tracking-wide">{{ creditCard.cardHolderName || 'NOME DO TITULAR' }}</div>
+        </div>
+        <div>
+            <div class="uppercase text-xs opacity-75">EXPIRESS</div>
+            <div class="font-semibold tracking-wide">{{ formatExpiry(creditCard.expirationDate || '') }}</div>
+        </div>
+    </div>
+</div>

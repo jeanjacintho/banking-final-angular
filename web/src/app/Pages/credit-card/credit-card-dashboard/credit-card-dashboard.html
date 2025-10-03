@@ -1,0 +1,41 @@
+<div class="min-h-screen bg-gray-900 text-white p-8">
+  <!-- Grid centralizado -->
+  <div class="max-w-5xl mx-auto space-y-8">
+    
+    <!-- Seção Cartões -->
+    <div>
+      <h1 class="text-2xl font-bold mb-6">Your Cards</h1>
+      <div class="flex flex-wrap justify-center gap-6">
+        <app-credit-card
+          *ngFor="let card of cards"
+          [creditCard]="card"
+          class="flex-shrink-0"
+        ></app-credit-card>
+      </div>
+    </div>
+
+    <!-- Seção Resumo da Fatura -->
+    <app-invoice-summary
+      [invoiceTotal]="invoiceTotal" 
+      [creditLimit]="totalLimit">
+    ></app-invoice-summary>
+
+    <!-- Divisor -->
+    <hr class="border-gray-700">
+
+    <!-- Histórico -->
+    <div>
+      <h2 class="text-xl font-semibold mb-4">Card History</h2>
+      <div class="bg-gray-800 rounded-xl p-4">
+        <div class="divide-y divide-gray-700">
+          <div *ngFor="let tx of transactions" class="flex justify-between py-3">
+            <span>{{ tx.description }}</span>
+            <span [ngClass]="tx.amount < 0 ? 'text-red-400' : 'text-green-400'">
+              {{ tx.amount | currency:'USD' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

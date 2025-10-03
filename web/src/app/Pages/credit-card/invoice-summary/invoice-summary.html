@@ -1,0 +1,20 @@
+<div class="bg-gray-800 rounded-xl p-6 my-4 text-white shadow-lg max-w-md mx-auto">
+    <h2 class="text-lg font-semibold mb-4">Resumo da Fatura</h2>
+
+    <!-- Valor da Fatura -->
+    <div class="mb-4">
+        <p class="text-sm opacity-70">Fatura Atual</p>
+        <p class="text-2xl font-bold text-red-400">{{ invoiceTotal | currency:'BRL'}}</p>
+    </div>
+
+    <!-- Limite disponível -->
+    <div class="mb-4">
+        <p class="text-sm opacity-70">Limite Disponível</p>
+        <p class="text-xl font-semibold text-green-400">{{ availableLimit | currency: 'BRL'}} / {{creditLimit | currency:'BRL'}}</p>
+    </div>
+
+    <!-- Barra de Progresso -->
+     <div class="h-3 w-full bg-gray-700 rounded-full overflow-hidden">
+        <div class="h-3 bg-gradient-to-r from-purple-500 to-pink-500 transition-all" [style.width.%]="progressPercentage"></div>
+     </div>
+</div>
