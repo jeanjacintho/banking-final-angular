@@ -1,1 +1,11 @@
-/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+
+
+@theme {
+    --color-background: #ffffff;
+    --color-primary: #2563eb;
+    --color-text: #111111;
+    --color-primary-hover: #15803d;
+    --color-gradient-start: #b6ff91;
+    --color-gradient-end: #8dff6a;
+}

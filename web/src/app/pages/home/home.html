@@ -1,0 +1,76 @@
+<div
+    class="min-h-screen bg-gradient-to-b from-background to-gradient-start/40 text-text grid grid-rows-[auto,1fr,auto]">
+    <header class="flex justify-between items-center px-4 md:px-8 py-4">
+        <div class="flex items-center">
+            <img src="assets/bankr-logo.png" alt="Logo" class="h-10 md:h-12" />
+        </div>
+
+        <nav class="hidden md:flex gap-6 text-sm text-text-light">
+            <a href="#">Contas</a>
+            <a href="#">Soluções</a>
+            <a href="#">Sobre nós</a>
+            <a href="#">Blog</a>
+        </nav>
+
+        <div class="hidden md:flex items-center gap-4">
+            <button class="font-medium px-4 py-2 hover:cursor-pointer" (click)="navigateToLogin()">Entrar</button>
+            <button class="flex items-center gap-2 px-4 py-2 rounded-xl font-medium 
+                    text-text bg-gradient-to-r from-gradient-start to-gradient-end 
+                    shadow-sm hover:scale-105 transition-transform hover:cursor-pointer">
+                <span class="text-lg">✦</span>Criar uma conta
+            </button>
+        </div>
+
+        <button class="md:hidden p-2" (click)="toggleMenu()" aria-label="Abrir menu">
+            <span class="block w-6 h-0.5 bg-text"></span>
+            <span class="block w-6 h-0.5 bg-text mt-1"></span>
+            <span class="block w-6 h-0.5 bg-text mt-1"></span>
+        </button>
+    </header>
+
+    <div *ngIf="menuOpen" class="md:hidden px-4 pb-4">
+        <nav class="flex flex-col gap-3 text-sm text-text-light">
+            <a href="#" (click)="toggleMenu()">Contas</a>
+            <a href="#" (click)="toggleMenu()">Soluções</a>
+            <a href="#" (click)="toggleMenu()">Sobre nós</a>
+            <a href="#" (click)="toggleMenu()">Blog</a>
+        </nav>
+        <div class="mt-3 flex flex-col gap-2">
+            <button class="font-medium px-4 py-2 text-left" (click)="navigateToLogin(); toggleMenu()">Entrar</button>
+            <button class="flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium 
+                    text-text bg-gradient-to-r from-gradient-start to-gradient-end 
+                    shadow-sm">
+                <span class="text-lg">✦</span>Criar uma conta
+            </button>
+        </div>
+    </div>
+
+    <section class="px-8 py-12 items-center justify-center">
+        <div class="space-y-6 flex flex-col items-center justify-center">
+            <span class="flex items-center gap-2 px-4 py-1 rounded-xl font-medium 
+                    text-text bg-gradient-start
+                    shadow-sm text-sm transition-transform">
+                Sua vida. Do seu jeito
+            </span>
+            <h1 class="text-5xl font-bold leading-tight text-center">
+                Mais que um banco:<br />
+                a liberdade de escolher.
+            </h1>
+            <p class="text-lg text-text-light max-w-lg text-center">
+                Seja pessoal ou empresarial, aqui você encontra a liberdade de ter tudo em um só banco.
+            </p>
+            <button class="flex items-center gap-2 px-4 py-2 rounded-xl font-medium 
+                    text-text bg-gradient-to-r from-gradient-start to-gradient-end 
+                    shadow-sm hover:scale-105 transition-transform">
+                <span class="text-lg">✦</span>Criar uma conta
+            </button>
+        </div>
+    </section>
+
+    <section class="bg-dark text-bg rounded-xl flex items-center justify-between self-end w-full">
+        <div class="flex items-center gap-4">
+            <img src="assets/bg-bankr.png" alt="Icon" class="" />
+
+        </div>
+    </section>
+</div>
