@@ -22,8 +22,24 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioService.buscarTodos());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Usuario> buscarPorId(@PathVariable Long id){
+        return ResponseEntity.ok(usuarioService.buscarPorId(id));
+    }
+
     @PostMapping
     public ResponseEntity<Usuario> criarUsuario(@Valid @RequestBody Usuario usuario){
-        return ResponseEntity.ok(usuarioService.criarUsuario(usuario));
+        return ResponseEntity.status(201).body(usuarioService.criarUsuario(usuario));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Usuario> atualizarUsuario(@PathVariable Long id, @RequestBody Usuario dadosAtualizados){
+        return ResponseEntity.ok(usuarioService.atualizarUsuario(id, dadosAtualizados));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> inativarUsuario(@PathVariable Long id){
+        usuarioService.inativarUsuario(id);
+        return ResponseEntity.noContent().build();
     }
 }
