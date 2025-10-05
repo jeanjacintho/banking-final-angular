@@ -40,7 +40,7 @@ public class UsuarioService {
     }
 
     public Usuario atualizarUsuario(Long id, Usuario dadosAtualizados){
-        Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
+        Usuario usuario = buscarPorId(id);
 
         if (usuarioRepository.existsByEmail(dadosAtualizados.getEmail()) && !dadosAtualizados.getEmail().equals(usuario.getEmail())) {
             throw new IllegalArgumentException("E-mail já cadastrado no sistema!");
@@ -61,9 +61,26 @@ public class UsuarioService {
     }
 
     public void inativarUsuario(Long id){
-        Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
+        Usuario usuario = buscarPorId(id);
         usuario.setStatus(Status.INATIVO);
         usuarioRepository.save(usuario);
+    }
+
+    public Usuario bloquearUsuario(Long id){
+        Usuario usuario = buscarPorId(id);
+        usuario.setStatus(Status.BLOQUEADO);
+        return usuarioRepository.save(usuario);
+    }
+
+    public Usuario reativarUsuario(Long id){
+        Usuario usuario = buscarPorId(id);
+
+        if (usuario.getStatus() == Status.ATIVO) {
+            throw new IllegalArgumentException("Usuario já está ativo!");
+        }
+
+        usuario.setStatus(Status.ATIVO);
+        return usuarioRepository.save(usuario);
     }
 
     public boolean validarSenha(String senhaDigitada, String senhaHash){

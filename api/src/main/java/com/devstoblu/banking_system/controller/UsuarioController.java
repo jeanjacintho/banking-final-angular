@@ -37,6 +37,16 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioService.atualizarUsuario(id, dadosAtualizados));
     }
 
+    @PutMapping("/{id}/bloquear")
+    public ResponseEntity<Usuario> bloquearUsuario(@PathVariable Long id) {
+        return ResponseEntity.ok(usuarioService.bloquearUsuario(id));
+    }
+
+    @PutMapping("/{id}/reativar")
+    public ResponseEntity<Usuario> reativarUsuario(@PathVariable Long id) {
+        return ResponseEntity.ok(usuarioService.reativarUsuario(id));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> inativarUsuario(@PathVariable Long id){
         usuarioService.inativarUsuario(id);
