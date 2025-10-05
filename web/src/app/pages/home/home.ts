@@ -1,18 +1,23 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { RegisterComponent } from '../register-component/register-component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   templateUrl: './home.html',
   imports: [
-    CommonModule
-  ],
+    CommonModule,
+    RegisterComponent
+],
   styleUrls: ['./home.css']
 })
 export class Home {
+
   menuOpen = false;
+  showForm = false;
+  isVisible = false
 
   constructor(private router: Router) {}
 
@@ -23,4 +28,15 @@ export class Home {
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
   }
+
+  openForm(){
+    this.isVisible = true;
+    setTimeout(() => this.showForm = true, 10)
+  }
+
+  closeForm(){
+    this.showForm = false;
+    setTimeout(() => this.isVisible = false, 300)
+  }
+
 }

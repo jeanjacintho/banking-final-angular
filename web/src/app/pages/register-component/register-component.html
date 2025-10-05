@@ -1,0 +1,111 @@
+<div>  
+  <!-- Logo -->
+  <img src="assets/bankr-logo.png" alt="Logo" class="h-12 mb-6" />
+
+  <!-- Card do formulário -->
+  <div
+    class="w-full max-w-md p-8 space-y-6 text-center">
+    
+    <h1 class="text-3xl font-bold">Crie sua conta</h1>
+    <p class="text-text-light text-sm">
+      Comece a aproveitar os benefícios do Bankr em poucos minutos.
+    </p>
+
+    <form (ngSubmit)="onSubmit()" class="flex flex-col gap-4 text-left">
+
+      <!-- Nome -->
+      <div>
+        <label for="nome" class="text-sm text-text-light">Nome completo</label>
+        <input
+          id="nome"
+          type="text"
+          
+          name="nome"
+          required
+          class="w-full mt-1 px-4 py-2 rounded-lg bg-background/60 border border-white/10 focus:border-gradient-start outline-none text-text placeholder:text-text-light/60"
+          placeholder="Digite seu nome"
+        />
+      </div> 
+      
+      <!-- Telefone -->
+      <div>
+        <label for="telefone" class="text-sm text-text-light">Telefone</label>
+        <input
+          id="telefone"
+          type="text"
+          
+          name="telefone"
+          required
+          class="w-full mt-1 px-4 py-2 rounded-lg bg-background/60 border border-white/10 focus:border-gradient-start outline-none text-text placeholder:text-text-light/60"
+          placeholder="Digite seu telefone"
+        />
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label for="email" class="text-sm text-text-light">E-mail</label>
+        <input
+          id="email"
+          type="email"
+         
+          name="email"
+          required
+          class="w-full mt-1 px-4 py-2 rounded-lg bg-background/60 border border-white/10 focus:border-gradient-start outline-none text-text placeholder:text-text-light/60"
+          placeholder="Digite seu e-mail"
+        />
+      </div>
+
+      <!-- CPF -->
+      <div>
+        <label for="cpf" class="text-sm text-text-light">CPF</label>
+        <input
+          id="cpf"
+          type="text"
+          
+          name="cpf"
+          required
+          class="w-full mt-1 px-4 py-2 rounded-lg bg-background/60 border border-white/10 focus:border-gradient-start outline-none text-text placeholder:text-text-light/60"
+          placeholder="Digite seu CPF"
+        />
+      </div>
+
+      <!-- Data de Nascimento -->
+      <div>
+        <label for="data_nascimento" class="text-sm text-text-light">Data de Nascimento</label>
+        <input
+          id="data_nascimento"
+          type="date"
+         
+          name="data_nascimento"
+          required
+          class="w-full mt-1 px-4 py-2 rounded-lg bg-background/60 border border-white/10 focus:border-gradient-start outline-none text-text placeholder:text-text-light/60"
+          placeholder="dd/mm/aaaa"
+        />
+      </div>
+
+      <!-- Consentimento -->
+      <div class="flex items-start gap-2 text-sm text-text-light">
+        <input type="checkbox" id="consentimento" class="w-4 h-4 rounded border-white/20 bg-background focus:ring-gradient-start" required> 
+        <label for=""> Autorizo o Bankr a tratar meus dados pessoais para envio de comunicações sobre seus produtos e serviços e também estou de acordo com a <a class="text-gradient-start hover:underline cursor-pointer">Política de Privacidade.</a></label>
+      </div>
+
+      <!-- Botão -->
+      <button
+        type="submit"
+        class="mt-4 flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium 
+        text-text bg-gradient-to-r from-gradient-start to-gradient-end 
+        shadow-sm hover:scale-105 transition-transform">
+        <span class="text-lg">✦</span>Criar conta
+      </button>
+
+    </form>
+
+    <!-- Link para login -->
+    <p class="text-sm text-text-light mt-4">
+      Já tem uma conta?
+      <a (click)="navigateToLogin()" class="text-gradient-start hover:underline cursor-pointer">
+        Entrar
+      </a>
+    </p>
+  </div>
+</div>

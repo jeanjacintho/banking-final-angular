@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
+import { RegisterComponent } from './pages/register-component/register-component';
 
 @NgModule({
   declarations: [
