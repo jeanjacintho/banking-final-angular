@@ -27,6 +27,14 @@ public class UsuarioService {
         String senhaHash = passwordEncoder.encode(usuario.getSenha());
         usuario.setSenha(senhaHash);
 
+        if (usuarioRepository.existsByCpf((usuario.getCpf()))) {
+            throw new IllegalArgumentException("CPF já cadastrado no sistema!");
+        }
+
+        if (usuarioRepository.existsByEmail((usuario.getEmail()))) {
+            throw new IllegalArgumentException("E-mail já cadastrado no sistema!");
+        }
+
         return usuarioRepository.save(usuario);
     }
 
