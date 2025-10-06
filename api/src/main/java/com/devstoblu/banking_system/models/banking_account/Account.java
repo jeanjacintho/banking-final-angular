@@ -1,6 +1,8 @@
 package com.devstoblu.banking_system.models.banking_account;
 
+import com.devstoblu.banking_system.enums.AccountType;
 import com.devstoblu.banking_system.models.Usuario;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.util.Random;
@@ -19,13 +21,21 @@ public abstract class Account {
   private String agency = "0001";
   private double balance = 0.0;
 
+  //@Enumerated(EnumType.STRING)
+  //@Column(name = "account_type")
+  //private AccountType accountType;
+
   @ManyToOne
-  @JoinColumn(name = "client_id")
+  @JoinColumn(name = "user_id")
+  @JsonIgnoreProperties("accounts")
   private Usuario usuario;
 
-  // Construtor Savings e Checking Account
   public Account() {
     this.accountNumber = new Random().nextInt(99999999);
+  }
+
+  public String getAccountType() {
+    return this.getClass().getAnnotation(DiscriminatorValue.class).value();
   }
 
   public Long getId() {

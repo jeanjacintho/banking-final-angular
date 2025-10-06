@@ -1,4 +1,4 @@
-package com.devstoblu.banking_system.controller;
+package com.devstoblu.banking_system.controllers;
 
 import com.devstoblu.banking_system.models.Usuario;
 import com.devstoblu.banking_system.services.UsuarioService;

@@ -2,12 +2,15 @@ package com.devstoblu.banking_system.models;
 
 import com.devstoblu.banking_system.enums.Status;
 import com.devstoblu.banking_system.enums.Tipo;
+import com.devstoblu.banking_system.models.banking_account.Account;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "usuarios")
@@ -16,38 +19,42 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class Usuario {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(name = "nome_completo", nullable = false, length = 120)
-    private String nomeCompleto;
+  @Column(name = "nome_completo", nullable = false, length = 120)
+  private String nomeCompleto;
 
-    @Column(nullable = false, unique = true, length = 11)
-    private String cpf;
+  @Column(nullable = false, unique = true, length = 11)
+  private String cpf;
 
-    @Column(nullable = false, unique = true, length = 100)
-    private String email;
+  @Column(nullable = false, unique = true, length = 100)
+  private String email;
 
-    @Column(length = 20)
-    private String telefone;
+  @Column(length = 20)
+  private String telefone;
 
-    @Column(name = "data_nascimento", nullable = false)
-    private LocalDate dataNascimento;
+  @Column(name = "data_nascimento", nullable = false)
+  private LocalDate dataNascimento;
 
-    @Column(name = "endereco", length = 255)
-    private String enderecoCompleto;
+  @Column(name = "endereco", length = 255)
+  private String enderecoCompleto;
 
-    @Column(nullable = false)
-    private String senha;
+  @Column(nullable = false)
+  private String senha;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 10)
-    private Status status;
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false, length = 10)
+  private Status status;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 10)
-    private Tipo tipo;
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false, length = 10)
+  private Tipo tipo;
+
+  @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+  @JsonIgnoreProperties("usuario")
+  private List<Account> accounts;
 
   public Long getId() {
     return id;
@@ -127,5 +134,13 @@ public class Usuario {
 
   public void setTipo(Tipo tipo) {
     this.tipo = tipo;
+  }
+
+  public List<Account> getAccounts() {
+    return accounts;
+  }
+
+  public void setAccounts(List<Account> accounts) {
+    this.accounts = accounts;
   }
 }

@@ -1,4 +1,4 @@
-package com.devstoblu.banking_system.repositories.banking_account;
+package com.devstoblu.banking_system.repositories;
 
 import com.devstoblu.banking_system.models.banking_account.Account;
 import com.devstoblu.banking_system.models.banking_account.CheckingAccount;
