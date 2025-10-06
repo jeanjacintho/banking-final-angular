@@ -1,5 +1,6 @@
 package com.devstoblu.banking_system.models.banking_account;
 
+import com.devstoblu.banking_system.models.Usuario;
 import jakarta.persistence.*;
 
 import java.util.Random;
@@ -18,6 +19,9 @@ public abstract class Account {
   private String agency = "0001";
   private double balance = 0.0;
 
+  @ManyToOne
+  @JoinColumn(name = "client_id")
+  private Usuario usuario;
 
   // Construtor Savings e Checking Account
   public Account() {
@@ -54,5 +58,13 @@ public abstract class Account {
 
   public void setBalance(double balance) {
     this.balance = balance;
+  }
+
+  public Usuario getUsuario() {
+    return usuario;
+  }
+
+  public void setUsuario(Usuario usuario) {
+    this.usuario = usuario;
   }
 }

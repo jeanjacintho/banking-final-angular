@@ -4,6 +4,7 @@ import com.devstoblu.banking_system.models.banking_account.Account;
 import com.devstoblu.banking_system.models.banking_account.CheckingAccount;
 import com.devstoblu.banking_system.models.banking_account.SavingsAccount;
 import com.devstoblu.banking_system.services.banking_account.AccountService;
+import com.devstoblu.banking_system.services.UsuarioService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,15 +34,15 @@ public class AccountController {
     return ResponseEntity.ok(service.findAllSavingsAccounts());
   }
 
-  @PostMapping("/checking")
-  public ResponseEntity<CheckingAccount> createChecking(@RequestBody CheckingAccount account) {
-    CheckingAccount newAccount = service.createCheckingAccount(account.getBalance());
+  @PostMapping("/checking/{userId}")
+  public ResponseEntity<Account> createChecking(@PathVariable Long userId, @RequestBody CheckingAccount account) {
+    CheckingAccount newAccount = service.createCheckingAccount(userId, account.getBalance());
     return ResponseEntity.ok(newAccount);
   }
 
-  @PostMapping("/savings")
-  public ResponseEntity<SavingsAccount> createSavings(@RequestBody SavingsAccount account) {
-    SavingsAccount newAccount = service.createSavingsAccount(account.getBalance());
+  @PostMapping("/savings/{userId}")
+  public ResponseEntity<Account> createSavings(@PathVariable Long userId, @RequestBody SavingsAccount account) {
+    SavingsAccount newAccount = service.createSavingsAccount(userId, account.getBalance());
     return ResponseEntity.ok(newAccount);
   }
 }
