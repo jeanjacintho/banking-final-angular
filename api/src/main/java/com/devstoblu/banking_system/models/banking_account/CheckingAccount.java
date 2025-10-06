@@ -1,0 +1,15 @@
+package com.devstoblu.banking_system.models.banking_account;
+
+import jakarta.persistence.*;
+
+import java.util.Random;
+
+@Entity
+@DiscriminatorValue("CHECKING")
+public class CheckingAccount extends Account {
+
+  private static final double MAINTENANCE_FEE = 15.0;
+  private static final double OVERDRAFT_LIMIT = 1000.0;
+  private static final double OVERDRAFT_INTEREST = 0.08;
+
+}
