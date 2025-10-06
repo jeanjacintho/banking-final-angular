@@ -1,9 +1,41 @@
 @import "tailwindcss";
 
-
 @theme {
+    /* Base (light) palette */
     --color-background: #ffffff;
-    --color-primary: #2563eb;
+    --color-foreground: #111111;
+
+    --color-card: #ffffff;
+    --color-card-foreground: #111111;
+
+    --color-popover: #ffffff;
+    --color-popover-foreground: #111111;
+
+    /* Brand */
+    --color-primary: #8dff6a; /* existing brand */
+    --color-primary-foreground: #1a2b12; /* high contrast on brand */
+
+    /* UI neutrals */
+    --color-secondary: #f1f5f9; /* slate-100 */
+    --color-secondary-foreground: #111111;
+
+    --color-muted: #f1f5f9;
+    --color-muted-foreground: #64748b; /* slate-500 */
+
+    --color-accent: #f1f5f9;
+    --color-accent-foreground: #111111;
+
+    --color-destructive: #ef4444; /* red-500 */
+    --color-destructive-foreground: #f8fafc; /* slate-50 */
+
+    --color-border: #e5e7eb; /* gray-200 */
+    --color-input: #e5e7eb;  /* gray-200 */
+    --color-ring: #111827;   /* gray-900 */
+
+    /* Radius token used by components */
+    --radius: 8px;
+
+    /* Keep existing custom tokens for compatibility */
     --color-text: #111111;
     --color-primary-hover: #15803d;
     --color-gradient-start: #b6ff91;
