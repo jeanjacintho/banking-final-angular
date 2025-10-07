@@ -1,0 +1,256 @@
+<div class="min-h-screen bg-gray-900 text-white p-8">
+  <div class="max-w-5xl mx-auto space-y-8">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-bold">Solicitar novo cartão</h1>
+        <p class="text-sm text-gray-400 mt-1">Preencha seus dados para analisarmos seu crédito.</p>
+      </div>
+
+      <a
+        routerLink=".."
+        class="inline-flex items-center gap-2 rounded-lg bg-gray-800 px-4 py-2 text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+      >
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+        Voltar
+      </a>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-8">
+      <!-- Dados pessoais -->
+      <section class="bg-gray-800 rounded-xl p-6 shadow-sm">
+        <h2 class="text-lg font-semibold mb-4">Dados pessoais</h2>
+
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <!-- Nome -->
+          <div>
+            <label class="block text-sm text-gray-300 mb-1">Nome completo</label>
+            <input
+              formControlName="nomeCompleto"
+              [class.border-red-500]="isInvalid(form.get('nomeCompleto'))"
+              class="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="Seu nome"
+            />
+            <p *ngIf="isInvalid(form.get('nomeCompleto'))" class="mt-1 text-xs text-red-400">
+              Informe um nome com pelo menos 5 caracteres.
+            </p>
+          </div>
+
+          <!-- CPF -->
+          <div>
+            <label class="block text-sm text-gray-300 mb-1">CPF</label>
+            <input
+              formControlName="cpf"
+              [class.border-red-500]="isInvalid(form.get('cpf'))"
+              class="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="000.000.000-00"
+            />
+            <p *ngIf="isInvalid(form.get('cpf'))" class="mt-1 text-xs text-red-400">
+              CPF inválido. Use o formato 000.000.000-00.
+            </p>
+          </div>
+
+          <!-- Data nasc -->
+          <div>
+            <label class="block text-sm text-gray-300 mb-1">Data de nascimento</label>
+            <input
+              type="date"
+              formControlName="dataNascimento"
+              [class.border-red-500]="isInvalid(form.get('dataNascimento'))"
+              class="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-white focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <p *ngIf="isInvalid(form.get('dataNascimento'))" class="mt-1 text-xs text-red-400">
+              Data de nascimento é obrigatória.
+            </p>
+          </div>
+
+          <!-- Email -->
+          <div>
+            <label class="block text-sm text-gray-300 mb-1">Email</label>
+            <input
+              type="email"
+              formControlName="email"
+              [class.border-red-500]="isInvalid(form.get('email'))"
+              class="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="voce@exemplo.com"
+            />
+            <p *ngIf="isInvalid(form.get('email'))" class="mt-1 text-xs text-red-400">
+              Informe um email válido.
+            </p>
+          </div>
+
+          <!-- Telefone -->
+          <div>
+            <label class="block text-sm text-gray-300 mb-1">Telefone</label>
+            <input
+              formControlName="telefone"
+              [class.border-red-500]="isInvalid(form.get('telefone'))"
+              class="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="(00) 00000-0000"
+            />
+            <p *ngIf="isInvalid(form.get('telefone'))" class="mt-1 text-xs text-red-400">
+              Informe um telefone válido.
+            </p>
+          </div>
+        </div>
+
+        <!-- Endereço -->
+        <div formGroupName="endereco" class="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div>
+            <label class="block text-sm text-gray-300 mb-1">Logradouro</label>
+            <input formControlName="logradouro" class="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          </div>
+          <div>
+            <label class="block text-sm text-gray-300 mb-1">Número</label>
+            <input formControlName="numero" class="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          </div>
+          <div>
+            <label class="block text-sm text-gray-300 mb-1">Complemento</label>
+            <input formControlName="complemento" class="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          </div>
+          <div>
+            <label class="block text-sm text-gray-300 mb-1">Bairro</label>
+            <input formControlName="bairro" class="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          </div>
+          <div>
+            <label class="block text-sm text-gray-300 mb-1">Cidade</label>
+            <input formControlName="cidade" class="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          </div>
+          <div>
+            <label class="block text-sm text-gray-300 mb-1">Estado</label>
+            <input formControlName="estado" maxlength="2" class="w-full uppercase rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          </div>
+          <div>
+            <label class="block text-sm text-gray-300 mb-1">CEP</label>
+            <input formControlName="cep" class="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="00000-000" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Dados financeiros -->
+      <section class="bg-gray-800 rounded-xl p-6 shadow-sm">
+        <h2 class="text-lg font-semibold mb-4">Dados financeiros</h2>
+
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div>
+            <label class="block text-sm text-gray-300 mb-1">Renda mensal (R$)</label>
+            <input
+              type="number"
+              formControlName="rendaMensal"
+              [class.border-red-500]="isInvalid(form.get('rendaMensal'))"
+              class="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <p *ngIf="isInvalid(form.get('rendaMensal'))" class="mt-1 text-xs text-red-400">
+              Informe uma renda válida.
+            </p>
+          </div>
+
+          <div>
+            <label class="block text-sm text-gray-300 mb-1">Fonte de renda</label>
+            <select
+              formControlName="fonteRenda"
+              class="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-white focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+              <option class="bg-gray-900" value="CLT">CLT</option>
+              <option class="bg-gray-900" value="PJ">PJ</option>
+              <option class="bg-gray-900" value="Autonomo">Autônomo</option>
+              <option class="bg-gray-900" value="Aposentado">Aposentado</option>
+              <option class="bg-gray-900" value="Estudante">Estudante</option>
+              <option class="bg-gray-900" value="Outros">Outros</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm text-gray-300 mb-1">Empresa</label>
+            <input formControlName="empresa" class="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          </div>
+
+          <div>
+            <label class="block text-sm text-gray-300 mb-1">Tempo de emprego (meses)</label>
+            <input type="number" formControlName="tempoEmpregoMeses" class="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Preferências e consentimentos -->
+      <section class="bg-gray-800 rounded-xl p-6 shadow-sm">
+        <h2 class="text-lg font-semibold mb-4">Preferências</h2>
+
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div>
+            <label class="block text-sm text-gray-300 mb-1">Tipo de fatura</label>
+            <select formControlName="tipoFatura" class="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-white focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+              <option class="bg-gray-900" value="digital">Digital</option>
+              <option class="bg-gray-900" value="papel">Papel</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm text-gray-300 mb-1">Dia de vencimento</label>
+            <input
+              type="number"
+              min="1" max="28"
+              formControlName="diaVencimentoPreferido"
+              class="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+        </div>
+
+        <hr class="my-6 border-gray-700">
+
+        <h2 class="text-lg font-semibold mb-3">Consentimentos</h2>
+        <div class="space-y-3">
+          <label class="flex items-center gap-3">
+            <input type="checkbox" formControlName="aceiteTermos" class="h-4 w-4 rounded border-gray-600 bg-gray-900 text-indigo-600 focus:ring-indigo-500" />
+            <span class="text-sm text-gray-300">Declaro que li e aceito os termos.</span>
+          </label>
+          <label class="flex items-center gap-3">
+            <input type="checkbox" formControlName="autorizacaoConsultaCredito" class="h-4 w-4 rounded border-gray-600 bg-gray-900 text-indigo-600 focus:ring-indigo-500" />
+            <span class="text-sm text-gray-300">Autorizo consulta aos bureaus de crédito.</span>
+          </label>
+        </div>
+      </section>
+
+      <!-- Ações -->
+      <div class="flex items-center gap-3">
+        <button
+          type="submit"
+          [disabled]="form.invalid || loading()"
+          class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-5 py-2.5 text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          <svg *ngIf="loading()" class="mr-2 h-4 w-4 animate-spin text-white" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+          </svg>
+          Enviar solicitação
+        </button>
+
+        <span *ngIf="form.invalid" class="text-sm text-gray-400">Preencha os campos obrigatórios.</span>
+      </div>
+    </form>
+
+    <!-- Resultado -->
+    <section *ngIf="result() as r" class="bg-gray-800 rounded-xl p-6 shadow-sm">
+      <h2 class="text-lg font-semibold mb-3">Resultado da solicitação</h2>
+      <p class="text-sm text-gray-300">Status: <span class="font-medium">{{ r.statusSolicitacao }}</span></p>
+
+      <div *ngIf="r.statusSolicitacao !== 'recusado'" class="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
+        <p class="text-sm text-gray-300">Limite aprovado: <span class="font-medium">{{ r.limiteAprovado | currency:'BRL' }}</span></p>
+        <p class="text-sm text-gray-300">Bandeira: <span class="font-medium">{{ r.brand }}</span></p>
+        <p class="text-sm text-gray-300">Cartão: <span class="font-medium">{{ r.maskedPan }}</span></p>
+        <p class="text-sm text-gray-300">Vencimento da fatura: <span class="font-medium">{{ r.dataVencimentoFatura }}</span></p>
+      </div>
+
+      <div *ngIf="r.pendencias?.length" class="mt-3">
+        <p class="text-sm font-medium text-white">Pendências:</p>
+        <ul class="mt-1 list-disc pl-5 text-sm text-gray-300">
+          <li *ngFor="let p of r.pendencias">{{ p }}</li>
+        </ul>
+      </div>
+
+      <p *ngIf="r.mensagem" class="mt-3 text-sm text-gray-300">{{ r.mensagem }}</p>
+    </section>
+  </div>
+</div>

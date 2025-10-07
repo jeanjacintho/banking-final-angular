@@ -4,19 +4,20 @@ import { CreditCardComponent } from '../credit-card/credit-card';
 import { InvoiceSummaryComponent } from "../invoice-summary/invoice-summary";
 import { CreditCardService } from '../../../services/credit-card-service';
 import { CreditCard } from '../../../models/credit-card.model';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-credit-card-dashboard',
   standalone: true,
   templateUrl: './credit-card-dashboard.html',
-  styleUrl: './credit-card-dashboard.css',
   imports: [
     CommonModule,
     NgFor,
     NgClass,
     CurrencyPipe,
     CreditCardComponent,
-    InvoiceSummaryComponent
+    InvoiceSummaryComponent,
+    RouterModule
 ]
 })
 export class CreditCardDashboardComponent {
