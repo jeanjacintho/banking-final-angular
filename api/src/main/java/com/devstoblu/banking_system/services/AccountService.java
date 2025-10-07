@@ -77,4 +77,14 @@ public class AccountService {
     account.withdraw(value);
     return accountRepository.save(account);
   }
+
+  // Deletar conta corrente e poupança
+  public void delete(String accountNumber) {
+    Account account = accountRepository.findByAccountNumber(accountNumber).orElseThrow(() -> new RuntimeException("Conta não encontrada"));
+    if (account.getBalance() != 0) {
+      throw new RuntimeException("Não é possível deletar conta com saldo positivo ou negativo. Saldo atual: " + account.getBalance());
+    }
+    accountRepository.delete(account);
+  }
+
 }

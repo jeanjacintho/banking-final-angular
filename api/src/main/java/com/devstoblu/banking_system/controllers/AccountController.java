@@ -82,4 +82,24 @@ public class AccountController {
       return ResponseEntity.badRequest().body(errorResponse);
     }
   }
+
+  @DeleteMapping("/{accountNumber}")
+  public ResponseEntity<?> deleteChecking(@PathVariable String accountNumber) {
+    try {
+      service.delete(accountNumber);
+
+      Map<String, Object> response = new HashMap<>();
+      response.put("message", "Conta deletada com sucesso");
+      response.put("accountNumber", accountNumber);
+
+      return ResponseEntity.ok(response);
+    } catch (RuntimeException e) {
+
+      Map<String, Object> errorResponse = new HashMap<>();
+      errorResponse.put("error", e.getMessage());
+      errorResponse.put("accountNumber", accountNumber);
+
+      return ResponseEntity.badRequest().body(errorResponse);
+    }
+  }
 }

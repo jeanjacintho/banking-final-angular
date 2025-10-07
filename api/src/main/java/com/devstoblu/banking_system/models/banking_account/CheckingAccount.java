@@ -16,7 +16,7 @@ public class CheckingAccount extends Account {
   public void withdraw(Double value) {
     double currentBalance = getBalance();
 
-    if ((currentBalance - value) > (- OVERDRAFT_LIMIT)) {
+    if ((currentBalance - value) >= (- OVERDRAFT_LIMIT)) {
       setBalance(currentBalance - value);
     } else {
       throw new RuntimeException("Saldo insuficiente ou limite excedido");

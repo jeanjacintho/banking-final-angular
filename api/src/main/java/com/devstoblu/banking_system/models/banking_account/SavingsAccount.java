@@ -18,7 +18,7 @@ public class SavingsAccount extends Account {
   public void withdraw(Double value) {
     double currentBalance = getBalance();
 
-    if (currentBalance > value) {
+    if (currentBalance >= value) {
       setBalance(currentBalance - value);
     } else {
       throw new RuntimeException("Saldo insuficiente");
