@@ -107,4 +107,25 @@ public class AccountController {
     AccountService.FeeApplicationResult result = service.applyFeesAndMaintenanceWithDetails();
     return ResponseEntity.ok(result);
   }
+
+  @PostMapping("/transfer")
+public ResponseEntity<?> transfer(@RequestBody Map<String, Object> request) {
+    try {
+        String fromAccount = (String) request.get("fromAccount");
+        String toAccount = (String) request.get("toAccount");
+        Double value = Double.valueOf(request.get("amount").toString());
+        String typeStr = (String) request.get("type");
+
+        TransferType type = TransferType.valueOf(typeStr.toUpperCase());
+
+        Map<String, Object> response = service.transfer(fromAccount, toAccount, value, type);
+        return ResponseEntity.ok(response);
+
+    } catch (RuntimeException e) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("error", e.getMessage());
+        return ResponseEntity.badRequest().body(errorResponse);
+    }
+}
+
 }
