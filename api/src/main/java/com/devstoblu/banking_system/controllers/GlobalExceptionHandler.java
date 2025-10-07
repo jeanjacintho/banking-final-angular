@@ -1,4 +1,4 @@
-package com.devstoblu.banking_system.controller;
+package com.devstoblu.banking_system.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
