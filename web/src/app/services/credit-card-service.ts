@@ -7,7 +7,7 @@ import { CreditCard } from '../models/credit-card.model';
   providedIn: 'root'
 })
 export class CreditCardService {
-  private apiUrl = 'http://localhost:8081/api/credit-card'; // URL da API
+  private apiUrl = 'http://localhost:8081/api/credit-cards'; // URL da API
 
   constructor(private http: HttpClient){ }
 
