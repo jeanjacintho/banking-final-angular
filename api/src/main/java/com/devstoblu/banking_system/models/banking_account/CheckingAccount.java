@@ -2,6 +2,7 @@ package com.devstoblu.banking_system.models.banking_account;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.Random;
 
 @Entity
@@ -20,6 +21,19 @@ public class CheckingAccount extends Account {
       setBalance(currentBalance - value);
     } else {
       throw new RuntimeException("Saldo insuficiente ou limite excedido");
+    }
+  }
+
+  @Override
+  public void applyFeesAndMaintenance() {
+    // Tarifa de manutenção no dia 1º
+    if (LocalDate.now().getDayOfMonth() == 7) {
+      setBalance(getBalance() - MAINTENANCE_FEE);
+
+      // Aplicar juros do cheque especial
+      if (getBalance() < 0) {
+        setBalance(getBalance() * (1 + OVERDRAFT_INTEREST));
+      }
     }
   }
 

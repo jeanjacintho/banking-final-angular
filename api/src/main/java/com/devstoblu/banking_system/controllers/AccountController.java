@@ -1,6 +1,5 @@
 package com.devstoblu.banking_system.controllers;
 
-import com.devstoblu.banking_system.enums.AccountType;
 import com.devstoblu.banking_system.models.banking_account.Account;
 import com.devstoblu.banking_system.models.banking_account.CheckingAccount;
 import com.devstoblu.banking_system.models.banking_account.SavingsAccount;
@@ -8,10 +7,7 @@ import com.devstoblu.banking_system.services.AccountService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @RestController
 @RequestMapping("/account")
@@ -37,6 +33,11 @@ public class AccountController {
     return ResponseEntity.ok(service.findAllSavingsAccounts());
   }
 
+  @GetMapping("/{accountNumber}")
+  public ResponseEntity<Optional<Account>> findByAccountNumber(@PathVariable String accountNumber) {
+    return ResponseEntity.ok(service.findByAccountNumber(accountNumber));
+  }
+
   @PostMapping("/checking/{userId}")
   public ResponseEntity<CheckingAccount> createChecking(@PathVariable Long userId, @RequestBody CheckingAccount account) {
     CheckingAccount newAccount = service.createCheckingAccount(userId, account.getBalance());
@@ -60,7 +61,6 @@ public class AccountController {
       Map<String, Object> errorResponse = new HashMap<>();
       errorResponse.put("error", e.getMessage());
       errorResponse.put("accountNumber", accountNumber);
-      errorResponse.put("status", 400);
 
       return ResponseEntity.badRequest().body(errorResponse);
     }
@@ -77,7 +77,6 @@ public class AccountController {
       Map<String, Object> errorResponse = new HashMap<>();
       errorResponse.put("error", e.getMessage());
       errorResponse.put("accountNumber", accountNumber);
-      errorResponse.put("status", 400);
 
       return ResponseEntity.badRequest().body(errorResponse);
     }
@@ -101,5 +100,11 @@ public class AccountController {
 
       return ResponseEntity.badRequest().body(errorResponse);
     }
+  }
+
+  @PostMapping("/fee-and-income")
+  public ResponseEntity<AccountService.FeeApplicationResult> aplicarTaxas() {
+    AccountService.FeeApplicationResult result = service.applyFeesAndMaintenanceWithDetails();
+    return ResponseEntity.ok(result);
   }
 }

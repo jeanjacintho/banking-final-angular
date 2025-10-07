@@ -10,6 +10,7 @@ import com.devstoblu.banking_system.repositories.AccountRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -87,4 +88,36 @@ public class AccountService {
     accountRepository.delete(account);
   }
 
+  // Relatório e aplicação de taxas e rendimentos nas contas (metodo applyFeesAndMaintenance)
+  public FeeApplicationResult applyFeesAndMaintenanceWithDetails() {
+    List<Account> accounts = accountRepository.findAll();
+    List<AccountUpdateDetail> detalhes = new ArrayList<>();
+
+    for (Account c : accounts) {
+      Double previousBalance = c.getBalance();
+      c.applyFeesAndMaintenance();
+      accountRepository.save(c);
+
+      detalhes.add(new AccountUpdateDetail(
+              c.getId(),
+              c.getAccountNumber(),
+              previousBalance,
+              c.getBalance(),
+              c.getAccountType()
+      ));
+    }
+    return new FeeApplicationResult(detalhes);
+  }
+
+  // Records para a resposta
+  public record FeeApplicationResult(List<AccountUpdateDetail> updades) {}
+
+  public record AccountUpdateDetail(
+          Long accountId,
+          String accountNumber,
+          Double previousBalance,
+          Double currentBalance,
+          String accountType
+
+  ) {}
 }

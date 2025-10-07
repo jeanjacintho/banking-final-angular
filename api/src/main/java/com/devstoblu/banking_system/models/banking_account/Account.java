@@ -34,6 +34,8 @@ public abstract class Account {
     return this.getClass().getAnnotation(DiscriminatorValue.class).value();
   }
 
+  public abstract void applyFeesAndMaintenance();
+
   public void deposit(Double value) {
     if (value > 0) this.balance += value;
   }
@@ -52,10 +54,6 @@ public abstract class Account {
 
   public String getAccountNumber() {
     return accountNumber;
-  }
-
-  public void setAccountNumber(String accountNumber) {
-    this.accountNumber = accountNumber;
   }
 
   public String getAgency() {
