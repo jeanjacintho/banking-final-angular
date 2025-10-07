@@ -1,15 +1,19 @@
 package com.devstoblu.banking_system.models;
 
 import com.devstoblu.banking_system.enums.Status;
-import com.devstoblu.banking_system.enums.Tipo;
+import com.devstoblu.banking_system.enums.UserRole;
 import com.devstoblu.banking_system.models.banking_account.Account;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -17,7 +21,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Usuario {
+public class Usuario implements UserDetails {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,7 +54,7 @@ public class Usuario {
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false, length = 10)
-  private Tipo tipo;
+  private UserRole userRole;
 
   @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
   @JsonIgnoreProperties("usuario")
@@ -128,12 +132,12 @@ public class Usuario {
     this.status = status;
   }
 
-  public Tipo getTipo() {
-    return tipo;
+  public UserRole getUserRole() {
+    return userRole;
   }
 
-  public void setTipo(Tipo tipo) {
-    this.tipo = tipo;
+  public void setUserRole(UserRole userRole) {
+    this.userRole = userRole;
   }
 
   public List<Account> getAccounts() {
@@ -143,4 +147,40 @@ public class Usuario {
   public void setAccounts(List<Account> accounts) {
     this.accounts = accounts;
   }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if(this.userRole == UserRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+        else return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    @Override
+    public String getPassword() {
+        return senha;
+    }
+
+    @Override
+    public String getUsername() {
+        return cpf;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+      return UserDetails.super.isAccountNonExpired();
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+      return UserDetails.super.isAccountNonLocked();
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return UserDetails.super.isCredentialsNonExpired();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return UserDetails.super.isEnabled();
+    }
 }

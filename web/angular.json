@@ -74,7 +74,8 @@
               "buildTarget": "banking:build:production"
             },
             "development": {
-              "buildTarget": "banking:build:development"
+              "buildTarget": "banking:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -12,26 +15,33 @@ import { CommonModule } from '@angular/common';
 export class Login {
   loginForm: FormGroup;
   isLoading = false;
+  errorMessage = '';
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      rememberMe: [false]
+      cpf: ['', [Validators.required, Validators.pattern(/^\d{11}$/)]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
 
   onSubmit() {
     if (this.loginForm.valid) {
       this.isLoading = true;
-      const { email, password, rememberMe } = this.loginForm.value;
-      
-      console.log('Login attempt:', { email, password, rememberMe });
-      
-      setTimeout(() => {
-        this.isLoading = false;
-        console.log('Login completed');
-      }, 2000);
+      const { cpf, password } = this.loginForm.value;
+      this.errorMessage = '';
+      const normalizedCpf = String(cpf || '').replace(/\D+/g, '').trim();
+      const normalizedPassword = String(password || '').trim();
+      this.auth.login({ login: normalizedCpf, password: normalizedPassword })
+        .pipe(finalize(() => { this.isLoading = false; }))
+        .subscribe({
+          next: () => {
+            this.router.navigateByUrl('/');
+          },
+          error: (err) => {
+            const backendMsg = err?.error?.message || err?.error?.error || err?.statusText;
+            this.errorMessage = backendMsg ? `Login inválido: ${backendMsg}` : 'Login inválido. Verifique seus dados e tente novamente.';
+          }
+        });
     } else {
       this.markFormGroupTouched();
     }
@@ -44,6 +54,6 @@ export class Login {
     });
   }
 
-  get email() { return this.loginForm.get('email'); }
+  get cpf() { return this.loginForm.get('cpf'); }
   get password() { return this.loginForm.get('password'); }
 }
