@@ -13,4 +13,15 @@ public class SavingsAccount extends Account {
 
   private int withdrawCount = 0;
   private int transferCount = 0;
+
+  @Override
+  public void withdraw(Double value) {
+    double currentBalance = getBalance();
+
+    if (currentBalance > value) {
+      setBalance(currentBalance - value);
+    } else {
+      throw new RuntimeException("Saldo insuficiente");
+    }
+  }
 }

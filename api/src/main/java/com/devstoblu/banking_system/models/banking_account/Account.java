@@ -17,13 +17,9 @@ public abstract class Account {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private int accountNumber;
+  private String accountNumber;
   private String agency = "0001";
   private double balance = 0.0;
-
-  //@Enumerated(EnumType.STRING)
-  //@Column(name = "account_type")
-  //private AccountType accountType;
 
   @ManyToOne
   @JoinColumn(name = "user_id")
@@ -31,11 +27,19 @@ public abstract class Account {
   private Usuario usuario;
 
   public Account() {
-    this.accountNumber = new Random().nextInt(99999999);
+    this.accountNumber = String.valueOf(new Random().nextInt(99999999));
   }
 
   public String getAccountType() {
     return this.getClass().getAnnotation(DiscriminatorValue.class).value();
+  }
+
+  public void deposit(Double value) {
+    if (value > 0) this.balance += value;
+  }
+
+  public void withdraw(Double value) {
+    if (this.balance > value) this.balance -= value;
   }
 
   public Long getId() {
@@ -46,11 +50,11 @@ public abstract class Account {
     this.id = id;
   }
 
-  public int getAccountNumber() {
+  public String getAccountNumber() {
     return accountNumber;
   }
 
-  public void setAccountNumber(int accountNumber) {
+  public void setAccountNumber(String accountNumber) {
     this.accountNumber = accountNumber;
   }
 
