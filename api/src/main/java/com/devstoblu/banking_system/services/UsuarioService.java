@@ -51,7 +51,7 @@ public class UsuarioService {
         usuario.setTelefone(dadosAtualizados.getTelefone());
         usuario.setEnderecoCompleto(dadosAtualizados.getEnderecoCompleto());
         usuario.setStatus(dadosAtualizados.getStatus());
-        usuario.setTipo(dadosAtualizados.getTipo());
+        usuario.setUserRole(dadosAtualizados.getUserRole());
 
         return usuarioRepository.save(usuario);
     }
