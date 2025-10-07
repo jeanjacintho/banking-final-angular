@@ -1,7 +1,7 @@
 package com.devstoblu.banking_system.controller;
 
 import com.devstoblu.banking_system.models.CreditCard;
-import com.devstoblu.banking_system.services.CreditCardService;
+import com.devstoblu.banking_system.services.credit_card.CreditCardService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

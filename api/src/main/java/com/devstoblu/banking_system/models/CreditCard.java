@@ -21,17 +21,26 @@ public class CreditCard {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 16)
+    @Column(nullable = false, unique = true, length = 16)
     private String cardNumber;
 
     @Column(nullable = false, length = 100)
     private String cardHolderName;
 
-    @Column(nullable = false, length = 7)
-    private String expirationDate;
+    @Column(nullable = false, length = 2)
+    private Integer expMonth;
 
     @Column(nullable = false, length = 4)
-    private String cvv;
+    private Integer expYear;
+
+    @Column(nullable = false, length = 64)
+    private String cvvHash;
+
+    @Column(nullable = false)
+    private String maskedPan;
+
+    @Column(nullable = false)
+    private String panToken;
 
     @Column(nullable = false, length = 50)
     private String brand;
@@ -51,4 +60,7 @@ public class CreditCard {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @ManyToOne
+    private Usuario usuario;
 }

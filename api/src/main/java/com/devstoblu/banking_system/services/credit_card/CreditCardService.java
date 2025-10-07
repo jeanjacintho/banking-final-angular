@@ -1,4 +1,4 @@
-package com.devstoblu.banking_system.services;
+package com.devstoblu.banking_system.services.credit_card;
 
 import com.devstoblu.banking_system.models.CreditCard;
 import com.devstoblu.banking_system.repositories.CreditCardRepository;
