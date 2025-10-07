@@ -32,11 +32,6 @@
               {
                 "glob": "**/*",
                 "input": "public"
-              },
-              {
-                "glob": "**/*",
-                "input": "src/assets",
-                "output": "assets"
               }
             ],
             "styles": [
@@ -74,8 +69,7 @@
               "buildTarget": "banking:build:production"
             },
             "development": {
-              "buildTarget": "banking:build:development",
-              "proxyConfig": "proxy.conf.json"
+              "buildTarget": "banking:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -91,17 +85,12 @@
               "zone.js/testing"
             ],
             "tsConfig": "tsconfig.spec.json",
-              "assets": [
-                {
-                  "glob": "**/*",
-                  "input": "public"
-                },
-                {
-                  "glob": "**/*",
-                  "input": "src/assets",
-                  "output": "assets"
-                }
-              ],
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "public"
+              }
+            ],
             "styles": [
               "src/styles.css"
             ]

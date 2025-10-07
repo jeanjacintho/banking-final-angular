@@ -1,4 +1,4 @@
-package com.devstoblu.banking_system.controllers;
+package com.devstoblu.banking_system.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
