@@ -44,7 +44,7 @@ export interface CreditCardRequestResponse {
 })
 export class CreditCardRequestService {
     private http = inject(HttpClient);
-    private baseUrl = 'https://localhost:8080/api/credit-cards';
+    private baseUrl = 'http://localhost:8081/api/credit-cards';
 
     solicitarCartao(payload: CreditCardRequest): Observable<CreditCardRequestResponse> {
         return this.http.post<CreditCardRequestResponse>(`${this.baseUrl}/requests`, payload);

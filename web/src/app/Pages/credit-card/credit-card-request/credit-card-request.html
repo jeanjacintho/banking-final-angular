@@ -28,7 +28,7 @@
           <div>
             <label class="block text-sm text-gray-300 mb-1">Nome completo</label>
             <input
-              formControlName="nomeCompleto"
+              formControlName="name"
               [class.border-red-500]="isInvalid(form.get('nomeCompleto'))"
               class="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               placeholder="Seu nome"
@@ -57,7 +57,7 @@
             <label class="block text-sm text-gray-300 mb-1">Data de nascimento</label>
             <input
               type="date"
-              formControlName="dataNascimento"
+              formControlName="dateOfBirth"
               [class.border-red-500]="isInvalid(form.get('dataNascimento'))"
               class="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-white focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
@@ -85,7 +85,7 @@
           <div>
             <label class="block text-sm text-gray-300 mb-1">Telefone</label>
             <input
-              formControlName="telefone"
+              formControlName="phoneNumber"
               [class.border-red-500]="isInvalid(form.get('telefone'))"
               class="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               placeholder="(00) 00000-0000"
@@ -97,7 +97,7 @@
         </div>
 
         <!-- Endereço -->
-        <div formGroupName="endereco" class="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div formGroupName="address" class="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
             <label class="block text-sm text-gray-300 mb-1">Logradouro</label>
             <input formControlName="logradouro" class="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
@@ -138,7 +138,7 @@
             <label class="block text-sm text-gray-300 mb-1">Renda mensal (R$)</label>
             <input
               type="number"
-              formControlName="rendaMensal"
+              formControlName="monthlyIncome"
               [class.border-red-500]="isInvalid(form.get('rendaMensal'))"
               class="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
@@ -150,7 +150,7 @@
           <div>
             <label class="block text-sm text-gray-300 mb-1">Fonte de renda</label>
             <select
-              formControlName="fonteRenda"
+              formControlName="sourceIncome"
               class="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-white focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
               <option class="bg-gray-900" value="CLT">CLT</option>
@@ -164,12 +164,12 @@
 
           <div>
             <label class="block text-sm text-gray-300 mb-1">Empresa</label>
-            <input formControlName="empresa" class="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            <input formControlName="company" class="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
           </div>
 
           <div>
             <label class="block text-sm text-gray-300 mb-1">Tempo de emprego (meses)</label>
-            <input type="number" formControlName="tempoEmpregoMeses" class="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            <input type="number" formControlName="employmentTimeMonths" class="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
           </div>
         </div>
       </section>
@@ -181,7 +181,7 @@
         <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
           <div>
             <label class="block text-sm text-gray-300 mb-1">Tipo de fatura</label>
-            <select formControlName="tipoFatura" class="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-white focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <select formControlName="invoiceType" class="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-white focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500">
               <option class="bg-gray-900" value="digital">Digital</option>
               <option class="bg-gray-900" value="papel">Papel</option>
             </select>
@@ -192,7 +192,7 @@
             <input
               type="number"
               min="1" max="28"
-              formControlName="diaVencimentoPreferido"
+              formControlName="preferredDueDate"
               class="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
@@ -203,11 +203,11 @@
         <h2 class="text-lg font-semibold mb-3">Consentimentos</h2>
         <div class="space-y-3">
           <label class="flex items-center gap-3">
-            <input type="checkbox" formControlName="aceiteTermos" class="h-4 w-4 rounded border-gray-600 bg-gray-900 text-indigo-600 focus:ring-indigo-500" />
+            <input type="checkbox" formControlName="acceptTerms" class="h-4 w-4 rounded border-gray-600 bg-gray-900 text-indigo-600 focus:ring-indigo-500" />
             <span class="text-sm text-gray-300">Declaro que li e aceito os termos.</span>
           </label>
           <label class="flex items-center gap-3">
-            <input type="checkbox" formControlName="autorizacaoConsultaCredito" class="h-4 w-4 rounded border-gray-600 bg-gray-900 text-indigo-600 focus:ring-indigo-500" />
+            <input type="checkbox" formControlName="authorizationCreditConsultation" class="h-4 w-4 rounded border-gray-600 bg-gray-900 text-indigo-600 focus:ring-indigo-500" />
             <span class="text-sm text-gray-300">Autorizo consulta aos bureaus de crédito.</span>
           </label>
         </div>
