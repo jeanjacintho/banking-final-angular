@@ -24,17 +24,14 @@ public class CheckingAccount extends Account {
     }
   }
 
+  // Aplica taxa de manutenção e tiver no cheque especial, aplica o juros
   @Override
   public void applyFeesAndMaintenance() {
-    // Tarifa de manutenção no dia 1º
-    if (LocalDate.now().getDayOfMonth() == 7) {
-      setBalance(getBalance() - MAINTENANCE_FEE);
+    setBalance(getBalance() - MAINTENANCE_FEE);
 
-      // Aplicar juros do cheque especial
-      if (getBalance() < 0) {
-        setBalance(getBalance() * (1 + OVERDRAFT_INTEREST));
-      }
+    // Aplicar juros do cheque especial
+    if (getBalance() < 0) {
+      setBalance(getBalance() * (1 + OVERDRAFT_INTEREST));
     }
   }
-
 }

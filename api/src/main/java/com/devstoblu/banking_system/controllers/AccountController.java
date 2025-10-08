@@ -5,7 +5,10 @@ import com.devstoblu.banking_system.models.banking_account.CheckingAccount;
 import com.devstoblu.banking_system.models.banking_account.SavingsAccount;
 import com.devstoblu.banking_system.services.AccountService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -14,6 +17,7 @@ import java.util.*;
 public class AccountController {
   private final AccountService service;
 
+  private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
   public AccountController(AccountService service) {
     this.service = service;
   }
@@ -103,7 +107,7 @@ public class AccountController {
   }
 
   @PostMapping("/fee-and-income")
-  public ResponseEntity<AccountService.FeeApplicationResult> aplicarTaxas() {
+  public ResponseEntity<AccountService.FeeApplicationResult> applyFee() {
     AccountService.FeeApplicationResult result = service.applyFeesAndMaintenanceWithDetails();
     return ResponseEntity.ok(result);
   }
