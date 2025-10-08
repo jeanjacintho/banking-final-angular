@@ -26,18 +26,12 @@ public class SavingsAccount extends Account {
     }
   }
 
+  // Reseta os withdraw do mes e aplica o rendimento da poupança
   @Override
   public void applyFeesAndMaintenance() {
-    // Rendimento no dia 1º
-    if (LocalDate.now().getDayOfMonth() == 7) {
-      deposit(getBalance() * INTEREST_RATE);
-
-      // Reiniciar contadores no primeiro dia do mês
-      if (LocalDate.now().getDayOfMonth() == 7) {
-        withdrawCount = 0;
-        transferCount = 0;
-      }
-    }
+    deposit(getBalance() * INTEREST_RATE);
+    withdrawCount = 0;
+    transferCount = 0;
   }
 
   public int getWithdrawCount() {
