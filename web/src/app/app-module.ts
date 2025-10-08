@@ -5,6 +5,8 @@ import { authInterceptor } from './interceptors/auth.interceptor';
 
 import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
+import { Login } from './pages/login/login';
+import { RegisterComponent } from './pages/register-component/register-component';
 
 @NgModule({
   declarations: [
@@ -14,7 +16,8 @@ import { App } from './app';
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
-    Login
+    Login,
+    RegisterComponent,
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),

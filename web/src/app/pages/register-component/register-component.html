@@ -11,19 +11,20 @@
       Comece a aproveitar os benefícios do Bankr em poucos minutos.
     </p>
 
-    <form (ngSubmit)="onSubmit()" class="flex flex-col gap-4 text-left">
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4 text-left">
 
       <!-- Nome -->
       <div>
-        <label for="nome" class="text-sm text-text-light">Nome completo</label>
+        <label for="nomeCompleto" class="text-sm text-text-light">Nome completo</label>
         <input
-          id="nome"
+          id="nomeCompleto"
           type="text"
           
-          name="nome"
-          required
+          formControlName="nomeCompleto"
           class="w-full mt-1 px-4 py-2 rounded-lg bg-background/60 border border-white/10 focus:border-gradient-start outline-none text-text placeholder:text-text-light/60"
           placeholder="Digite seu nome"
+          [class.border-gray-300]="!nomeCompleto?.touched || !nomeCompleto?.invalid"
+          [class.border-red-500]="nomeCompleto?.touched && nomeCompleto?.invalid"
         />
       </div> 
       
@@ -34,10 +35,11 @@
           id="telefone"
           type="text"
           
-          name="telefone"
-          required
+          formControlName="telefone"
           class="w-full mt-1 px-4 py-2 rounded-lg bg-background/60 border border-white/10 focus:border-gradient-start outline-none text-text placeholder:text-text-light/60"
           placeholder="Digite seu telefone"
+          [class.border-gray-300]="!telefone?.touched || !telefone?.invalid"
+          [class.border-red-500]="telefone?.touched && telefone?.invalid"
         />
       </div>
 
@@ -48,10 +50,11 @@
           id="email"
           type="email"
          
-          name="email"
-          required
+          formControlName="email"
           class="w-full mt-1 px-4 py-2 rounded-lg bg-background/60 border border-white/10 focus:border-gradient-start outline-none text-text placeholder:text-text-light/60"
           placeholder="Digite seu e-mail"
+          [class.border-gray-300]="!email?.touched || !email?.invalid"
+          [class.border-red-500]="email?.touched && email?.invalid"
         />
       </div>
 
@@ -62,10 +65,11 @@
           id="cpf"
           type="text"
           
-          name="cpf"
-          required
+          formControlName="cpf"
           class="w-full mt-1 px-4 py-2 rounded-lg bg-background/60 border border-white/10 focus:border-gradient-start outline-none text-text placeholder:text-text-light/60"
           placeholder="Digite seu CPF"
+          [class.border-gray-300]="!cpf?.touched || !cpf?.invalid"
+          [class.border-red-500]="cpf?.touched && cpf?.invalid"
         />
       </div>
 
@@ -76,25 +80,30 @@
           id="data_nascimento"
           type="date"
          
-          name="data_nascimento"
-          required
+          formControlName="dataNascimento"
           class="w-full mt-1 px-4 py-2 rounded-lg bg-background/60 border border-white/10 focus:border-gradient-start outline-none text-text placeholder:text-text-light/60"
-          placeholder="dd/mm/aaaa"
+          placeholder=""
+          [class.border-gray-300]="!dataNascimento?.touched || !dataNascimento?.invalid"
+          [class.border-red-500]="dataNascimento?.touched && dataNascimento?.invalid"
         />
       </div>
 
       <!-- Consentimento -->
       <div class="flex items-start gap-2 text-sm text-text-light">
-        <input type="checkbox" id="consentimento" class="w-4 h-4 rounded border-white/20 bg-background focus:ring-gradient-start" required> 
-        <label for=""> Autorizo o Bankr a tratar meus dados pessoais para envio de comunicações sobre seus produtos e serviços e também estou de acordo com a <a class="text-gradient-start hover:underline cursor-pointer">Política de Privacidade.</a></label>
+        <input
+        type="checkbox"
+        id="consentimento"
+        formControlName="consentimento"
+        class="w-4 h-4 rounded border-white/20 bg-background focus:ring-gradient-start"> 
+        <label for="consentimento"> Autorizo o Bankr a tratar meus dados pessoais para envio de comunicações sobre seus produtos e serviços e também estou de acordo com a <a class="text-gradient-start hover:underline cursor-pointer">Política de Privacidade.</a></label>
       </div>
 
       <!-- Botão -->
       <button
         type="submit"
         class="mt-4 flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium 
-        text-text bg-gradient-to-r from-gradient-start to-gradient-end 
-        shadow-sm hover:scale-105 transition-transform">
+              text-text bg-gradient-to-r from-gradient-start to-gradient-end 
+              shadow-sm hover:scale-105 transition-transform">
         <span class="text-lg">✦</span>Criar conta
       </button>
 
