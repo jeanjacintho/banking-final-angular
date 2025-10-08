@@ -1,5 +1,6 @@
 package com.devstoblu.banking_system.controllers;
 
+import com.devstoblu.banking_system.enums.TransferType;
 import com.devstoblu.banking_system.models.banking_account.Account;
 import com.devstoblu.banking_system.models.banking_account.CheckingAccount;
 import com.devstoblu.banking_system.models.banking_account.SavingsAccount;
