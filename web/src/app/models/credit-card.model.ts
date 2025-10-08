@@ -1,4 +1,5 @@
 export interface CreditCard {
+maskedPan: any;
     id: number;
     cardNumber: string;
     cardHolderName: string;

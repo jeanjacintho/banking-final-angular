@@ -6,6 +6,12 @@ import { CreditCardService } from '../../../services/credit-card-service';
 import { CreditCard } from '../../../models/credit-card.model';
 import { RouterModule } from '@angular/router';
 
+type InvoiceItem = {
+  date: string;
+  description: string;
+  amount: number;
+}
+
 @Component({
   selector: 'app-credit-card-dashboard',
   standalone: true,
@@ -13,7 +19,6 @@ import { RouterModule } from '@angular/router';
   imports: [
     CommonModule,
     NgFor,
-    NgClass,
     CurrencyPipe,
     CreditCardComponent,
     InvoiceSummaryComponent,
@@ -27,20 +32,50 @@ export class CreditCardDashboardComponent {
   cards: CreditCard[] = [];
   totalLimit: number = 0;
 
+  selectedCard: CreditCard | null = null;
+  invoiceLoading = false;
+  invoiceItems: InvoiceItem[] = [];
+
   ngOnInit(): void {
     this.creditCardService.getAllCards().subscribe(cards => {
       this.cards = cards;
       this.totalLimit = this.cards.reduce((sum, card) => sum + card.creditLimit, 0);
+
+      // Opcional: já seleciona o primeiro card
+      if (this.cards.length && !this.selectedCard) {
+        this.onSelectCard(this.cards[0]);
+      }
     });
   }
 
-  transactions = [
-    { date: '2024-09-01', description: 'Amazon Purchase', amount: -150.75 },
-    { date: '2024-09-03', description: 'TV', amount: -2500.00 },
-  ];
+  onSelectCard(card: CreditCard) {
+    if (this.selectedCard?.id === card.id) return;
+    this.selectedCard = card;
+    this.loadInvoice(card.id);
+  }
 
+  private loadInvoice(cardId: number) {
+    this.invoiceLoading = true;
+    // Substitua por chamada real quando tiver o endpoint pronto
+    // this.creditCardService.getInvoice(cardId).subscribe({
+    //   next: items => { this.invoiceItems = items; this.invoiceLoading = false; },
+    //   error: () => { this.invoiceItems = []; this.invoiceLoading = false; }
+    // });
 
-  get invoiceTotal(): number {
-    return this.transactions.filter(tx => tx.amount < 0).reduce((sum, tx) => sum + Math.abs(tx.amount), 0);
+    // Mock temporário
+    setTimeout(() => {
+      this.invoiceItems = [
+        { date: '2025-10-03', description: 'Mercado', amount: -320.45 },
+        { date: '2025-10-05', description: 'Gasolina', amount: -210.00 },
+        { date: '2025-10-10', description: 'Pagamento anterior', amount: 320.45 }
+      ];
+      this.invoiceLoading = false;
+    }, 300);
+  }
+
+  get invoiceTotalBySelected(): number {
+    return this.invoiceItems
+      .filter(tx => tx.amount < 0)
+      .reduce((sum, tx) => sum + Math.abs(tx.amount), 0);
   }
 }

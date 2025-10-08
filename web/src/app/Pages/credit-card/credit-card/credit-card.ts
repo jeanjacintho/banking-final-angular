@@ -1,8 +1,11 @@
-import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { CreditCard } from '../../../models/credit-card.model';
 
 @Component({
   selector: 'app-credit-card',
   standalone: true,
+  imports: [CommonModule],
   templateUrl: './credit-card.html',
   styleUrl: './credit-card.css'
 })
@@ -14,6 +17,14 @@ export class CreditCardComponent {
     brand: string;
     cardHolderName: string;
   }; // Recebe os dados de fora
+
+  @Input() card!: CreditCard;
+  @Input() selected = false;
+  @Output() select = new EventEmitter<CreditCard>();
+
+  onClick() {
+    this.select.emit(this.card);
+  }
 
   // Mostra apenas os 4 últimos dígitos
   maskCardNumber(num: string): string {

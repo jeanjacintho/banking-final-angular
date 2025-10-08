@@ -1,52 +1,51 @@
 <div class="min-h-screen bg-gray-900 text-white p-8">
-  <!-- Grid centralizado -->
   <div class="max-w-5xl mx-auto space-y-8">
-    
-    <!-- Seção Cartões -->
-    <div>
-      <h1 class="text-2xl font-bold mb-6">Your Cards</h1>
-      <div class="flex flex-wrap justify-center gap-6">
-        <app-credit-card
-          *ngFor="let card of cards"
-          [creditCard]="card"
-          class="flex-shrink-0"
-        ></app-credit-card>
-      </div>
+    <h1 class="text-2xl font-bold">Your Cards</h1>
+
+    <!-- Lista de cartões -->
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <app-credit-card
+        *ngFor="let card of cards"
+        [card]="card"
+        [selected]="selectedCard?.id === card.id"
+        (select)="onSelectCard($event)"
+      ></app-credit-card>
     </div>
 
-    <!-- Seção Resumo da Fatura -->
-    <app-invoice-summary
-      [invoiceTotal]="invoiceTotal" 
-      [creditLimit]="totalLimit">
-    ></app-invoice-summary>
+    <!-- Resumo da fatura do cartão selecionado -->
+    <section class="mt-8">
+      <h2 class="text-lg font-semibold mb-3">Resumo da Fatura</h2>
 
-    <!-- Divisor -->
-    <hr class="border-gray-700">
+      <div *ngIf="!selectedCard" class="text-gray-400 text-sm">
+        Selecione um cartão para ver a fatura.
+      </div>
 
-    <!-- Histórico -->
-    <div>
-      <h2 class="text-xl font-semibold mb-4">Card History</h2>
-      <div class="bg-gray-800 rounded-xl p-4">
-        <div class="divide-y divide-gray-700">
-          <div *ngFor="let tx of transactions" class="flex justify-between py-3">
-            <span>{{ tx.description }}</span>
-            <span [ngClass]="tx.amount < 0 ? 'text-red-400' : 'text-green-400'">
-              {{ tx.amount | currency:'USD' }}
-            </span>
+      <div *ngIf="selectedCard" class="rounded-xl bg-gray-800 p-6">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <p class="text-sm text-gray-400">Cartão</p>
+            <p class="font-medium">
+              {{ selectedCard.brand }} •
+              {{ selectedCard.maskedPan || ('**** **** **** ' + (selectedCard.cardNumber | slice:-4)) }}
+            </p>
+          </div>
+          <div class="text-right">
+            <p class="text-sm text-gray-400">Fatura Atual</p>
+            <p class="text-2xl font-bold text-red-400">{{ invoiceTotalBySelected | currency:'BRL' }}</p>
           </div>
         </div>
-      </div>
-    </div>
-    <div class="flex items-center justify-between">
-      <h1 class="text-2xl font-semibold text-gray-900">Meus cartões</h1>
 
-      <a
-        routerLink="request"
-        class="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-      >
-        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-        </svg>
+        <app-invoice-summary
+          [items]="invoiceItems"
+          [loading]="invoiceLoading"
+        ></app-invoice-summary>
+      </div>
+    </section>
+
+    <!-- Botão solicitar novo cartão -->
+    <div class="flex justify-end">
+      <a routerLink="/credit-cards/request" class="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-white hover:bg-indigo-700">
+        <span class="text-xl leading-none">+</span>
         Solicitar novo cartão
       </a>
     </div>
