@@ -25,6 +25,10 @@ export class AuthService {
     );
   }
 
+  getUserInfo(): Observable<any> {
+    return this.http.get<any>(`${environment.apiBase}/usuarios/me`);
+  }
+
   getToken(): string | null {
     return localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
   }
@@ -32,6 +36,14 @@ export class AuthService {
   clearToken(): void {
     localStorage.removeItem('auth_token');
     sessionStorage.removeItem('auth_token');
+  }
+
+  logout(): void {
+    this.clearToken();
+  }
+
+  isAuthenticated(): boolean {
+    return !!this.getToken();
   }
 }
 

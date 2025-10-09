@@ -35,7 +35,7 @@ export class Login {
         .pipe(finalize(() => { this.isLoading = false; }))
         .subscribe({
           next: () => {
-            this.router.navigateByUrl('/');
+            this.router.navigateByUrl('/dashboard');
           },
           error: (err) => {
             const backendMsg = err?.error?.message || err?.error?.error || err?.statusText;

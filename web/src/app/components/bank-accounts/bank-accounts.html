@@ -1,0 +1,189 @@
+<div class="bg-card border border-border rounded-xl p-6">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-semibold text-text">Saldo das Contas</h2>
+        <div *ngIf="showActions" class="flex gap-3">
+            <button *ngIf="!hasAccountType('CHECKING')" (click)="onCreateAccount('CHECKING')"
+                class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-gradient-start to-gradient-end text-text rounded-lg text-sm font-medium hover:scale-105 transition-transform shadow-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                Conta Corrente
+            </button>
+            <button *ngIf="!hasAccountType('SAVINGS')" (click)="onCreateAccount('SAVINGS')"
+                class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-gradient-start to-gradient-end text-text rounded-lg text-sm font-medium hover:scale-105 transition-transform shadow-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                Conta Poupança
+            </button>
+        </div>
+    </div>
+
+    <!-- Accounts List -->
+    <div class="flex flex-col gap-4">
+        <!-- Loading State -->
+        <div *ngIf="loading" class="flex flex-col items-center justify-center py-10 gap-4">
+            <div class="w-8 h-8 border-3 border-border border-t-gradient-start rounded-full animate-spin"></div>
+            <p class="text-text-light">Carregando contas...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="!loading && accounts.length === 0"
+            class="flex flex-col items-center justify-center py-10 gap-4 text-center">
+            <div class="w-16 h-16 bg-muted rounded-full flex items-center justify-center text-text-light">
+                <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z">
+                    </path>
+                </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-text">Nenhuma conta encontrada</h3>
+            <p class="text-sm text-text-light">Crie sua primeira conta bancária para começar</p>
+        </div>
+
+        <!-- Account Cards -->
+        <div *ngFor="let account of accounts"
+            class="flex justify-between items-center p-5 bg-gradient-to-r from-gradient-start/20 to-gradient-end/20 border border-border rounded-xl transition-all duration-200"
+            [class.cursor-pointer]="showActions" [class.hover:shadow-lg]="showActions"
+            [class.hover:-translate-y-0.5]="showActions" [class.hover:border-gradient-start]="showActions"
+            (click)="showActions ? onAccountClick(account) : null">
+
+            <!-- Account Header -->
+            <div class="flex items-center gap-4">
+                <div
+                    class="w-12 h-12 bg-gradient-to-r from-gradient-start to-gradient-end rounded-xl flex items-center justify-center text-text">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            [attr.d]="getAccountTypeIcon(account.accountType)">
+                        </path>
+                    </svg>
+                </div>
+                <div class="flex flex-col gap-1">
+                    <h3 class="text-base font-semibold text-text">{{ getAccountTypeLabel(account.accountType) }}</h3>
+                    <p class="text-sm text-text-light">****{{ account.accountNumber }}</p>
+                    <p class="text-xs text-text-light">Agência: {{ account.agency }}</p>
+                </div>
+            </div>
+
+            <!-- Account Balance & Actions -->
+            <div class="text-right flex flex-col gap-3">
+                <div>
+                    <div class="text-2xl font-bold text-text">{{ formatBalance(account.balance) }}</div>
+                    <div class="text-xs text-text-light">Saldo disponível</div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex gap-2">
+                    <button (click)="onDeposit(account)"
+                        class="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-md text-xs font-medium hover:scale-105 transition-transform">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Depositar
+                    </button>
+                    <button (click)="onWithdraw(account)"
+                        class="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-md text-xs font-medium hover:scale-105 transition-transform">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+                        </svg>
+                        Sacar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Account Modal -->
+    <div *ngIf="createAccountModal.show" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-5"
+        (click)="closeCreateAccountModal()">
+        <div class="bg-card border border-border rounded-xl w-full max-w-md max-h-[90vh] overflow-y-auto"
+            (click)="$event.stopPropagation()">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center p-6 border-b border-border">
+                <h3 class="text-lg font-semibold text-text">Criar {{ getAccountTypeLabel(createAccountModal.type!) }}
+                </h3>
+                <button (click)="closeCreateAccountModal()"
+                    class="p-1 text-text-light hover:bg-muted hover:text-text rounded transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6">
+                <div class="mb-5">
+                    <label for="balance" class="block text-sm font-medium text-text mb-2">Saldo inicial (R$)</label>
+                    <input type="number" id="balance" [(ngModel)]="createAccountModal.balance" min="0" step="0.01"
+                        class="w-full px-4 py-3 border border-border rounded-lg text-base bg-background text-text focus:outline-none focus:border-gradient-start focus:ring-3 focus:ring-gradient-start/10 transition-colors"
+                        placeholder="0,00">
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="flex gap-3 p-6 border-t border-border justify-end">
+                <button (click)="closeCreateAccountModal()"
+                    class="px-5 py-2.5 bg-muted text-text border border-border rounded-lg text-sm font-medium hover:bg-border transition-colors">
+                    Cancelar
+                </button>
+                <button (click)="confirmCreateAccount()"
+                    class="px-5 py-2.5 bg-gradient-to-r from-gradient-start to-gradient-end text-text rounded-lg text-sm font-medium hover:scale-105 transition-transform shadow-sm">
+                    Criar Conta
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction Modal -->
+    <div *ngIf="transactionModal.show" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-5"
+        (click)="closeTransactionModal()">
+        <div class="bg-card border border-border rounded-xl w-full max-w-md max-h-[90vh] overflow-y-auto"
+            (click)="$event.stopPropagation()">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center p-6 border-b border-border">
+                <h3 class="text-lg font-semibold text-text">{{ transactionModal.type === 'DEPOSIT' ? 'Depositar' :
+                    'Sacar' }} Dinheiro</h3>
+                <button (click)="closeTransactionModal()"
+                    class="p-1 text-text-light hover:bg-muted hover:text-text rounded transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6">
+                <div class="bg-muted p-4 rounded-lg mb-5">
+                    <p class="text-sm text-text mb-1"><strong>Conta:</strong> ****{{ transactionModal.accountNumber }}
+                    </p>
+                    <p class="text-sm text-text"><strong>Tipo:</strong> {{ transactionModal.type === 'DEPOSIT' ?
+                        'Depósito' : 'Saque' }}</p>
+                </div>
+                <div class="mb-5">
+                    <label for="amount" class="block text-sm font-medium text-text mb-2">Valor (R$)</label>
+                    <input type="number" id="amount" [(ngModel)]="transactionModal.amount" min="0.01" step="0.01"
+                        class="w-full px-4 py-3 border border-border rounded-lg text-base bg-background text-text focus:outline-none focus:border-gradient-start focus:ring-3 focus:ring-gradient-start/10 transition-colors"
+                        placeholder="0,00">
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="flex gap-3 p-6 border-t border-border justify-end">
+                <button (click)="closeTransactionModal()"
+                    class="px-5 py-2.5 bg-muted text-text border border-border rounded-lg text-sm font-medium hover:bg-border transition-colors">
+                    Cancelar
+                </button>
+                <button (click)="confirmTransaction()"
+                    class="px-5 py-2.5 bg-gradient-to-r from-gradient-start to-gradient-end text-text rounded-lg text-sm font-medium hover:scale-105 transition-transform shadow-sm">
+                    {{ transactionModal.type === 'DEPOSIT' ? 'Depositar' : 'Sacar' }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

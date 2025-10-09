@@ -1,0 +1,51 @@
+/* Dashboard specific styles */
+.dashboard-card {
+  transition: all 0.2s ease-in-out;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.account-balance {
+  background: linear-gradient(135deg, var(--color-gradient-start), var(--color-gradient-end));
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.transaction-item {
+  transition: all 0.2s ease-in-out;
+}
+
+.transaction-item:hover {
+  background-color: var(--color-muted);
+  transform: translateX(4px);
+}
+
+.user-avatar {
+  background: linear-gradient(135deg, var(--color-gradient-start), var(--color-gradient-end));
+}
+
+.quick-action-card {
+  transition: all 0.2s ease-in-out;
+  border: 1px solid var(--color-border);
+}
+
+.quick-action-card:hover {
+  border-color: var(--color-gradient-start);
+  box-shadow: 0 4px 12px rgba(141, 255, 106, 0.15);
+}
+
