@@ -20,6 +20,32 @@ export interface TransactionRequest {
   value: number;
 }
 
+export interface TransferRequest {
+  fromAccount: string;
+  toAccount: string;
+  amount: number;
+  type: 'INTERNAL' | 'TED' | 'PIX';
+}
+
+export interface TransferResponse {
+  fromAccount: string;
+  toAccount: string;
+  amount: number;
+  type: string;
+  fromBalanceAfter: number;
+  toBalanceAfter: number;
+  message: string;
+}
+
+export interface TransactionHistoryItem {
+  id: number;
+  fromAccount: BankAccount | null;
+  toAccount: BankAccount | null;
+  amount: number;
+  type: 'INTERNAL' | 'TED' | 'PIX' | 'DEPOSIT' | 'WITHDRAW';
+  timestamp: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -37,7 +63,7 @@ export class AccountService {
   }
 
   getUserAccounts(): Observable<BankAccount[]> {
-    return this.http.get<BankAccount[]>(`${this.baseUrl}`, {
+    return this.http.get<BankAccount[]>(`${this.baseUrl}/my-accounts`, {
       headers: this.getHeaders()
     });
   }
@@ -72,6 +98,18 @@ export class AccountService {
 
   getAccountByNumber(accountNumber: string): Observable<BankAccount> {
     return this.http.get<BankAccount>(`${this.baseUrl}/${accountNumber}`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  transfer(transferRequest: TransferRequest): Observable<TransferResponse> {
+    return this.http.post<TransferResponse>(`${this.baseUrl}/transfer`, transferRequest, {
+      headers: this.getHeaders()
+    });
+  }
+
+  getMyTransactions(): Observable<TransactionHistoryItem[]> {
+    return this.http.get<TransactionHistoryItem[]>(`${this.baseUrl}/my-transactions`, {
       headers: this.getHeaders()
     });
   }

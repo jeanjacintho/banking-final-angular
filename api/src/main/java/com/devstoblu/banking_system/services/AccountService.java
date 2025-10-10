@@ -38,6 +38,14 @@ public class AccountService {
     return accountRepository.findAll();
   }
 
+  public List<Account> findByUserId(Long userId) {
+    return accountRepository.findByUsuarioId(userId);
+  }
+
+  public List<Transaction> findTransactionsByUser(Long userId) {
+    return transactionRepository.findByFromAccountUsuarioIdOrToAccountUsuarioIdOrderByTimestampDesc(userId, userId);
+  }
+
   public List<CheckingAccount> findAllCheckingAccounts() {
     return accountRepository.findAllCheckingAccounts();
   }
@@ -79,13 +87,23 @@ public class AccountService {
   public Account deposit(String accountNumber, Double value) {
     Account account = accountRepository.findByAccountNumber(accountNumber).orElseThrow(() -> new RuntimeException("Conta não encontrada"));
     account.deposit(value);
-    return accountRepository.save(account);
+    Account savedAccount = accountRepository.save(account);
+    
+    // Registra depósito no histórico
+    registerDepositHistory(savedAccount, value);
+    
+    return savedAccount;
   }
 
   public Account withdraw(String accountNumber, Double value) {
     Account account = accountRepository.findByAccountNumber(accountNumber).orElseThrow(() -> new RuntimeException("Conta não encontrada"));
     account.withdraw(value);
-    return accountRepository.save(account);
+    Account savedAccount = accountRepository.save(account);
+    
+    // Registra saque no histórico
+    registerWithdrawHistory(savedAccount, value);
+    
+    return savedAccount;
   }
 
   // Deletar conta corrente e poupança
@@ -257,6 +275,28 @@ public class AccountService {
     tx.setToAccount(to);
     tx.setAmount(value);
     tx.setType(type);
+    tx.setTimestamp(LocalDateTime.now());
+    transactionRepository.save(tx);
+  }
+
+  // Registro de depósito no histórico
+  private void registerDepositHistory(Account account, Double value) {
+    Transaction tx = new Transaction();
+    tx.setFromAccount(null); // Depósito não tem conta origem
+    tx.setToAccount(account);
+    tx.setAmount(value);
+    tx.setType(TransferType.DEPOSIT);
+    tx.setTimestamp(LocalDateTime.now());
+    transactionRepository.save(tx);
+  }
+
+  // Registro de saque no histórico
+  private void registerWithdrawHistory(Account account, Double value) {
+    Transaction tx = new Transaction();
+    tx.setFromAccount(account);
+    tx.setToAccount(null); // Saque não tem conta destino
+    tx.setAmount(value);
+    tx.setType(TransferType.WITHDRAW);
     tx.setTimestamp(LocalDateTime.now());
     transactionRepository.save(tx);
   }

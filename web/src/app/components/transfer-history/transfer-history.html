@@ -1,0 +1,45 @@
+<div class="bg-card border border-border rounded-xl p-4 flex flex-col gap-3">
+    <div class="flex justify-between items-center">
+        <h3 class="text-xl font-semibold text-text">Histórico de Transações</h3>
+        <button
+            class="bg-gradient-start text-white border-0 px-3 py-2 rounded-lg cursor-pointer transition-all duration-200 hover:bg-gradient-end disabled:opacity-50"
+            (click)="fetch()" [disabled]="isLoading">
+            Atualizar
+        </button>
+    </div>
+
+    <div *ngIf="errorMessage" class="text-error-color text-sm text-center p-3 bg-error-bg rounded-lg">
+        {{ errorMessage }}
+    </div>
+
+    <div *ngIf="isLoading" class="text-text-light text-sm text-center py-4">
+        Carregando...
+    </div>
+
+    <div *ngIf="!isLoading && items.length === 0" class="text-text-light italic text-center py-4">
+        Nenhuma transação encontrada
+    </div>
+
+    <ul *ngIf="!isLoading && items.length > 0" class="flex flex-col gap-2">
+        <li *ngFor="let it of items"
+            class="grid grid-cols-[90px_1fr_140px_180px] gap-3 items-center p-2 border border-border rounded-lg bg-bg-primary">
+
+            <div class="font-semibold text-sm">{{ getTypeLabel(it.type) }}</div>
+
+            <div class="flex items-center gap-2">
+                <span class="text-xs text-text-light">{{ it.fromAccount?.accountNumber || '-' }}</span>
+                <span class="text-sm">{{ getArrow(it.type) }}</span>
+                <span class="text-xs text-text-light">{{ it.toAccount?.accountNumber || '-' }}</span>
+            </div>
+
+            <div class="text-right font-semibold" [class.text-success]="it.type === 'DEPOSIT'"
+                [class.text-error]="it.type === 'WITHDRAW' || (it.type !== 'INTERNAL' && it.type !== 'DEPOSIT' && it.fromAccount)">
+                {{ formatCurrency(it.amount) }}
+            </div>
+
+            <div class="text-right text-xs text-text-light">
+                {{ formatDate(it.timestamp) }}
+            </div>
+        </li>
+    </ul>
+</div>

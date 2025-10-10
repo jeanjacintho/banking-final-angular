@@ -1,13 +1,15 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { BankAccountsComponent } from '../../components/bank-accounts/bank-accounts';
+import { TransfersComponent } from '../../components/transfers/transfers';
+import { TransferHistoryComponent } from '../../components/transfer-history/transfer-history';
 import { BankAccount } from '../../services/account.service';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [BankAccountsComponent],
+  imports: [BankAccountsComponent, TransfersComponent, TransferHistoryComponent, RouterModule],
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css']
 })
