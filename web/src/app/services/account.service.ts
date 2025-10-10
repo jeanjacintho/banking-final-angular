@@ -24,7 +24,7 @@ export interface TransferRequest {
   fromAccount: string;
   toAccount: string;
   amount: number;
-  type: 'INTERNAL' | 'TED' | 'PIX';
+  type: string;
 }
 
 export interface TransferResponse {

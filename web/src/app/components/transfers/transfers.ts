@@ -7,8 +7,7 @@ import { AccountService, BankAccount, TransferRequest, TransferResponse } from '
   selector: 'app-transfers',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './transfers.html',
-  styleUrls: ['./transfers.css']
+  templateUrl: './transfers.html'
 })
 export class TransfersComponent implements OnInit {
   private accountService = inject(AccountService);
@@ -17,7 +16,7 @@ export class TransfersComponent implements OnInit {
   selectedFromAccount: BankAccount | null = null;
   selectedToAccount: BankAccount | null = null;
   transferAmount: number = 0;
-  transferType: 'INTERNAL' | 'TED' | 'PIX' = 'PIX';
+  transferType: string = 'PIX';
   toAccountNumber: string = '';
   
   isLoading = false;

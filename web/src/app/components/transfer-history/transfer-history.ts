@@ -6,8 +6,7 @@ import { AccountService, TransactionHistoryItem } from '../../services/account.s
   selector: 'app-transfer-history',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './transfer-history.html',
-  styleUrls: ['./transfer-history.css']
+  templateUrl: './transfer-history.html'
 })
 export class TransferHistoryComponent implements OnInit {
   private accountService = inject(AccountService);
