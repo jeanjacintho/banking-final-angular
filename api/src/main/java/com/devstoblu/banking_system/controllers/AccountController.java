@@ -1,12 +1,16 @@
 package com.devstoblu.banking_system.controllers;
 
 import com.devstoblu.banking_system.enums.TransferType;
+import com.devstoblu.banking_system.models.Usuario;
 import com.devstoblu.banking_system.models.banking_account.Account;
+import com.devstoblu.banking_system.models.Transaction;
 import com.devstoblu.banking_system.models.banking_account.CheckingAccount;
 import com.devstoblu.banking_system.models.banking_account.SavingsAccount;
+import com.devstoblu.banking_system.repositories.UsuarioRepository;
 import com.devstoblu.banking_system.services.AccountService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,15 +21,50 @@ import java.util.*;
 @RequestMapping("/account")
 public class AccountController {
   private final AccountService service;
+  private final UsuarioRepository usuarioRepository;
 
   private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
-  public AccountController(AccountService service) {
+  public AccountController(AccountService service, UsuarioRepository usuarioRepository) {
     this.service = service;
+    this.usuarioRepository = usuarioRepository;
   }
 
   @GetMapping
   public ResponseEntity<List<Account>> findAll() {
     return ResponseEntity.ok(service.findAll());
+  }
+
+  @GetMapping("/my-accounts")
+  public ResponseEntity<List<Account>> getMyAccounts(@AuthenticationPrincipal UserDetails principal) {
+    try {
+      String cpf = principal.getUsername();
+      UserDetails userDetails = usuarioRepository.findByCpf(cpf);
+      
+      if (userDetails instanceof Usuario usuario) {
+        return ResponseEntity.ok(service.findByUserId(usuario.getId()));
+      } else {
+        throw new RuntimeException("Usuário não encontrado");
+      }
+    } catch (Exception e) {
+      logger.error("Erro ao buscar contas do usuário: {}", e.getMessage());
+      return ResponseEntity.badRequest().build();
+    }
+  }
+
+  @GetMapping("/my-transactions")
+  public ResponseEntity<List<Transaction>> getMyTransactions(@AuthenticationPrincipal UserDetails principal) {
+    try {
+      String cpf = principal.getUsername();
+      UserDetails userDetails = usuarioRepository.findByCpf(cpf);
+      if (userDetails instanceof Usuario usuario) {
+        return ResponseEntity.ok(service.findTransactionsByUser(usuario.getId()));
+      } else {
+        throw new RuntimeException("Usuário não encontrado");
+      }
+    } catch (Exception e) {
+      logger.error("Erro ao buscar transações do usuário: {}", e.getMessage());
+      return ResponseEntity.badRequest().build();
+    }
   }
 
   @GetMapping("/checking")

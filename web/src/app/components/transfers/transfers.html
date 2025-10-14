@@ -1,0 +1,158 @@
+<div class="max-w-6xl mx-auto p-8 flex flex-col gap-6">
+    <div class="text-center">
+        <h2 class="text-3xl font-bold text-text">Transferências</h2>
+        <p class="text-text-light">Envie dinheiro para qualquer conta</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-card border border-border rounded-xl p-6">
+            <h3 class="text-xl font-semibold text-text mb-4">Suas Contas</h3>
+            <div class="flex flex-col gap-3">
+                <div *ngFor="let account of accounts"
+                    class="bg-bg-primary border-2 border-border rounded-xl p-4 cursor-pointer transition-all duration-200 hover:border-gradient-start hover:-translate-y-0.5 hover:shadow-lg flex flex-col gap-3"
+                    [class.border-gradient-start]="selectedFromAccount?.accountNumber === account.accountNumber"
+                    [class.ring-4]="selectedFromAccount?.accountNumber === account.accountNumber"
+                    [class.ring-gradient-start]="selectedFromAccount?.accountNumber === account.accountNumber"
+                    [class.ring-opacity-20]="selectedFromAccount?.accountNumber === account.accountNumber"
+                    (click)="selectFromAccount(account)">
+
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-bg-secondary rounded-lg flex items-center justify-center text-2xl">
+                            {{ getAccountTypeIcon(account.accountType) }}
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-sm">{{ getAccountTypeLabel(account.accountType) }}</h4>
+                            <p class="text-xs text-text-light">{{ account.accountNumber }}</p>
+                        </div>
+                    </div>
+
+                    <div class="text-right">
+                        <span class="text-xs text-text-light block">Saldo</span>
+                        <span class="text-xl font-bold">{{ formatCurrency(account.balance) }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-card border border-border rounded-xl p-6">
+            <div class="flex flex-col gap-4">
+                <h3 class="text-xl font-semibold text-text">Nova Transferência</h3>
+
+                <div class="flex flex-col gap-2">
+                    <label class="font-semibold text-text text-sm">Conta de Origem</label>
+                    <div class="bg-bg-primary border border-border rounded-lg p-4">
+                        <div *ngIf="selectedFromAccount" class="flex items-center gap-3">
+                            <span class="w-8 h-8 bg-bg-secondary rounded-lg flex items-center justify-center text-lg">
+                                {{ getAccountTypeIcon(selectedFromAccount.accountType) }}
+                            </span>
+                            <div class="flex-1 flex flex-col">
+                                <span class="font-semibold text-sm">{{
+                                    getAccountTypeLabel(selectedFromAccount.accountType) }}</span>
+                                <span class="text-xs text-text-light">{{ selectedFromAccount.accountNumber }}</span>
+                            </div>
+                            <span class="font-bold">{{ formatCurrency(selectedFromAccount.balance) }}</span>
+                        </div>
+                        <div *ngIf="!selectedFromAccount" class="text-text-light italic text-center py-4">
+                            Selecione uma conta acima
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                    <label class="font-semibold text-text text-sm">Conta de Destino</label>
+                    <input type="text"
+                        class="px-3 py-3 border border-border rounded-lg bg-bg-primary text-text text-base transition-colors focus:outline-none focus:border-gradient-start"
+                        [(ngModel)]="toAccountNumber" (input)="onToAccountNumberChange()"
+                        placeholder="Digite o número da conta" maxlength="20">
+
+                    <div *ngIf="selectedToAccount" class="p-3 bg-bg-secondary rounded-lg border border-gradient-start">
+                        <div class="flex items-center gap-3">
+                            <span
+                                class="w-8 h-8 bg-gradient-end text-white rounded-md flex items-center justify-center text-sm">
+                                {{ getAccountTypeIcon(selectedToAccount.accountType) }}
+                            </span>
+                            <div class="flex flex-col">
+                                <span class="font-semibold text-sm">{{
+                                    getAccountTypeLabel(selectedToAccount.accountType) }}</span>
+                                <span class="text-xs text-text-light">{{ selectedToAccount.accountNumber }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                    <label class="font-semibold text-text text-sm">Valor</label>
+                    <input type="number"
+                        class="px-3 py-3 border border-border rounded-lg bg-bg-primary text-text text-base transition-colors focus:outline-none focus:border-gradient-start"
+                        [(ngModel)]="transferAmount" placeholder="0,00" min="0.01" step="0.01">
+                </div>
+
+                <div class="flex flex-col gap-2">
+                    <label class="font-semibold text-text text-sm">Tipo de Transferência</label>
+                    <div class="flex flex-col gap-3">
+                        <div *ngFor="let type of transferTypes"
+                            class="bg-bg-primary border-2 border-border rounded-lg p-4 cursor-pointer transition-all duration-200 hover:border-gradient-start flex flex-col gap-1"
+                            [class.border-gradient-start]="transferType === type.value"
+                            [class.ring-4]="transferType === type.value"
+                            [class.ring-gradient-start]="transferType === type.value"
+                            [class.ring-opacity-20]="transferType === type.value" (click)="transferType = type.value">
+
+                            <div class="flex justify-between items-center">
+                                <span class="font-semibold text-sm">{{ type.label }}</span>
+                                <span class="text-xs text-text-light">{{ type.fee }}</span>
+                            </div>
+                            <p class="text-xs text-text-light">{{ type.description }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="transferAmount > 0"
+                    class="bg-bg-secondary border border-border rounded-lg p-4 flex flex-col gap-2">
+                    <div class="flex justify-between text-sm">
+                        <span>Valor da transferência:</span>
+                        <span>{{ formatCurrency(transferAmount) }}</span>
+                    </div>
+                    <div *ngIf="calculateTotalWithFee() > transferAmount"
+                        class="flex justify-between text-sm text-warning">
+                        <span>Taxa:</span>
+                        <span>{{ formatCurrency(calculateTotalWithFee() - transferAmount) }}</span>
+                    </div>
+                    <div class="flex justify-between text-sm font-semibold border-t border-border pt-2">
+                        <span>Total a ser debitado:</span>
+                        <span>{{ formatCurrency(calculateTotalWithFee()) }}</span>
+                    </div>
+                    <div class="flex justify-between text-sm font-semibold text-success">
+                        <span>Saldo após transferência:</span>
+                        <span>{{ formatCurrency((selectedFromAccount?.balance || 0) - calculateTotalWithFee()) }}</span>
+                    </div>
+                </div>
+
+                <div *ngIf="errorMessage" class="bg-error-bg text-error-color p-3 rounded-lg text-sm text-center">
+                    {{ errorMessage }}
+                </div>
+
+                <button
+                    class="bg-gradient-to-r from-gradient-start to-gradient-end text-white border-0 rounded-lg py-4 text-base font-semibold cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                    [disabled]="isLoading || !selectedFromAccount || !toAccountNumber || transferAmount <= 0"
+                    (click)="executeTransfer()">
+
+                    <span *ngIf="!isLoading">Transferir</span>
+                    <span *ngIf="isLoading">Processando...</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="showSuccessModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        (click)="closeSuccessModal()">
+        <div class="bg-card border border-border rounded-xl p-8 text-center max-w-md w-11/12"
+            (click)="$event.stopPropagation()">
+            <div class="text-5xl mb-4">✅</div>
+            <h3 class="text-2xl font-bold text-text mb-2">Transferência Realizada!</h3>
+            <p class="text-text-light mb-6">{{ successMessage }}</p>
+            <button
+                class="bg-gradient-start text-white border-0 rounded-lg px-6 py-3 font-semibold cursor-pointer transition-all duration-200 hover:bg-gradient-end"
+                (click)="closeSuccessModal()">Fechar</button>
+        </div>
+    </div>
+</div>

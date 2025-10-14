@@ -1,0 +1,48 @@
+<app-layout pageTitle="Dashboard">
+    <div class="col-span-12 lg:col-span-8">
+        <!-- Quick actions tiles to mirror the screenshot -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-6 cursor-pointer" routerLink="/transfers">
+            <div class="bg-white rounded-xl border border-border p-4 flex flex-col items-center gap-2">
+                <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                    <lucide-icon name="ArrowRightLeft" size="20" class="text-primary"></lucide-icon>
+                </div>
+                <div class="text-xs text-text">Transferências</div>
+            </div>
+            <div class="bg-white rounded-xl border border-border p-4 flex flex-col items-center gap-2">
+                <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                    <lucide-icon name="Receipt" size="20" class="text-primary"></lucide-icon>
+                </div>
+                <div class="text-xs text-text">Pagamentos</div>
+            </div>
+            <div class="bg-white rounded-xl border border-border p-4 flex flex-col items-center gap-2">
+                <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                    <lucide-icon name="BarChart3" size="20" class="text-primary"></lucide-icon>
+                </div>
+                <div class="text-xs text-text">Investimentos</div>
+            </div>
+            <div class="bg-white rounded-xl border border-border p-4 flex flex-col items-center gap-2">
+                <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                    <lucide-icon name="CreditCard" size="20" class="text-primary"></lucide-icon>
+                </div>
+                <div class="text-xs text-text">Cartões</div>
+            </div>
+            <div class="bg-white rounded-xl border border-border p-4 flex flex-col items-center gap-2">
+                <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                    <lucide-icon name="Gift" size="20" class="text-primary"></lucide-icon>
+                </div>
+                <div class="text-xs text-text">Gift Card</div>
+            </div>
+            <div class="bg-white rounded-xl border border-border p-4 flex flex-col items-center gap-2">
+                <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                    <lucide-icon name="Umbrella" size="20" class="text-primary"></lucide-icon>
+                </div>
+                <div class="text-xs text-text">Seguros</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-span-12 lg:col-span-4 grid grid-cols-6 gap-4">
+        <app-bank-accounts class="col-span-12 lg:col-span-6"></app-bank-accounts>
+        <app-credit-card class="col-span-12 lg:col-span-3"></app-credit-card>
+        <app-transfer-history class="col-span-12 lg:col-span-3"></app-transfer-history>
+    </div>
+</app-layout>
