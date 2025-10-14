@@ -1,6 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { LucideAngularModule } from 'lucide-angular';
 import { AccountService, BankAccount, TransferRequest, TransferResponse } from '../../services/account.service';
 
 interface TransferType {
@@ -13,7 +14,7 @@ interface TransferType {
 @Component({
   selector: 'app-transfers',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule],
   templateUrl: './transfers.html',
   styles: [`
     .transfers-page {
