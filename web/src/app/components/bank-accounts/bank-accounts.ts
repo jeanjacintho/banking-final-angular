@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { LucideAngularModule } from 'lucide-angular';
 import { AccountService, BankAccount } from '../../services/account.service';
 import { AuthService } from '../../services/auth.service';
 
@@ -20,7 +21,7 @@ export interface TransactionModal {
 @Component({
   selector: 'app-bank-accounts',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule],
   templateUrl: './bank-accounts.html'
 })
 export class BankAccountsComponent implements OnInit {

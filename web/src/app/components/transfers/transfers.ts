@@ -3,135 +3,138 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AccountService, BankAccount, TransferRequest, TransferResponse } from '../../services/account.service';
 
+interface TransferType {
+  value: string;
+  label: string;
+  fee: string;
+  description: string;
+}
+
 @Component({
   selector: 'app-transfers',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './transfers.html'
+  templateUrl: './transfers.html',
+  styles: [`
+    .transfers-page {
+      min-height: 100vh;
+      background: var(--bg-primary);
+    }
+  `]
 })
 export class TransfersComponent implements OnInit {
-  private accountService = inject(AccountService);
+  private readonly accountService = inject(AccountService);
 
   accounts: BankAccount[] = [];
   selectedFromAccount: BankAccount | null = null;
   selectedToAccount: BankAccount | null = null;
-  transferAmount: number = 0;
-  transferType: string = 'PIX';
   toAccountNumber: string = '';
-  
-  isLoading = false;
-  errorMessage = '';
-  successMessage = '';
-  showSuccessModal = false;
+  transferAmount: number = 0;
+  transferType: string = 'INTERNAL';
+  isLoading: boolean = false;
+  errorMessage: string = '';
+  showSuccessModal: boolean = false;
+  successMessage: string = '';
 
-  transferTypes = [
-    { value: 'PIX', label: 'PIX', description: 'Transferência instantânea 24h', fee: 'Gratuita' },
-    { value: 'INTERNAL', label: 'Transferência Interna', description: 'Entre contas do banco', fee: 'Gratuita*' },
-    { value: 'TED', label: 'TED', description: 'Para outros bancos', fee: 'R$ 10-15' }
+  transferTypes: TransferType[] = [
+    {
+      value: 'INTERNAL',
+      label: 'Transferência Interna',
+      fee: 'Sem taxa',
+      description: 'Transferência entre contas do mesmo banco'
+    },
+    {
+      value: 'PIX',
+      label: 'PIX',
+      fee: 'R$ 0,00',
+      description: 'Transferência instantânea via PIX'
+    },
+    {
+      value: 'TED',
+      label: 'TED',
+      fee: 'R$ 8,50',
+      description: 'Transferência Eletrônica Disponível'
+    }
   ];
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadAccounts();
   }
 
-  loadAccounts() {
+  loadAccounts(): void {
     this.accountService.getUserAccounts().subscribe({
       next: (accounts) => {
         this.accounts = accounts;
-        if (accounts.length > 0) {
-          this.selectedFromAccount = accounts[0];
-        }
       },
       error: (error) => {
         console.error('Erro ao carregar contas:', error);
+        this.errorMessage = 'Erro ao carregar contas';
       }
     });
   }
 
-  selectFromAccount(account: BankAccount) {
+  selectFromAccount(account: BankAccount): void {
     this.selectedFromAccount = account;
-    this.clearMessages();
+    this.errorMessage = '';
   }
 
-  selectToAccount(account: BankAccount) {
-    this.selectedToAccount = account;
-    this.toAccountNumber = account.accountNumber;
-    this.clearMessages();
-  }
-
-  onToAccountNumberChange() {
-    this.selectedToAccount = null;
-    this.clearMessages();
-  }
-
-  findAccountByNumber(accountNumber: string): BankAccount | null {
-    return this.accounts.find(acc => acc.accountNumber === accountNumber) || null;
-  }
-
-  validateTransfer(): string | null {
-    if (!this.selectedFromAccount) {
-      return 'Selecione a conta de origem';
+  onToAccountNumberChange(): void {
+    if (this.toAccountNumber && this.toAccountNumber.length >= 4) {
+      this.accountService.getAccountByNumber(this.toAccountNumber).subscribe({
+        next: (account) => {
+          this.selectedToAccount = account;
+          this.errorMessage = '';
+        },
+        error: (error) => {
+          this.selectedToAccount = null;
+          if (error.status === 404) {
+            this.errorMessage = 'Conta não encontrada';
+          } else {
+            this.errorMessage = 'Erro ao buscar conta';
+          }
+        }
+      });
+    } else {
+      this.selectedToAccount = null;
+      this.errorMessage = '';
     }
-
-    if (!this.toAccountNumber.trim()) {
-      return 'Informe o número da conta de destino';
-    }
-
-    if (this.selectedFromAccount.accountNumber === this.toAccountNumber) {
-      return 'Não é possível transferir para a mesma conta';
-    }
-
-    if (this.transferAmount <= 0) {
-      return 'Valor deve ser maior que zero';
-    }
-
-    if (this.transferAmount > this.selectedFromAccount.balance) {
-      return 'Saldo insuficiente';
-    }
-
-    if (this.transferType === 'PIX' && this.transferAmount > 5000) {
-      return 'Limite máximo do PIX é R$ 5.000';
-    }
-
-    const now = new Date();
-    const currentHour = now.getHours();
-
-    if (this.transferType === 'TED' && (currentHour < 6 || currentHour > 17)) {
-      return 'TED só pode ser realizada entre 06:00 e 17:00';
-    }
-
-    if (this.transferType === 'PIX' && (currentHour > 20 || currentHour < 6) && this.transferAmount > 1000) {
-      return 'Limite noturno do PIX é R$ 1.000';
-    }
-
-    return null;
   }
 
   calculateTotalWithFee(): number {
-    if (!this.selectedFromAccount) return this.transferAmount;
-
+    if (this.transferAmount <= 0) return 0;
+    
     let fee = 0;
-    if (this.transferType === 'TED') {
-      fee = this.selectedFromAccount.accountType === 'SAVINGS' ? 15 : 10;
-    } else if (this.transferType === 'INTERNAL' && this.selectedFromAccount.accountType === 'SAVINGS') {
-      fee = 3;
+    switch (this.transferType) {
+      case 'INTERNAL':
+        fee = 0;
+        break;
+      case 'PIX':
+        fee = 0;
+        break;
+      case 'TED':
+        fee = 8.50;
+        break;
     }
-
+    
     return this.transferAmount + fee;
   }
 
-  executeTransfer() {
-    const validationError = this.validateTransfer();
-    if (validationError) {
-      this.errorMessage = validationError;
+  executeTransfer(): void {
+    if (!this.selectedFromAccount || !this.toAccountNumber || this.transferAmount <= 0) {
+      this.errorMessage = 'Preencha todos os campos corretamente';
+      return;
+    }
+
+    if (this.selectedFromAccount.balance < this.calculateTotalWithFee()) {
+      this.errorMessage = 'Saldo insuficiente para realizar a transferência';
       return;
     }
 
     this.isLoading = true;
-    this.clearMessages();
+    this.errorMessage = '';
 
     const transferRequest: TransferRequest = {
-      fromAccount: this.selectedFromAccount!.accountNumber,
+      fromAccount: this.selectedFromAccount.accountNumber,
       toAccount: this.toAccountNumber,
       amount: this.transferAmount,
       type: this.transferType
@@ -139,35 +142,40 @@ export class TransfersComponent implements OnInit {
 
     this.accountService.transfer(transferRequest).subscribe({
       next: (response: TransferResponse) => {
-        this.successMessage = response.message;
+        this.isLoading = false;
         this.showSuccessModal = true;
-        this.loadAccounts();
+        this.successMessage = response.message;
         this.resetForm();
+        this.loadAccounts();
       },
       error: (error) => {
-        this.errorMessage = error.error?.error || 'Erro ao realizar transferência';
-      },
-      complete: () => {
         this.isLoading = false;
+        console.error('Erro na transferência:', error);
+        this.errorMessage = error.error?.message || 'Erro ao realizar transferência';
       }
     });
   }
 
-  resetForm() {
-    this.transferAmount = 0;
-    this.toAccountNumber = '';
+  resetForm(): void {
+    this.selectedFromAccount = null;
     this.selectedToAccount = null;
-    this.transferType = 'PIX';
-  }
-
-  clearMessages() {
+    this.toAccountNumber = '';
+    this.transferAmount = 0;
+    this.transferType = 'INTERNAL';
     this.errorMessage = '';
-    this.successMessage = '';
   }
 
-  closeSuccessModal() {
+  closeSuccessModal(): void {
     this.showSuccessModal = false;
     this.successMessage = '';
+  }
+
+  getAccountTypeIcon(accountType: string): string {
+    return accountType === 'CHECKING' ? '🏦' : '💰';
+  }
+
+  getAccountTypeLabel(accountType: string): string {
+    return accountType === 'CHECKING' ? 'Conta Corrente' : 'Conta Poupança';
   }
 
   formatCurrency(value: number): string {
@@ -175,13 +183,5 @@ export class TransfersComponent implements OnInit {
       style: 'currency',
       currency: 'BRL'
     }).format(value);
-  }
-
-  getAccountTypeLabel(type: string): string {
-    return type === 'CHECKING' ? 'Conta Corrente' : 'Poupança';
-  }
-
-  getAccountTypeIcon(type: string): string {
-    return type === 'CHECKING' ? '🏦' : '💰';
   }
 }

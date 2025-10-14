@@ -19,3 +19,4 @@ import { TransfersComponent } from '../../components/transfers/transfers';
 })
 export class TransfersPageComponent {
 }
+

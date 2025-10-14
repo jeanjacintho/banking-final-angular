@@ -1,0 +1,87 @@
+<div class="p-4 bg-white border border-border rounded-xl">
+    <!-- Header -->
+    <div class="mb-6 flex items-center gap-2 justify-between">
+        <div class="flex items-center gap-2">
+            <lucide-icon name="CreditCard" size="20" class="text-primary"></lucide-icon>
+            <span class="text-sm text-muted-foreground">Meus Cartões</span>
+        </div>
+        <button routerLink="/credit-cards"
+            class="flex items-center gap-2 bg-primary text-white text-xs px-4 py-2 rounded-lg transition-colors">
+            <lucide-icon name="Plus" size="16" class="text-white"></lucide-icon>
+            Novo Cartão
+        </button>
+    </div>
+
+    <!-- Card Navigation -->
+    <div class="flex items-center justify-between mb-4">
+        <button
+            class="w-10 h-10 border border-border rounded-lg flex items-center justify-center hover:bg-bg-secondary transition-colors"
+            (click)="previousCard()" [disabled]="currentCardIndex === 0">
+            <svg class="w-5 h-5 text-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+        </button>
+
+        <div class="flex gap-2">
+            <div *ngFor="let card of cards; let i = index" class="w-2 h-2 rounded-full transition-colors"
+                [class.bg-gradient-start]="i === currentCardIndex" [class.bg-border]="i !== currentCardIndex">
+            </div>
+        </div>
+
+        <button
+            class="w-10 h-10 border border-border rounded-lg flex items-center justify-center hover:bg-bg-secondary transition-colors"
+            (click)="nextCard()" [disabled]="currentCardIndex === cards.length - 1">
+            <svg class="w-5 h-5 text-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Credit Card and Actions Layout -->
+    <div *ngIf="currentCard" class="flex gap-6 justify-center items-center">
+        <!-- Credit Card -->
+        <div class="flex flex-col gap-4 flex-shrink-0 w-full">
+            <div class="relative w-full rounded-2xl shadow-xl overflow-hidden" style="aspect-ratio: 80 / 48;">
+                <div class="absolute inset-0 bg-gradient-to-r from-gradient-start to-gradient-end p-6 text-white">
+                    <!-- Card Background Pattern -->
+                    <div
+                        class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -translate-y-16 translate-x-16">
+                    </div>
+                    <div
+                        class="absolute bottom-0 left-0 w-24 h-24 bg-white opacity-5 rounded-full translate-y-12 -translate-x-12">
+                    </div>
+
+                    <!-- Card Content -->
+                    <div class="relative z-10 h-full flex flex-col">
+                        <!-- Card Header -->
+                        <div class="flex justify-end items-start mb-4">
+                            <div class="text-xs font-medium">{{ currentCard.expiryDate }}</div>
+                        </div>
+
+                        <!-- Card Number -->
+                        <div class="text-sm font-bold mb-4 tracking-wider flex-1 flex items-center">
+                            {{ formatCardNumber(currentCard.cardNumber) }}
+                        </div>
+
+                        <!-- Card Footer -->
+                        <div class="flex justify-between items-end">
+                            <div>
+                                <div class="text-xs opacity-80 mb-1">Saldo</div>
+                                <div class="text-sm font-bold">{{ formatCurrency(currentCard.balance) }}</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm font-bold">{{ getCardLogo(currentCard.cardType) }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button routerLink="/credit-cards"
+                class="flex items-center gap-2 bg-primary text-white text-xs px-4 py-2 rounded-lg transition-colors justify-center">
+                <lucide-icon name="Wallet" size="16" class="text-white"></lucide-icon>
+                Pagar Conta
+            </button>
+        </div>
+    </div>
+</div>

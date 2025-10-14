@@ -20,7 +20,9 @@ export class AuthService {
   login(payload: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiBase}/login`, payload).pipe(
       tap((res) => {
+        console.log('Login response received:', res);
         localStorage.setItem('auth_token', res.token);
+        console.log('Token saved to localStorage:', localStorage.getItem('auth_token'));
       })
     );
   }
@@ -30,7 +32,9 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+    const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+    console.log('Getting token:', token);
+    return token;
   }
 
   clearToken(): void {

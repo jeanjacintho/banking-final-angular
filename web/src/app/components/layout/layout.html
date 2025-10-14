@@ -1,0 +1,133 @@
+<div class="min-h-screen bg-background flex flex-col">
+    <!-- Top Header -->
+    <header class="h-20 bg-white border-b border-border px-8 flex items-center">
+        <div class="w-full max-w-[1200px] mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-8">
+                <div class="flex items-center gap-3">
+                    <div class="text-2xl font-extrabold text-primary tracking-tight">bankr</div>
+                    <div class="text-muted-foreground">Internet Banking</div>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <button class="relative" aria-label="Notificações">
+                    <lucide-icon name="Bell" size="20" class="text-muted-foreground"></lucide-icon>
+                    <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-primary rounded-full ring-2 ring-white"></span>
+                </button>
+                <div
+                    class="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-sm font-semibold text-primary">
+                    {{ (userInfo?.name || 'U').charAt(0).toUpperCase() }}
+                </div>
+                <button
+                    class="px-3 py-2 rounded-lg border border-border text-muted-foreground bg-white text-sm hover:brightness-95 flex items-center gap-2"
+                    (click)="logout()">
+                    <lucide-icon name="LogOut" size="16" class="text-muted-foreground"></lucide-icon>
+                    <span>Sair</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Orange Bar -->
+    <div class="h-12 bg-gradient-to-r from-gradient-start to-gradient-end w-full z-0"></div>
+
+    <!-- Content -->
+    <div class="flex-1 px-6 pt-0 pb-8 -mt-6 relative z-10">
+        <div class="max-w-[1200px] mx-auto grid grid-cols-12 gap-6">
+            <!-- Left Menu Card -->
+            <aside class="col-span-12 lg:col-span-4">
+                <div class="bg-white rounded-xl shadow-shadow border border-border p-4">
+                    <app-account-balance></app-account-balance>
+                    <div class="mt-4 divide-y divide-gray-100">
+                        <div
+                            class="py-3 flex items-center justify-between cursor-pointer hover:bg-gray-50 rounded-lg px-2">
+                            <div class="flex items-center gap-3">
+                                <span class="bg-muted rounded-full p-2">
+                                    <lucide-icon name="LayoutDashboard" size="18" class="text-primary"></lucide-icon>
+                                </span>
+                                <span class="text-sm text-muted-foreground">Conta digital</span>
+                            </div>
+                            <lucide-icon name="ChevronDown" size="16" class="text-muted-foreground"></lucide-icon>
+                        </div>
+                        <div class="py-3 flex items-center justify-between cursor-pointer hover:bg-gray-50 rounded-lg px-2"
+                            routerLink="/credit-cards">
+                            <div class="flex items-center gap-3">
+                                <span class="bg-muted rounded-full p-2">
+                                    <lucide-icon name="CreditCard" size="18" class="text-primary"></lucide-icon>
+                                </span>
+                                <span class="text-sm text-muted-foreground">Crédito</span>
+                            </div>
+                            <lucide-icon name="ChevronDown" size="16" class="text-muted-foreground"></lucide-icon>
+                        </div>
+                        <div
+                            class="py-3 flex items-center justify-between cursor-pointer hover:bg-gray-50 rounded-lg px-2">
+                            <div class="flex items-center gap-3">
+                                <span class="bg-muted rounded-full p-2">
+                                    <lucide-icon name="BarChart3" size="18" class="text-primary"></lucide-icon>
+                                </span>
+                                <span class="text-sm text-muted-foreground">Investimentos</span>
+                            </div>
+                            <lucide-icon name="ChevronDown" size="16" class="text-muted-foreground"></lucide-icon>
+                        </div>
+                        <div
+                            class="py-3 flex items-center justify-between cursor-pointer hover:bg-gray-50 rounded-lg px-2">
+                            <div class="flex items-center gap-3">
+                                <span class="bg-muted rounded-full p-2">
+                                    <lucide-icon name="Wallet" size="18" class="text-primary"></lucide-icon>
+                                </span>
+                                <span class="text-sm text-muted-foreground">IDTVM</span>
+                            </div>
+                            <lucide-icon name="ChevronDown" size="16" class="text-muted-foreground"></lucide-icon>
+                        </div>
+                        <div
+                            class="py-3 flex items-center justify-between cursor-pointer hover:bg-gray-50 rounded-lg px-2">
+                            <div class="flex items-center gap-3">
+                                <span class="bg-muted rounded-full p-2">
+                                    <lucide-icon name="Umbrella" size="18" class="text-primary"></lucide-icon>
+                                </span>
+                                <span class="text-sm text-muted-foreground">Seguros</span>
+                            </div>
+                            <lucide-icon name="ChevronDown" size="16" class="text-muted-foreground"></lucide-icon>
+                        </div>
+                        <div
+                            class="py-3 flex items-center justify-between cursor-pointer hover:bg-gray-50 rounded-lg px-2">
+                            <div class="flex items-center gap-3">
+                                <span class="bg-muted rounded-full p-2">
+                                    <lucide-icon name="Smartphone" size="18" class="text-primary"></lucide-icon>
+                                </span>
+                                <span class="text-sm text-muted-foreground">Recarga de celular</span>
+                            </div>
+                            <lucide-icon name="ChevronDown" size="16" class="text-muted-foreground"></lucide-icon>
+                        </div>
+                        <div
+                            class="py-3 flex items-center justify-between cursor-pointer hover:bg-gray-50 rounded-lg px-2">
+                            <div class="flex items-center gap-3">
+                                <span class="bg-muted rounded-full p-2">
+                                    <lucide-icon name="Shield" size="18" class="text-primary"></lucide-icon>
+                                </span>
+                                <span class="text-sm text-muted-foreground">Sua segurança</span>
+                            </div>
+                            <lucide-icon name="ChevronDown" size="16" class="text-muted-foreground"></lucide-icon>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 bg-muted rounded-lg p-4 border border-border flex items-center gap-4">
+                    <div class="rounded-full size-10 bg-primary"></div>
+                    <span class="text-sm text-muted-foreground flex-1">Olá, {{ userInfo?.name }}, como podemos ajudar
+                        você
+                        hoje?</span>
+                    <button class="rounded-full size-10 bg-white flex items-center justify-center">
+                        <lucide-icon name="ArrowRight" size="20" class="text-primary"></lucide-icon>
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Right Content -->
+            <section class="col-span-12 lg:col-span-8">
+                <!-- Projected content -->
+                <div class="space-y-6">
+                    <ng-content></ng-content>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
