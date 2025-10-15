@@ -4,6 +4,7 @@ import { BankAccountsComponent } from '../../components/bank-accounts/bank-accou
 import { TransfersComponent } from '../../components/transfers/transfers';
 import { TransferHistoryComponent } from '../../components/transfer-history/transfer-history';
 import { CreditCardComponent } from '../../components/credit-card/credit-card';
+import { CurrencyConverterComponent } from '../../components/currency-converter/currency-converter';
 import { Layout } from '../../components/layout/layout';
 import { BankAccount } from '../../services/account.service';
 import { LucideAngularModule } from 'lucide-angular';
@@ -15,7 +16,8 @@ import { LucideAngularModule } from 'lucide-angular';
     BankAccountsComponent, 
     TransfersComponent, 
     TransferHistoryComponent, 
-    CreditCardComponent, 
+    CreditCardComponent,
+    CurrencyConverterComponent,
     RouterModule, 
     LucideAngularModule,
     Layout

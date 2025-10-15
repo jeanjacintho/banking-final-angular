@@ -5,7 +5,7 @@ import { authInterceptor } from './interceptors/auth.interceptor';
 import { LucideAngularModule, 
   LayoutDashboard, Wallet, BarChart3, MoreHorizontal, Calendar, Bell, Settings, LogOut, Search,
   Building2, FileText, ArrowRightLeft, CreditCard, ChevronDown, Gift, Umbrella, Smartphone, Shield, Receipt, ArrowRight, Plus, BanknoteArrowDown,
-  Eye, EyeOff, Lock, ShieldCheck, ArrowUp, ArrowDown, Coffee
+  Eye, EyeOff, Lock, ShieldCheck, ArrowUp, ArrowDown, Coffee, DollarSign, Calculator, ArrowLeftRight, Loader2, AlertCircle, Wifi, WifiOff
 } from 'lucide-angular';
 
 import { AppRoutingModule } from './app-routing-module';
@@ -50,7 +50,14 @@ import { Login } from './pages/login/login';
       ShieldCheck,
       ArrowUp,
       ArrowDown,
-      Coffee
+      Coffee,
+      DollarSign,
+      Calculator,
+      ArrowLeftRight,
+      Loader2,
+      AlertCircle,
+      Wifi,
+      WifiOff
     })
   ],
   providers: [
