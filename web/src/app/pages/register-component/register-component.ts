@@ -41,10 +41,15 @@ export class RegisterComponent {
     this.isSubmiting = true;
   }
 
-  private markFormGroupTouched() {
-    Object.keys(this.registerForm.controls).forEach(key => {
+  private markFormGroupTouched(formGroup: FormGroup = this.registerForm) {
+    Object.keys(formGroup.controls).forEach(key => {
       const control = this.registerForm.get(key);
-      control?.markAsTouched();
+
+      if (control instanceof FormGroup) {
+        this.markFormGroupTouched(control);
+      } else {
+        control?.markAsTouched();
+      }      
     });
   }
 
