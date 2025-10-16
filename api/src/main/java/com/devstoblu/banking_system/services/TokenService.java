@@ -20,7 +20,11 @@ public class TokenService {
     public String generateToken(Usuario user) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
-            String token = JWT.create().withIssuer("bankr").withSubject(user.getCpf()).withExpiresAt(generateExpirationDate()).sign(algorithm);
+            String token = JWT.create()
+                .withIssuer("bankr")
+                .withSubject(user.getCpf())
+                .withExpiresAt(generateExpirationDate())
+                .sign(algorithm);
             return token;
         } catch (JWTCreationException e) {
             throw new RuntimeException("Erro ao gerar a token: ", e);
@@ -35,12 +39,12 @@ public class TokenService {
                     .build()
                     .verify(token)
                     .getSubject();
-        }catch (JWTVerificationException ex){
+        } catch (JWTVerificationException ex) {
             return "";
         }
     }
 
-    private Instant generateExpirationDate(){
+    private Instant generateExpirationDate() {
         return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
     }
 }

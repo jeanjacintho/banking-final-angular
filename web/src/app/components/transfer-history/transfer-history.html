@@ -1,0 +1,59 @@
+<div class="bg-white rounded-xl p-4 border border-border">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+        <div class="flex items-center gap-2">
+            <lucide-icon name="BanknoteArrowDown" size="20" class="text-primary"></lucide-icon>
+            <span class="text-sm text-muted-foreground">Transações Recentes</span>
+        </div>
+        <a href="#" class="text-primary text-xs font-medium hover:text-primary-hover transition-colors">Ver tudo</a>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="text-red-600 text-sm text-center p-3 bg-red-50 rounded-lg mb-4">
+        {{ errorMessage }}
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="text-muted-foreground text-sm text-center py-8">
+        Carregando...
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && items.length === 0" class="text-muted-foreground text-center py-8">
+        Nenhuma transação encontrada
+    </div>
+
+    <!-- Transactions List -->
+    <div *ngIf="!isLoading && items.length > 0" class="space-y-2">
+        <div *ngFor="let transaction of items"
+            class="flex items-center gap-4 p-2 hover:bg-muted rounded-lg transition-colors">
+            <!-- Icon -->
+            <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                <lucide-icon *ngIf="getTransactionIcon(transaction) === 'wallet'" name="Wallet" size="20"
+                    class="text-primary"></lucide-icon>
+
+                <lucide-icon *ngIf="getTransactionIcon(transaction) === 'coffee'" name="Coffee" size="20"
+                    class="text-primary"></lucide-icon>
+
+                <lucide-icon *ngIf="getTransactionIcon(transaction) === 'transfer'" name="ArrowUp" size="20"
+                    class="text-primary"></lucide-icon>
+
+                <lucide-icon *ngIf="getTransactionIcon(transaction) === 'deposit'" name="ArrowDown" size="20"
+                    class="text-primary"></lucide-icon>
+            </div>
+
+            <!-- Transaction Details -->
+            <div class="flex-1">
+                <div class="text-text text-sm font-semibold">{{ getTransactionName(transaction) }}</div>
+                <div class="text-xs text-muted-foreground mt-1">{{ formatDate(transaction.timestamp) }}</div>
+            </div>
+
+            <!-- Amount -->
+            <div class="text-right">
+                <div class="font-semibold text-text text-sm">
+                    {{ formatAmount(transaction) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

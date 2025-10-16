@@ -20,18 +20,34 @@ export class AuthService {
   login(payload: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiBase}/login`, payload).pipe(
       tap((res) => {
+        console.log('Login response received:', res);
         localStorage.setItem('auth_token', res.token);
+        console.log('Token saved to localStorage:', localStorage.getItem('auth_token'));
       })
     );
   }
 
+  getUserInfo(): Observable<any> {
+    return this.http.get<any>(`${environment.apiBase}/usuarios/me`);
+  }
+
   getToken(): string | null {
-    return localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+    const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+    console.log('Getting token:', token);
+    return token;
   }
 
   clearToken(): void {
     localStorage.removeItem('auth_token');
     sessionStorage.removeItem('auth_token');
+  }
+
+  logout(): void {
+    this.clearToken();
+  }
+
+  isAuthenticated(): boolean {
+    return !!this.getToken();
   }
 }
 

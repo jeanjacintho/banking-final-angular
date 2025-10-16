@@ -2,9 +2,12 @@ package com.devstoblu.banking_system.controllers;
 
 import com.devstoblu.banking_system.models.Usuario;
 import com.devstoblu.banking_system.services.UsuarioService;
+import com.devstoblu.banking_system.repositories.UsuarioRepository;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 
@@ -12,14 +15,28 @@ import java.util.List;
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
     private final UsuarioService usuarioService;
+    private final UsuarioRepository usuarioRepository;
 
-    public UsuarioController(UsuarioService usuarioService) {
+    public UsuarioController(UsuarioService usuarioService, UsuarioRepository usuarioRepository) {
         this.usuarioService = usuarioService;
+        this.usuarioRepository = usuarioRepository;
     }
 
     @GetMapping
     public ResponseEntity<List<Usuario>> buscarTodos(){
         return ResponseEntity.ok(usuarioService.buscarTodos());
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<Usuario> me(@AuthenticationPrincipal UserDetails principal) {
+        if (principal == null) {
+            return ResponseEntity.status(401).build();
+        }
+        var user = usuarioRepository.findByCpf(principal.getUsername());
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok((Usuario) user);
     }
 
     @GetMapping("/{id}")

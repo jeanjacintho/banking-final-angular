@@ -1,43 +1,49 @@
 @import "tailwindcss";
 
 @theme {
-    /* Base (light) palette */
-    --color-background: #ffffff;
-    --color-foreground: #111111;
+   /* 🌞 Base (Light) Palette */
+  --color-background: #f8f8ff; /* branco frio levemente azulado */
+  --color-foreground: #111111;
 
-    --color-card: #ffffff;
-    --color-card-foreground: #111111;
+  --color-card: #ffffff;
+  --color-card-foreground: #111111;
 
-    --color-popover: #ffffff;
-    --color-popover-foreground: #111111;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #111111;
 
-    /* Brand */
-    --color-primary: #8dff6a; /* existing brand */
-    --color-primary-foreground: #1a2b12; /* high contrast on brand */
+  /* 🔮 Primária (Roxo Magenta Neon) */
+  --color-primary: #9A1AFF;
+  --color-primary-foreground: #ffffff;
+  --color-primary-hover: #8220db;
 
-    /* UI neutrals */
-    --color-secondary: #f1f5f9; /* slate-100 */
-    --color-secondary-foreground: #111111;
+  /* 🔥 Secundária (Laranja Coral Neon) */
+  --color-secondary: #FF6B3C;
+  --color-secondary-foreground: #ffffff;
+  --color-secondary-hover: #e85d30;
 
-    --color-muted: #f1f5f9;
-    --color-muted-foreground: #64748b; /* slate-500 */
+  /* 🎨 Gradiente principal */
+  --color-gradient-start: #9A1AFF;
+  --color-gradient-end: #FF6B3C;
 
-    --color-accent: #f1f5f9;
-    --color-accent-foreground: #111111;
+  /* 🌈 Acentos e suporte */
+  --color-accent: #00E5FF; /* ciano elétrico sutil */
+  --color-accent-foreground: #0b0c10;
 
-    --color-destructive: #ef4444; /* red-500 */
-    --color-destructive-foreground: #f8fafc; /* slate-50 */
+  --color-muted: #eaeaf2;
+  --color-muted-foreground: #6a7282;
 
-    --color-border: #e5e7eb; /* gray-200 */
-    --color-input: #e5e7eb;  /* gray-200 */
-    --color-ring: #111827;   /* gray-900 */
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #ffffff;
 
-    /* Radius token used by components */
-    --radius: 8px;
+  /* ✏️ Interface */
+  --color-border: #e5e7eb;
+  --color-input: #e5e7eb;
+  --color-ring: #9A1AFF;
 
-    /* Keep existing custom tokens for compatibility */
-    --color-text: #111111;
-    --color-primary-hover: #15803d;
-    --color-gradient-start: #b6ff91;
-    --color-gradient-end: #8dff6a;
+  /* 🩶 Texto e sombras */
+  --color-text: #111111;
+  --color-text-light: #6a7282;
+  --color-shadow: 0 0 15px rgba(154, 26, 255, 0.15);
+
+  --radius: 8px;
 }

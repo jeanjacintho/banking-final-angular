@@ -1,0 +1,54 @@
+<!-- Account Balance Component -->
+<div class="bg-muted rounded-lg p-4 border border-border">
+    <div class="flex justify-between items-center mb-2">
+        <div class="text-xs text-muted-foreground">Saldo em conta</div>
+        <button (click)="toggleHideValues()" class="text-muted-foreground hover:text-primary transition-colors"
+            aria-label="Mostrar/ocultar valores">
+            <lucide-icon [name]="hideValues ? 'EyeOff' : 'Eye'" size="14"></lucide-icon>
+        </button>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="text-xs text-muted-foreground">
+        Carregando...
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="errorMessage" class="text-xs text-red-600">
+        {{ errorMessage }}
+    </div>
+
+    <!-- No Accounts State -->
+    <div *ngIf="!isLoading && !errorMessage && !hasActiveAccounts()" class="text-xs text-muted-foreground">
+        Nenhuma conta ativa
+    </div>
+
+    <!-- Accounts State -->
+    <div *ngIf="!isLoading && !errorMessage && hasActiveAccounts()" class="space-y-2">
+        <!-- Checking Account -->
+        <div *ngIf="getCheckingAccount()" class="flex justify-between items-center">
+            <span class="text-xs text-muted-foreground">Corrente:</span>
+            <span class="text-sm font-semibold text-text">{{ getMaskedValue(getCheckingAccount()!.balance) }}</span>
+        </div>
+
+        <!-- Savings Account -->
+        <div *ngIf="getSavingsAccount()" class="flex justify-between items-center">
+            <span class="text-xs text-muted-foreground">Poupança:</span>
+            <span class="text-sm font-semibold text-text">{{ getMaskedValue(getSavingsAccount()!.balance) }}</span>
+        </div>
+
+        <!-- Total Balance -->
+        <div *ngIf="getCheckingAccount() && getSavingsAccount()" class="pt-2 border-t border-border">
+            <div class="flex justify-between items-center">
+                <span class="text-xs text-muted-foreground">Total:</span>
+                <span class="text-sm font-semibold text-primary">
+                    {{ getMaskedValue((getCheckingAccount()?.balance || 0) + (getSavingsAccount()?.balance || 0)) }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <button class="mt-3 w-full text-xs bg-primary text-white rounded-md py-2 hover:bg-primary-hover transition-colors">
+        Ver total investido
+    </button>
+</div>

@@ -1,0 +1,162 @@
+<div class="bg-white rounded-xl p-4 border border-border">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+        <div class="flex items-center gap-2">
+            <lucide-icon name="Wallet" size="20" class="text-primary"></lucide-icon>
+            <span class="text-sm text-muted-foreground">Saldo das Contas</span>
+        </div>
+        <div *ngIf="showActions" class="flex gap-2">
+            <button *ngIf="!hasAccountType('CHECKING')" (click)="onCreateAccount('CHECKING')"
+                class="flex items-center gap-2 px-3 py-1.5 bg-primary text-white rounded-lg text-xs font-medium hover:brightness-105 transition-colors">
+                <lucide-icon name="Plus" size="14" class="text-white"></lucide-icon>
+                Conta Corrente
+            </button>
+            <button *ngIf="!hasAccountType('SAVINGS')" (click)="onCreateAccount('SAVINGS')"
+                class="flex items-center gap-2 px-3 py-1.5 bg-primary text-white rounded-lg text-xs font-medium hover:brightness-105 transition-colors">
+                <lucide-icon name="Plus" size="14" class="text-white"></lucide-icon>
+                Conta Poupança
+            </button>
+        </div>
+    </div>
+
+    <!-- Accounts List -->
+    <div class="flex flex-col gap-4">
+        <!-- Loading State -->
+        <div *ngIf="loading" class="text-muted-foreground text-sm text-center py-8">
+            Carregando contas...
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="!loading && accounts.length === 0" class="text-muted-foreground text-center py-8">
+            Nenhuma conta encontrada
+        </div>
+
+        <!-- Account Cards -->
+        <div *ngFor="let account of accounts" class="space-y-4">
+            <div class="flex items-center gap-4 p-2 hover:bg-muted rounded-lg transition-colors"
+                [class.cursor-pointer]="showActions" (click)="showActions ? onAccountClick(account) : null">
+                <!-- Icon -->
+                <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                    <lucide-icon name="Wallet" size="20" class="text-primary"></lucide-icon>
+                </div>
+
+                <!-- Account Details -->
+                <div class="flex-1">
+                    <div class="text-text text-sm font-semibold">{{ getAccountTypeLabel(account.accountType) }}</div>
+                    <div class="text-xs text-muted-foreground">****{{ account.accountNumber }}</div>
+                    <div class="text-xs text-muted-foreground">Agência: {{ account.agency }}</div>
+                </div>
+
+                <!-- Balance -->
+                <div class="text-right">
+                    <div class="font-semibold text-text text-sm">{{ formatBalance(account.balance) }}</div>
+                    <div class="text-xs text-muted-foreground">Saldo disponível</div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div *ngIf="showActions" class="flex gap-2 ml-16">
+                <button (click)="onDeposit(account)"
+                    class="flex items-center gap-1.5 px-3 py-1.5 bg-primary text-white rounded-md text-xs font-medium hover:brightness-105 transition-colors">
+                    <lucide-icon name="Plus" size="12" class="text-white"></lucide-icon>
+                    Depositar
+                </button>
+                <button (click)="onWithdraw(account)"
+                    class="flex items-center gap-1.5 px-3 py-1.5 bg-secondary text-white rounded-md text-xs font-medium hover:brightness-105 transition-colors">
+                    <lucide-icon name="ArrowUp" size="12" class="text-white"></lucide-icon>
+                    Sacar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Account Modal -->
+    <div *ngIf="createAccountModal.show" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-5"
+        (click)="closeCreateAccountModal()">
+        <div class="bg-card border border-border rounded-xl w-full max-w-md max-h-[90vh] overflow-y-auto"
+            (click)="$event.stopPropagation()">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center p-6 border-b border-border">
+                <h3 class="text-lg font-semibold text-text">Criar {{ getAccountTypeLabel(createAccountModal.type!) }}
+                </h3>
+                <button (click)="closeCreateAccountModal()"
+                    class="p-1 text-text-light hover:bg-muted hover:text-text rounded transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6">
+                <div class="mb-5">
+                    <label for="balance" class="block text-sm font-medium text-text mb-2">Saldo inicial (R$)</label>
+                    <input type="number" id="balance" [(ngModel)]="createAccountModal.balance" min="0" step="0.01"
+                        class="w-full px-4 py-3 border border-border rounded-lg text-base bg-background text-text focus:outline-none focus:border-gradient-start focus:ring-3 focus:ring-gradient-start/10 transition-colors"
+                        placeholder="0,00">
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="flex gap-3 p-6 border-t border-border justify-end">
+                <button (click)="closeCreateAccountModal()"
+                    class="px-5 py-2.5 bg-muted text-text border border-border rounded-lg text-sm font-medium hover:bg-border transition-colors">
+                    Cancelar
+                </button>
+                <button (click)="confirmCreateAccount()"
+                    class="px-5 py-2.5 bg-gradient-to-r from-gradient-start to-gradient-end text-text rounded-lg text-sm font-medium hover:scale-105 transition-transform shadow-sm">
+                    Criar Conta
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction Modal -->
+    <div *ngIf="transactionModal.show" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-5"
+        (click)="closeTransactionModal()">
+        <div class="bg-card border border-border rounded-xl w-full max-w-md max-h-[90vh] overflow-y-auto"
+            (click)="$event.stopPropagation()">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center p-6 border-b border-border">
+                <h3 class="text-lg font-semibold text-text">{{ transactionModal.type === 'DEPOSIT' ? 'Depositar' :
+                    'Sacar' }} Dinheiro</h3>
+                <button (click)="closeTransactionModal()"
+                    class="p-1 text-text-light hover:bg-muted hover:text-text rounded transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6">
+                <div class="bg-muted p-4 rounded-lg mb-5">
+                    <p class="text-sm text-text mb-1"><strong>Conta:</strong> ****{{ transactionModal.accountNumber }}
+                    </p>
+                    <p class="text-sm text-text"><strong>Tipo:</strong> {{ transactionModal.type === 'DEPOSIT' ?
+                        'Depósito' : 'Saque' }}</p>
+                </div>
+                <div class="mb-5">
+                    <label for="amount" class="block text-sm font-medium text-text mb-2">Valor (R$)</label>
+                    <input type="number" id="amount" [(ngModel)]="transactionModal.amount" min="0.01" step="0.01"
+                        class="w-full px-4 py-3 border border-border rounded-lg text-base bg-background text-text focus:outline-none focus:border-gradient-start focus:ring-3 focus:ring-gradient-start/10 transition-colors"
+                        placeholder="0,00">
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="flex gap-3 p-6 border-t border-border justify-end">
+                <button (click)="closeTransactionModal()"
+                    class="px-5 py-2.5 bg-muted text-text border border-border rounded-lg text-sm font-medium hover:bg-border transition-colors">
+                    Cancelar
+                </button>
+                <button (click)="confirmTransaction()"
+                    class="px-5 py-2.5 bg-gradient-to-r from-gradient-start to-gradient-end text-text rounded-lg text-sm font-medium hover:scale-105 transition-transform shadow-sm">
+                    {{ transactionModal.type === 'DEPOSIT' ? 'Depositar' : 'Sacar' }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
