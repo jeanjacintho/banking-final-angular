@@ -11,7 +11,6 @@ import { LucideAngularModule,
 import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
 import { Login } from './pages/login/login';
-import { RegisterComponent } from './pages/register-component/register-component';
 
 @NgModule({
   declarations: [
@@ -21,7 +20,45 @@ import { RegisterComponent } from './pages/register-component/register-component
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
-    Login
+    Login,
+    LucideAngularModule.pick({
+      LayoutDashboard,
+      Wallet,
+      BarChart3,
+      MoreHorizontal,
+      Plus,
+      Calendar,
+      Bell,
+      Settings,
+      LogOut,
+      Search,
+      Building2,
+      FileText,
+      ArrowRightLeft,
+      CreditCard,
+      ChevronDown,
+      Gift,
+      Umbrella,
+      Smartphone,
+      Shield,
+      Receipt,
+      ArrowRight,
+      BanknoteArrowDown,
+      Eye,
+      EyeOff,
+      Lock,
+      ShieldCheck,
+      ArrowUp,
+      ArrowDown,
+      Coffee,
+      DollarSign,
+      Calculator,
+      ArrowLeftRight,
+      Loader2,
+      AlertCircle,
+      Wifi,
+      WifiOff
+    })
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),
