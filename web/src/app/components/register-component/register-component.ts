@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -6,20 +7,20 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-register-component',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, HttpClientModule],
   templateUrl: './register-component.html',
-  styleUrl: './register-component.css'
+  styleUrls: ['./register-component.css']
 })
 export class RegisterComponent {
   registerForm: FormGroup;
   isSubmiting = false;
   
-  constructor(private fb: FormBuilder, private router: Router) {
+  constructor(private fb: FormBuilder, private router: Router, private http: HttpClientModule) {
     this.registerForm = this.fb.group({
       nomeCompleto:   ['', [Validators.required, Validators.minLength(3), Validators.maxLength(120)]],
       telefone:       ['', [Validators.required, Validators.pattern(/^\d{10,11}$/)]],
       email:          ['', [Validators.required, Validators.email]],
-      cpf:            ['', [Validators.required, Validators.pattern(/^\d{11}$/)]],
+      cpf:            ['', [Validators.required, Validators.pattern(/^\d{11}$/), Validators.minLength(11), Validators.maxLength(11)]],
       dataNascimento: ['', [Validators.required]],
       consentimento:  [false, Validators.requiredTrue]
     });
@@ -43,7 +44,7 @@ export class RegisterComponent {
 
   private markFormGroupTouched(formGroup: FormGroup = this.registerForm) {
     Object.keys(formGroup.controls).forEach(key => {
-      const control = this.registerForm.get(key);
+      const control = formGroup.get(key);
 
       if (control instanceof FormGroup) {
         this.markFormGroupTouched(control);

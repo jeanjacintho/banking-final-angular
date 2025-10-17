@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { RegisterComponent } from '../register-component/register-component';
+import { RegisterComponent } from '../../components/register-component/register-component';
 
 @Component({
   selector: 'app-home',

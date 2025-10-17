@@ -28,10 +28,8 @@
         @if (nomeCompleto?.touched && nomeCompleto?.invalid) {
           <div class="mt-1 text-sm text-red-600">
               @if (nomeCompleto?.errors?.['required']) { <span>Nome é obrigatório</span> }
-              @if (nomeCompleto?.errors?.['minlength']) {
-                <span>O nome deve ter pelo menos 3 caracteres</span>
-              }
-          </div>    
+              @if (nomeCompleto?.errors?.['minlength']) { <span>O nome deve ter pelo menos 3 caracteres</span> }
+          </div>
         }
       </div> 
       
@@ -71,6 +69,7 @@
         @if (email?.touched && email?.invalid) {
           <div class="mt-1 text-sm text-red-600">
               @if (email?.errors?.['required']) { <span>Email é obrigatório</span> }
+              @if (email?.errors?.['email']) { <span>Email inválido</span> }
           </div>    
         }
       </div>
