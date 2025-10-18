@@ -12,9 +12,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "credit_cards")
 public class CreditCard {
     @Id
@@ -63,4 +60,145 @@ public class CreditCard {
 
     @ManyToOne
     private Usuario usuario;
+
+    public CreditCard() {
+    }
+
+    public CreditCard(Long id, String cardNumber, String cardHolderName, Integer expMonth, Integer expYear, String cvvHash, String maskedPan, String panToken, String brand, BigDecimal creditLimit, BigDecimal availableLimit, Boolean isActive, LocalDateTime createdAt, LocalDateTime updatedAt, Usuario usuario) {
+        this.id = id;
+        this.cardNumber = cardNumber;
+        this.cardHolderName = cardHolderName;
+        this.expMonth = expMonth;
+        this.expYear = expYear;
+        this.cvvHash = cvvHash;
+        this.maskedPan = maskedPan;
+        this.panToken = panToken;
+        this.brand = brand;
+        this.creditLimit = creditLimit;
+        this.availableLimit = availableLimit;
+        this.isActive = isActive;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.usuario = usuario;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getCardNumber() {
+        return cardNumber;
+    }
+
+    public void setCardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
+    }
+
+    public String getCardHolderName() {
+        return cardHolderName;
+    }
+
+    public void setCardHolderName(String cardHolderName) {
+        this.cardHolderName = cardHolderName;
+    }
+
+    public Integer getExpMonth() {
+        return expMonth;
+    }
+
+    public void setExpMonth(Integer expMonth) {
+        this.expMonth = expMonth;
+    }
+
+    public Integer getExpYear() {
+        return expYear;
+    }
+
+    public void setExpYear(Integer expYear) {
+        this.expYear = expYear;
+    }
+
+    public String getCvvHash() {
+        return cvvHash;
+    }
+
+    public void setCvvHash(String cvvHash) {
+        this.cvvHash = cvvHash;
+    }
+
+    public String getMaskedPan() {
+        return maskedPan;
+    }
+
+    public void setMaskedPan(String maskedPan) {
+        this.maskedPan = maskedPan;
+    }
+
+    public String getPanToken() {
+        return panToken;
+    }
+
+    public void setPanToken(String panToken) {
+        this.panToken = panToken;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public BigDecimal getCreditLimit() {
+        return creditLimit;
+    }
+
+    public void setCreditLimit(BigDecimal creditLimit) {
+        this.creditLimit = creditLimit;
+    }
+
+    public BigDecimal getAvailableLimit() {
+        return availableLimit;
+    }
+
+    public void setAvailableLimit(BigDecimal availableLimit) {
+        this.availableLimit = availableLimit;
+    }
+
+    public Boolean getActive() {
+        return isActive;
+    }
+
+    public void setActive(Boolean active) {
+        isActive = active;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
 }

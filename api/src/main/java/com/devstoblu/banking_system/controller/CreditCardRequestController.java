@@ -14,9 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/credit-cards")
-@RequiredArgsConstructor
 public class CreditCardRequestController {
     private final CreditCardApplicationService service;
+
+    public CreditCardRequestController(CreditCardApplicationService service) {
+        this.service = service;
+    }
 
     @PostMapping("/requests")
     public ResponseEntity<CreditCardRequestResponseDTO> request(@Valid @RequestBody CreditCardRequestDTO dto) {

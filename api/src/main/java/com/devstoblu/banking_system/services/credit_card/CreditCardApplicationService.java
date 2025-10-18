@@ -11,12 +11,18 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 
 @Service
-@RequiredArgsConstructor
 public class CreditCardApplicationService {
     private final RiskScoringService riskScoringService;
     private final CreditLimitService creditLimitService;
     private final CardIssuanceService cardIssuanceService;
     private final CreditCardRepository cardRepository;
+
+    public CreditCardApplicationService(RiskScoringService riskScoringService, CreditLimitService creditLimitService, CardIssuanceService cardIssuanceService, CreditCardRepository cardRepository) {
+        this.riskScoringService = riskScoringService;
+        this.creditLimitService = creditLimitService;
+        this.cardIssuanceService = cardIssuanceService;
+        this.cardRepository = cardRepository;
+    }
 
     @Transactional
     public CreditCardRequestResponseDTO processApplication(CreditCardRequestDTO dto) {
