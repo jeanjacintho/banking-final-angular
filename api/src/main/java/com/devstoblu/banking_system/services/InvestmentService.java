@@ -1,16 +1,18 @@
 package com.devstoblu.banking_system.services;
 
 import com.devstoblu.banking_system.models.banking_account.Account;
-import com.devstoblu.banking_system.models.banking_account.CheckingAccount;
 import com.devstoblu.banking_system.models.investment.CDB;
 import com.devstoblu.banking_system.models.investment.Investment;
 import com.devstoblu.banking_system.repositories.AccountRepository;
 import com.devstoblu.banking_system.repositories.InvestmentRepository;
+
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class InvestmentService {
   private final AccountRepository accountRepository;
 
@@ -22,7 +24,12 @@ public class InvestmentService {
   }
 
   public CDB createInvestment(String accountNumber, double term, double value) {
-    Account account = accountRepository.findByAccountNumber(accountNumber).orElseThrow(() -> new RuntimeException("Conta não encontrada"));
+    Account account = accountRepository.findByAccountNumber(accountNumber)
+            .orElseThrow(() -> new IllegalArgumentException("Conta não encontrada"));
+
+    if (account.getAccountType().equals("SAVINGS")) {
+      throw new IllegalArgumentException("Conta Poupança não pode realizar investimentos");
+    }
     account.withdraw(value);
 
     CDB cdb = new CDB(term, value);
@@ -36,24 +43,27 @@ public class InvestmentService {
 
   public void deleteInvestment(String accountNumber, Long id) {
     Account account = accountRepository.findByAccountNumber(accountNumber)
-            .orElseThrow(() -> new RuntimeException("Conta não encontrada"));
+            .orElseThrow(() -> new IllegalArgumentException("Conta não encontrada"));
     Investment investment = investmentRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Investimento não encontrado"));
+            .orElseThrow(() -> new IllegalArgumentException("Investimento não encontrado"));
 
     investmentRepository.delete(investment);
   }
 
   public void applyInvestimento(String accountNumber) {
-    List<Investment> investments = investmentRepository.findAll();
+    List<Investment> investments = investmentRepository.findByAccount_AccountNumberAndActiveTrue(accountNumber);
+
+    if (investments.isEmpty()) {
+      throw new IllegalArgumentException("Nenhum investimento ativo encontrado para a conta");
+    }
+
     Account account = accountRepository.findByAccountNumber(accountNumber)
-            .orElseThrow(() -> new RuntimeException("Conta não encontrada"));
+            .orElseThrow(() -> new IllegalArgumentException("Conta não encontrada"));
 
     for (Investment i : investments) {
       i.applyInvestment(account);
-      if (i.getInvestmentTerm() == 0) {
-        deleteInvestment(accountNumber, i.getId());
-      }
       investmentRepository.save(i);
     }
+    accountRepository.save(account);
   }
 }

@@ -1,28 +1,26 @@
 package com.devstoblu.banking_system.models.investment;
 
-import com.devstoblu.banking_system.models.Usuario;
 import com.devstoblu.banking_system.models.banking_account.Account;
-import com.devstoblu.banking_system.models.banking_account.CheckingAccount;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Entity
 public class CDB extends Investment {
+
+  private static final Logger logger = LoggerFactory.getLogger(CDB.class);
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long Id;
 
-  @ManyToOne
-  @JoinColumn(name = "account_id")
-  @JsonIgnoreProperties("investments")
-  private Account account; // referência à conta dona do investimento
-
   public CDB() {
   }
 
   public CDB(double investmentTermChosen, double investmentValue) {
-    setInvestmentTerm(investmentTermChosen); //* 12
+    setInvestmentTerm(investmentTermChosen * 12); // Contagem em meses
+    setCurrentTerm(investmentTermChosen);
     // Rendimento bonus de 10% ao ano. % final calculada em cima do CDI atual
     setYield(getCDI() * (1 + (0.1 * investmentTermChosen)));
     setInvestmentValue(investmentValue);
@@ -30,20 +28,22 @@ public class CDB extends Investment {
 
   @Override
   public void applyInvestment(Account account) {
-    double term = getInvestmentTerm();
-    if (term == 0) {
-      double valueAndFee = (getYield() + 1) * getInvestmentValue();
-      account.setBalance(valueAndFee + account.getBalance());
+    double term = getCurrentTerm();
+
+    if (term <= 0) {
+      double totalReturn = (getYield() + 1) * getInvestmentValue();
+      account.setBalance(totalReturn + account.getBalance());
+      setActive(false);
+      setInvestmentReturn(getYield() * getInvestmentValue());
     } else {
-      setInvestmentTerm(term - 1);
+      setCurrentTerm(term - 1);
+
+      if (getCurrentTerm() <= 0) {
+        double totalReturn = (getYield() + 1) * getInvestmentValue();
+        account.setBalance(totalReturn + account.getBalance());
+        setActive(false);
+        setInvestmentReturn(getYield() * getInvestmentValue());
+      }
     }
-  }
-
-  public Account getAccount() {
-    return account;
-  }
-
-  public void setAccount(Account account) {
-    this.account = account;
   }
 }

@@ -1,7 +1,7 @@
 package com.devstoblu.banking_system.models.investment;
 
 import com.devstoblu.banking_system.models.banking_account.Account;
-import com.devstoblu.banking_system.models.banking_account.CheckingAccount;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
@@ -16,10 +16,18 @@ public abstract class Investment {
   private double CDI = 0.08;
 
   private double yield;
-  private double investmentTerm; // em anos
+  private double investmentTerm;
+  private double currentTerm;
   private double investmentValue;
   private String liquidity;
   private double administrationFee;
+  private boolean active = true;
+  private double investmentReturn;
+
+  @ManyToOne
+  @JoinColumn(name = "account_id")
+  @JsonIgnoreProperties("investments")
+  private Account account; // referência à conta dona do investimento
 
   public abstract void applyInvestment(Account account);
 
@@ -79,5 +87,35 @@ public abstract class Investment {
     this.administrationFee = administrationFee;
   }
 
+  public boolean isActive() {
+    return active;
+  }
 
+  public void setActive(boolean active) {
+    this.active = active;
+  }
+
+  public Account getAccount() {
+    return account;
+  }
+
+  public void setAccount(Account account) {
+    this.account = account;
+  }
+
+  public double getCurrentTerm() {
+    return currentTerm;
+  }
+
+  public void setCurrentTerm(double currentTerm) {
+    this.currentTerm = currentTerm;
+  }
+
+  public double getInvestmentReturn() {
+    return investmentReturn;
+  }
+
+  public void setInvestmentReturn(double investmentReturn) {
+    this.investmentReturn = investmentReturn;
+  }
 }
