@@ -3,6 +3,7 @@ package com.devstoblu.banking_system.models.banking_account;
 import com.devstoblu.banking_system.enums.AccountType;
 import com.devstoblu.banking_system.models.Usuario;
 import com.devstoblu.banking_system.models.investment.CDB;
+import com.devstoblu.banking_system.models.investment.Investment;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
@@ -31,7 +32,7 @@ public abstract class Account {
 
   @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
   @JsonIgnoreProperties("account")
-  private List<CDB> investments = new ArrayList<>();
+  private List<Investment> investments = new ArrayList<>();
 
   public Account() {
     this.accountNumber = String.valueOf(new Random().nextInt(99999999));
@@ -87,11 +88,11 @@ public abstract class Account {
     this.usuario = usuario;
   }
 
-  public List<CDB> getInvestments() {
+  public List<Investment> getInvestments() {
     return investments;
   }
 
-  public void setInvestments(List<CDB> investments) {
+  public void setInvestments(List<Investment> investments) {
     this.investments = investments;
   }
 }

@@ -10,7 +10,7 @@ public abstract class Investment {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long Id;
+  private long id;
 
   // CDI atual 8% a.a
   private double CDI = 0.08;
@@ -29,14 +29,14 @@ public abstract class Investment {
   @JsonIgnoreProperties("investments")
   private Account account; // referência à conta dona do investimento
 
-  public abstract void applyInvestment(Account account);
+  public abstract void applyInvestment(Account account, double currentCDI);
 
   public long getId() {
-    return Id;
+    return id;
   }
 
   public void setId(long id) {
-    Id = id;
+    id = id;
   }
 
   public double getCDI() {

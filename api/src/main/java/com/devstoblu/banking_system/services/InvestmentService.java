@@ -3,6 +3,7 @@ package com.devstoblu.banking_system.services;
 import com.devstoblu.banking_system.models.banking_account.Account;
 import com.devstoblu.banking_system.models.investment.CDB;
 import com.devstoblu.banking_system.models.investment.Investment;
+import com.devstoblu.banking_system.models.investment.RendaFixa;
 import com.devstoblu.banking_system.repositories.AccountRepository;
 import com.devstoblu.banking_system.repositories.InvestmentRepository;
 
@@ -23,7 +24,7 @@ public class InvestmentService {
     this.investmentRepository = investmentRepository;
   }
 
-  public CDB createInvestment(String accountNumber, double term, double value) {
+  public CDB createInvestmentCdb(String accountNumber, double term, double value) {
     Account account = accountRepository.findByAccountNumber(accountNumber)
             .orElseThrow(() -> new IllegalArgumentException("Conta não encontrada"));
 
@@ -41,6 +42,24 @@ public class InvestmentService {
     return cdb;
   }
 
+  public RendaFixa createInvestmentRenda(String accountNumber, double value) {
+    Account account = accountRepository.findByAccountNumber(accountNumber)
+            .orElseThrow(() -> new IllegalArgumentException("Conta não encontrada"));
+
+    if (account.getAccountType().equals("SAVINGS")) {
+      throw new IllegalArgumentException("Conta Poupança não pode realizar investimentos");
+    }
+    account.withdraw(value);
+
+    RendaFixa rendaFixa = new RendaFixa(value);
+    rendaFixa.setAccount(account);
+
+    account.getInvestments().add(rendaFixa);
+    accountRepository.save(account);
+
+    return rendaFixa;
+  }
+
   public void deleteInvestment(String accountNumber, Long id) {
     Account account = accountRepository.findByAccountNumber(accountNumber)
             .orElseThrow(() -> new IllegalArgumentException("Conta não encontrada"));
@@ -50,7 +69,7 @@ public class InvestmentService {
     investmentRepository.delete(investment);
   }
 
-  public void applyInvestimento(String accountNumber) {
+  public void applyInvestment(String accountNumber, double currentCdi) {
     List<Investment> investments = investmentRepository.findByAccount_AccountNumberAndActiveTrue(accountNumber);
 
     if (investments.isEmpty()) {
@@ -61,8 +80,27 @@ public class InvestmentService {
             .orElseThrow(() -> new IllegalArgumentException("Conta não encontrada"));
 
     for (Investment i : investments) {
-      i.applyInvestment(account);
+      i.applyInvestment(account, currentCdi);
       investmentRepository.save(i);
+    }
+    accountRepository.save(account);
+  }
+
+  public void withdrawInvestment(String accountNumber) {
+    Account account = accountRepository.findByAccountNumber(accountNumber)
+            .orElseThrow(() -> new IllegalArgumentException("Conta não encontrada"));
+
+    List<Investment> investments = investmentRepository.findByAccount_AccountNumberAndActiveTrue(accountNumber);
+
+    if (investments.isEmpty()) {
+      throw new IllegalArgumentException("Nenhum investimento ativo encontrado para a conta");
+    }
+
+    for (Investment i : investments) {
+      if (i instanceof RendaFixa) {
+        ((RendaFixa) i).withdraw(account);
+        investmentRepository.save(i);
+      }
     }
     accountRepository.save(account);
   }

@@ -1,6 +1,7 @@
 package com.devstoblu.banking_system.controllers;
 
 import com.devstoblu.banking_system.models.investment.CDB;
+import com.devstoblu.banking_system.models.investment.RendaFixa;
 import com.devstoblu.banking_system.services.InvestmentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,13 @@ public class InvestmentController {
 
   @PostMapping("/cdb/{accountNumber}")
   public ResponseEntity<CDB> createInvestmentCdb(@PathVariable String accountNumber, @RequestBody Map<String, Double> data) {
-    CDB newInvestment = service.createInvestment(accountNumber, data.get("term"), data.get("value"));
+    CDB newInvestment = service.createInvestmentCdb(accountNumber, data.get("term"), data.get("value"));
+    return ResponseEntity.ok(newInvestment);
+  }
+
+  @PostMapping("/renda-fixa/{accountNumber}")
+  public ResponseEntity<RendaFixa> createInvestmentRendaFixa(@PathVariable String accountNumber, @RequestBody Map<String, Double> data) {
+    RendaFixa newInvestment = service.createInvestmentRenda(accountNumber, data.get("value"));
     return ResponseEntity.ok(newInvestment);
   }
 
@@ -48,12 +55,32 @@ public class InvestmentController {
 
   // Somente para teste, será implementado para executar automaticamente
   @PostMapping("/cdb/apply/{accountNumber}")
-  public ResponseEntity<?> applyFee(@PathVariable String accountNumber) {
+  public ResponseEntity<?> applyFee(@PathVariable String accountNumber, @RequestBody double currentCdi) {
     try {
-      service.applyInvestimento(accountNumber);
+      service.applyInvestment(accountNumber, currentCdi);
 
       Map<String, Object> response = new HashMap<>();
       response.put("message", "Investimento aplicado");
+      response.put("account", accountNumber);
+
+      return ResponseEntity.ok(response);
+
+    } catch (RuntimeException e) {
+      Map<String, Object> errorResponse = new HashMap<>();
+      errorResponse.put("error", e.getMessage());
+      errorResponse.put("accountNumber", accountNumber);
+
+      return ResponseEntity.badRequest().body(errorResponse);
+    }
+  }
+
+  @PostMapping("/withdraw/{accountNumber}")
+  public ResponseEntity<?> withdraw(@PathVariable String accountNumber) {
+    try {
+      service.withdrawInvestment(accountNumber);
+
+      Map<String, Object> response = new HashMap<>();
+      response.put("message", "Investimento retirado da Renda Fixa");
       response.put("account", accountNumber);
 
       return ResponseEntity.ok(response);

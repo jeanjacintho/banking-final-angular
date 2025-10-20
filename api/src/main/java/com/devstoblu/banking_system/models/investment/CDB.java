@@ -1,19 +1,14 @@
 package com.devstoblu.banking_system.models.investment;
 
 import com.devstoblu.banking_system.models.banking_account.Account;
-
 import jakarta.persistence.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Entity
 public class CDB extends Investment {
 
-  private static final Logger logger = LoggerFactory.getLogger(CDB.class);
-
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long Id;
+  private long id;
 
   public CDB() {
   }
@@ -27,9 +22,10 @@ public class CDB extends Investment {
   }
 
   @Override
-  public void applyInvestment(Account account) {
+  public void applyInvestment(Account account, double currentCDI) {
     double term = getCurrentTerm();
 
+    // Se o periodo de investimento acabou, retorna o valor com juros
     if (term <= 0) {
       double totalReturn = (getYield() + 1) * getInvestmentValue();
       account.setBalance(totalReturn + account.getBalance());

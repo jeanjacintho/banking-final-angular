@@ -125,7 +125,7 @@ public class AccountController {
   }
 
   @DeleteMapping("/{accountNumber}")
-  public ResponseEntity<?> deleteChecking(@PathVariable String accountNumber) {
+  public ResponseEntity<?> delete(@PathVariable String accountNumber) {
     try {
       service.delete(accountNumber);
 
