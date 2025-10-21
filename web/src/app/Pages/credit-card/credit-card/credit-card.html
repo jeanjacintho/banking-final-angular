@@ -1,0 +1,42 @@
+<button
+  class="w-full text-left rounded-xl p-4 transition border bg-[color:var(--color-card)] hover:bg-[color:var(--color-muted)] text-[color:var(--color-text)] border-[color:var(--color-border)] shadow-[var(--color-shadow)]"
+  type="button"
+  (click)="onClick()"
+  [class.border-[color:var(--color-ring)]]="selected"
+  [class.border-transparent]="!selected"
+>
+  <div
+    class="w-96 h-56 rounded-xl p-6 flex flex-col justify-between text-[color:var(--color-card-foreground)] bg-[linear-gradient(135deg,var(--color-gradient-start),var(--color-gradient-end))] shadow-[var(--color-shadow)]"
+  >
+    <!-- Top Row -->
+    <div class="flex justify-between items-center">
+      <div class="text-lg font-bold tracking-wider">
+        {{ creditCard.brand || 'CARD' }}
+      </div>
+
+      <!-- Chip do cartão -->
+      <div class="w-12 h-8 rounded-md shadow-inner bg-[color:var(--color-muted)]"></div>
+    </div>
+
+    <!-- Card Number -->
+    <div class="text-center text-2xl tracking-widest font-mono">
+      {{ maskCardNumber(creditCard.cardNumber) || '' }}
+    </div>
+
+    <!-- Bottom Row -->
+    <div class="flex justify-between items-end text-sm">
+      <div>
+        <div class="uppercase text-xs opacity-75">CARD HOLDER</div>
+        <div class="font-semibold tracking-wide">
+          {{ creditCard.cardHolderName || 'NOME DO TITULAR' }}
+        </div>
+      </div>
+      <div>
+        <div class="uppercase text-xs opacity-75">EXPIRES</div>
+        <div class="font-semibold tracking-wide">
+          {{ formatExpiry(creditCard.expirationDate || '') }}
+        </div>
+      </div>
+    </div>
+  </div>
+</button>

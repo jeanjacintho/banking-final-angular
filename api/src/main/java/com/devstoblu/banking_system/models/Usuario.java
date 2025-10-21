@@ -1,20 +1,13 @@
 package com.devstoblu.banking_system.models;
 
 import com.devstoblu.banking_system.enums.Status;
-import com.devstoblu.banking_system.enums.UserRole;
-import com.devstoblu.banking_system.models.banking_account.Account;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.devstoblu.banking_system.enums.Tipo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
 
 @Entity
 @Table(name = "usuarios")
