@@ -54,10 +54,10 @@ public class InvestmentController {
   }
 
   // Somente para teste, será implementado para executar automaticamente
-  @PostMapping("/cdb/apply/{accountNumber}")
-  public ResponseEntity<?> applyFee(@PathVariable String accountNumber, @RequestBody double currentCdi) {
+  @PostMapping("/apply/{accountNumber}")
+  public ResponseEntity<?> applyFee(@PathVariable String accountNumber, @RequestBody Map<String, Double> body) {
     try {
-      service.applyInvestment(accountNumber, currentCdi);
+      service.applyInvestment(accountNumber, body.get("cdi"));
 
       Map<String, Object> response = new HashMap<>();
       response.put("message", "Investimento aplicado");
@@ -74,10 +74,10 @@ public class InvestmentController {
     }
   }
 
-  @PostMapping("/withdraw/{accountNumber}")
-  public ResponseEntity<?> withdraw(@PathVariable String accountNumber) {
+  @PostMapping("/withdraw/{accountNumber}/{id}")
+  public ResponseEntity<?> withdraw(@PathVariable String accountNumber, @PathVariable Long id) {
     try {
-      service.withdrawInvestment(accountNumber);
+      service.withdrawInvestment(accountNumber, id);
 
       Map<String, Object> response = new HashMap<>();
       response.put("message", "Investimento retirado da Renda Fixa");

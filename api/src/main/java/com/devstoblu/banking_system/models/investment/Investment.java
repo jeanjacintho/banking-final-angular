@@ -13,14 +13,13 @@ public abstract class Investment {
   private long id;
 
   // CDI atual 8% a.a
-  private double CDI = 0.08;
+  private double CDI = 0.1;
 
   private double yield;
   private double investmentTerm;
   private double currentTerm;
   private double investmentValue;
   private String liquidity;
-  private double administrationFee;
   private boolean active = true;
   private double investmentReturn;
 
@@ -77,14 +76,6 @@ public abstract class Investment {
 
   public void setLiquidity(String liquidity) {
     this.liquidity = liquidity;
-  }
-
-  public double getAdministrationFee() {
-    return administrationFee;
-  }
-
-  public void setAdministrationFee(double administrationFee) {
-    this.administrationFee = administrationFee;
   }
 
   public boolean isActive() {

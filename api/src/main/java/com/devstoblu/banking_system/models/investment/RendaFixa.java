@@ -1,6 +1,7 @@
 package com.devstoblu.banking_system.models.investment;
 
 import com.devstoblu.banking_system.models.banking_account.Account;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -15,35 +16,49 @@ public class RendaFixa extends Investment {
   @GeneratedValue
   private long id;
 
-  List<Double> cdiEachMonth = new ArrayList<>();
+  private static final double ADMINISTRATION_FEE = 0.005 / 12;
+
+  @ElementCollection
+  private List<Double> cdiEachMonth = new ArrayList<>();
 
   public RendaFixa() {
   }
 
   public RendaFixa(double invetmentValue) {
     setInvestmentValue(invetmentValue);
+    setYield(getCDI() * 0.9);
   }
 
   // Calcula o CDI do mes e salva em um array
   @Override
   public void applyInvestment(Account account, double currentCdi) {
     cdiEachMonth.add((currentCdi * 0.9) / 12);
+    setCurrentTerm(getCurrentTerm() + 1);
+    setInvestmentTerm(getCurrentTerm());
   }
 
-  // Calcula a média dos valor de cada mes do cdi
-  public double averageCdi() {
-    double sum = 0;
-    for (Double eachCdi : cdiEachMonth) {
-      sum += eachCdi;
-    }
-    return sum / cdiEachMonth.toArray().length;
-  }
-
-  // Ao ser solicitado a retirada do investimento, calcula o rendimento com base na media do cdis
+  // Ao ser solicitado a retirada do investimento, calcula o rendimento com base nos cdis mensais
   public void withdraw(Account account) {
-    double totalReturn = getInvestmentValue() * (1 + (averageCdi() - getAdministrationFee() / 12));
-    account.setBalance(totalReturn + account.getBalance());
+    double total = getInvestmentValue();
+
+    for (Double monthlyCdi : cdiEachMonth) {
+      // Rendimento líquido de cada mês
+      double effectiveRate = monthlyCdi - ADMINISTRATION_FEE;
+      total *= (1 + effectiveRate);
+    }
+
+    // Atualiza a conta e encerra o investimento
+    account.setBalance(account.getBalance() + total);
     setActive(false);
-    setInvestmentReturn(getInvestmentValue() * averageCdi());
+
+    setInvestmentReturn(total - getInvestmentValue());
+  }
+
+  public List<Double> getCdiEachMonth() {
+    return cdiEachMonth;
+  }
+
+  public void setCdiEachMonth(List<Double> cdiEachMonth) {
+    this.cdiEachMonth = cdiEachMonth;
   }
 }

@@ -26,10 +26,10 @@ public class InvestmentService {
 
   public CDB createInvestmentCdb(String accountNumber, double term, double value) {
     Account account = accountRepository.findByAccountNumber(accountNumber)
-            .orElseThrow(() -> new IllegalArgumentException("Conta não encontrada"));
+            .orElseThrow(() -> new IllegalArgumentException("Conta não encontrada."));
 
     if (account.getAccountType().equals("SAVINGS")) {
-      throw new IllegalArgumentException("Conta Poupança não pode realizar investimentos");
+      throw new IllegalArgumentException("Conta Poupança não pode realizar investimentos.");
     }
     account.withdraw(value);
 
@@ -44,10 +44,10 @@ public class InvestmentService {
 
   public RendaFixa createInvestmentRenda(String accountNumber, double value) {
     Account account = accountRepository.findByAccountNumber(accountNumber)
-            .orElseThrow(() -> new IllegalArgumentException("Conta não encontrada"));
+            .orElseThrow(() -> new IllegalArgumentException("Conta não encontrada."));
 
     if (account.getAccountType().equals("SAVINGS")) {
-      throw new IllegalArgumentException("Conta Poupança não pode realizar investimentos");
+      throw new IllegalArgumentException("Conta Poupança não pode realizar investimentos.");
     }
     account.withdraw(value);
 
@@ -62,9 +62,9 @@ public class InvestmentService {
 
   public void deleteInvestment(String accountNumber, Long id) {
     Account account = accountRepository.findByAccountNumber(accountNumber)
-            .orElseThrow(() -> new IllegalArgumentException("Conta não encontrada"));
+            .orElseThrow(() -> new IllegalArgumentException("Conta não encontrada."));
     Investment investment = investmentRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Investimento não encontrado"));
+            .orElseThrow(() -> new IllegalArgumentException("Investimento não encontrado."));
 
     investmentRepository.delete(investment);
   }
@@ -73,11 +73,11 @@ public class InvestmentService {
     List<Investment> investments = investmentRepository.findByAccount_AccountNumberAndActiveTrue(accountNumber);
 
     if (investments.isEmpty()) {
-      throw new IllegalArgumentException("Nenhum investimento ativo encontrado para a conta");
+      throw new IllegalArgumentException("Nenhum investimento ativo encontrado para a conta.");
     }
 
     Account account = accountRepository.findByAccountNumber(accountNumber)
-            .orElseThrow(() -> new IllegalArgumentException("Conta não encontrada"));
+            .orElseThrow(() -> new IllegalArgumentException("Conta não encontrada."));
 
     for (Investment i : investments) {
       i.applyInvestment(account, currentCdi);
@@ -86,22 +86,26 @@ public class InvestmentService {
     accountRepository.save(account);
   }
 
-  public void withdrawInvestment(String accountNumber) {
+  public void withdrawInvestment(String accountNumber, Long id) {
     Account account = accountRepository.findByAccountNumber(accountNumber)
-            .orElseThrow(() -> new IllegalArgumentException("Conta não encontrada"));
+            .orElseThrow(() -> new IllegalArgumentException("Conta não encontrada."));
 
-    List<Investment> investments = investmentRepository.findByAccount_AccountNumberAndActiveTrue(accountNumber);
+    Investment investment = investmentRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Investimento não encontrado."));
 
-    if (investments.isEmpty()) {
-      throw new IllegalArgumentException("Nenhum investimento ativo encontrado para a conta");
+    if (!(investment instanceof RendaFixa)) {
+      throw new IllegalArgumentException("O investimento não é Renda Fixa.");
     }
 
-    for (Investment i : investments) {
-      if (i instanceof RendaFixa) {
-        ((RendaFixa) i).withdraw(account);
-        investmentRepository.save(i);
-      }
+    if (investment.getCurrentTerm() == 0) {
+      throw new IllegalArgumentException("Investimento na Renda Fixa deve estar aplicado pelo menos 1 mês para ser retirado.");
     }
+
+    if (investment.getId() == id) {
+      ((RendaFixa) investment).withdraw(account);
+      investmentRepository.save(investment);
+    }
+
     accountRepository.save(account);
   }
 }

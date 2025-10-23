@@ -14,8 +14,9 @@ public class CDB extends Investment {
   }
 
   public CDB(double investmentTermChosen, double investmentValue) {
-    setInvestmentTerm(investmentTermChosen * 12); // Contagem em meses
-    setCurrentTerm(investmentTermChosen);
+    setInvestmentTerm(investmentTermChosen); // Contagem em anos
+    setCurrentTerm(investmentTermChosen * 12); // Contagem em meses
+
     // Rendimento bonus de 10% ao ano. % final calculada em cima do CDI atual
     setYield(getCDI() * (1 + (0.1 * investmentTermChosen)));
     setInvestmentValue(investmentValue);
