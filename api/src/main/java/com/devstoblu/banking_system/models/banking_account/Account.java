@@ -2,9 +2,12 @@ package com.devstoblu.banking_system.models.banking_account;
 
 import com.devstoblu.banking_system.models.PixKey;
 import com.devstoblu.banking_system.models.Usuario;
+import com.devstoblu.banking_system.models.investment.CDB;
+import com.devstoblu.banking_system.models.investment.Investment;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -26,6 +29,10 @@ public abstract class Account {
   @JoinColumn(name = "user_id")
   @JsonIgnoreProperties("accounts")
   private Usuario usuario;
+
+  @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonIgnoreProperties("account")
+  private List<Investment> investments = new ArrayList<>();
 
   @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @JsonIgnoreProperties("account")
@@ -83,6 +90,14 @@ public abstract class Account {
 
   public void setUsuario(Usuario usuario) {
     this.usuario = usuario;
+  }
+
+  public List<Investment> getInvestments() {
+    return investments;
+  }
+
+  public void setInvestments(List<Investment> investments) {
+    this.investments = investments;
   }
 
   public List<PixKey> getPixKeys() {

@@ -102,7 +102,6 @@ public class AccountController {
       return ResponseEntity.ok(updatedAccount);
     } catch (RuntimeException e) {
 
-      // Mensagem de erro Json
       Map<String, Object> errorResponse = new HashMap<>();
       errorResponse.put("error", e.getMessage());
       errorResponse.put("accountNumber", accountNumber);
@@ -118,7 +117,6 @@ public class AccountController {
       return ResponseEntity.ok(updatedAccount);
     } catch (RuntimeException e) {
 
-      // Mensagem de erro Json
       Map<String, Object> errorResponse = new HashMap<>();
       errorResponse.put("error", e.getMessage());
       errorResponse.put("accountNumber", accountNumber);
@@ -128,7 +126,7 @@ public class AccountController {
   }
 
   @DeleteMapping("/{accountNumber}")
-  public ResponseEntity<?> deleteChecking(@PathVariable String accountNumber) {
+  public ResponseEntity<?> delete(@PathVariable String accountNumber) {
     try {
       service.delete(accountNumber);
 
@@ -154,7 +152,7 @@ public class AccountController {
   }
 
   @PostMapping("/transfer")
-public ResponseEntity<?> transfer(@RequestBody Map<String, Object> request) {
+  public ResponseEntity<?> transfer(@RequestBody Map<String, Object> request) {
     try {
         String fromAccount = (String) request.get("fromAccount");
         Double value = Double.valueOf(request.get("amount").toString());
@@ -185,6 +183,5 @@ public ResponseEntity<?> transfer(@RequestBody Map<String, Object> request) {
         errorResponse.put("error", "Erro interno do servidor: " + e.getMessage());
         return ResponseEntity.status(500).body(errorResponse);
     }
-}
-
+  }
 }
