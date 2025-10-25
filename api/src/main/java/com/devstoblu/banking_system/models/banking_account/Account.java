@@ -1,6 +1,6 @@
 package com.devstoblu.banking_system.models.banking_account;
 
-import com.devstoblu.banking_system.enums.AccountType;
+import com.devstoblu.banking_system.models.PixKey;
 import com.devstoblu.banking_system.models.Usuario;
 import com.devstoblu.banking_system.models.investment.CDB;
 import com.devstoblu.banking_system.models.investment.Investment;
@@ -33,6 +33,10 @@ public abstract class Account {
   @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
   @JsonIgnoreProperties("account")
   private List<Investment> investments = new ArrayList<>();
+
+  @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @JsonIgnoreProperties("account")
+  private List<PixKey> pixKeys;
 
   public Account() {
     this.accountNumber = String.valueOf(new Random().nextInt(99999999));
@@ -94,5 +98,13 @@ public abstract class Account {
 
   public void setInvestments(List<Investment> investments) {
     this.investments = investments;
+  }
+
+  public List<PixKey> getPixKeys() {
+    return pixKeys;
+  }
+
+  public void setPixKeys(List<PixKey> pixKeys) {
+    this.pixKeys = pixKeys;
   }
 }
