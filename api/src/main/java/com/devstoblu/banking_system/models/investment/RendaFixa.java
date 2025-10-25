@@ -61,4 +61,9 @@ public class RendaFixa extends Investment {
   public void setCdiEachMonth(List<Double> cdiEachMonth) {
     this.cdiEachMonth = cdiEachMonth;
   }
+
+  @Override
+  public String getInvestmentType() {
+    return "RENDA_FIXA";
+  }
 }

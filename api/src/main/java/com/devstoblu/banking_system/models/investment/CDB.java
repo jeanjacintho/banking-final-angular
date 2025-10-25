@@ -43,4 +43,9 @@ public class CDB extends Investment {
       }
     }
   }
+
+  @Override
+  public String getInvestmentType() {
+    return "CDB";
+  }
 }

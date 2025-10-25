@@ -1,12 +1,14 @@
 package com.devstoblu.banking_system.controllers;
 
 import com.devstoblu.banking_system.models.investment.CDB;
+import com.devstoblu.banking_system.models.investment.Investment;
 import com.devstoblu.banking_system.models.investment.RendaFixa;
 import com.devstoblu.banking_system.services.InvestmentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -17,6 +19,11 @@ public class InvestmentController {
 
   public InvestmentController(InvestmentService service) {
     this.service = service;
+  }
+
+  @GetMapping
+  public ResponseEntity<List<Investment>> findAll() {
+    return ResponseEntity.ok(service.findAll());
   }
 
   @PostMapping("/cdb/{accountNumber}")

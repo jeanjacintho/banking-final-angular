@@ -12,8 +12,8 @@ public abstract class Investment {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
-  // CDI atual 8% a.a
-  private double CDI = 0.1;
+  // CDI atual 10% a.a
+  public static final double CDI = 0.1;
 
   private double yield;
   private double investmentTerm;
@@ -22,6 +22,7 @@ public abstract class Investment {
   private String liquidity;
   private boolean active = true;
   private double investmentReturn;
+  private String investmentType;
 
   @ManyToOne
   @JoinColumn(name = "account_id")
@@ -40,10 +41,6 @@ public abstract class Investment {
 
   public double getCDI() {
     return CDI;
-  }
-
-  public void setCDI(double CDI) {
-    this.CDI = CDI;
   }
 
   public double getYield() {
@@ -108,5 +105,9 @@ public abstract class Investment {
 
   public void setInvestmentReturn(double investmentReturn) {
     this.investmentReturn = investmentReturn;
+  }
+
+  public String getInvestmentType() {
+    return investmentType;
   }
 }

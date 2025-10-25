@@ -24,6 +24,10 @@ public class InvestmentService {
     this.investmentRepository = investmentRepository;
   }
 
+  public List<Investment> findAll() {
+    return investmentRepository.findAll();
+  }
+
   public CDB createInvestmentCdb(String accountNumber, double term, double value) {
     Account account = accountRepository.findByAccountNumber(accountNumber)
             .orElseThrow(() -> new IllegalArgumentException("Conta não encontrada."));
@@ -69,6 +73,8 @@ public class InvestmentService {
     investmentRepository.delete(investment);
   }
 
+
+  // Aplica investimento em uma conta especifica via endpoint para testes
   public void applyInvestment(String accountNumber, double currentCdi) {
     List<Investment> investments = investmentRepository.findByAccount_AccountNumberAndActiveTrue(accountNumber);
 
@@ -84,6 +90,21 @@ public class InvestmentService {
       investmentRepository.save(i);
     }
     accountRepository.save(account);
+  }
+
+  // Aplica investimento para todas as contas automaticamente via @Scheduled
+  public void applyInvestmentForAllAccounts(double currentCdi) {
+    List<Account> accounts = accountRepository.findAll();
+
+    for (Account account : accounts) {
+      List<Investment> investments = investmentRepository.findByAccount_AccountNumberAndActiveTrue(account.getAccountNumber());
+
+      for (Investment investment : investments) {
+        investment.applyInvestment(account, currentCdi);
+        investmentRepository.save(investment);
+      }
+      accountRepository.save(account);
+    }
   }
 
   public void withdrawInvestment(String accountNumber, Long id) {
