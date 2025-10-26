@@ -7,9 +7,7 @@ import com.devstoblu.banking_system.services.LoanService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -44,29 +42,6 @@ public class LoanController {
     @GetMapping("/{id}")
     public ResponseEntity<LoanResponseDTO> getLoan(@PathVariable Long id) {
         LoanResponseDTO loan = loanService.getLoanResponse(id);
-        if (loan == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Empréstimo não encontrado com id: " + id);
-        }
-        return ResponseEntity.ok(loan);
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/{id}/approve")
-    public ResponseEntity<LoanResponseDTO> approve(@PathVariable Long id) {
-        LoanResponseDTO loan = loanService.approveLoan(id);
-        if (loan == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Empréstimo não encontrado para aprovação: " + id);
-        }
-        return ResponseEntity.ok(loan);
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/{id}/reject")
-    public ResponseEntity<LoanResponseDTO> reject(@PathVariable Long id) {
-        LoanResponseDTO loan = loanService.rejectLoan(id);
-        if (loan == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Empréstimo não encontrado para rejeição: " + id);
-        }
         return ResponseEntity.ok(loan);
     }
 }

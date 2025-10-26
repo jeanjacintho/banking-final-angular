@@ -3,8 +3,11 @@ package com.devstoblu.banking_system.services;
 import com.devstoblu.banking_system.dto.loan.*;
 import com.devstoblu.banking_system.enums.loans.InstallmentStatus;
 import com.devstoblu.banking_system.enums.loans.LoanStatus;
+import com.devstoblu.banking_system.enums.loans.LoanType;
+import com.devstoblu.banking_system.models.Usuario;
 import com.devstoblu.banking_system.models.loan.Loan;
 import com.devstoblu.banking_system.models.loan.LoanInstallment;
+import com.devstoblu.banking_system.repositories.UsuarioRepository;
 import com.devstoblu.banking_system.repositories.loan.LoanInstallmentRepository;
 import com.devstoblu.banking_system.repositories.loan.LoanRepository;
 import org.springframework.stereotype.Service;
@@ -20,16 +23,21 @@ public class LoanService {
 
     private final LoanRepository loanRepository;
     private final LoanInstallmentRepository installmentRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final CreditScoreService creditScoreService;
 
-    public LoanService(LoanRepository loanRepository, LoanInstallmentRepository installmentRepository) {
+    public LoanService(LoanRepository loanRepository, LoanInstallmentRepository installmentRepository,
+                       UsuarioRepository usuarioRepository, CreditScoreService creditScoreService) {
         this.loanRepository = loanRepository;
         this.installmentRepository = installmentRepository;
+        this.usuarioRepository = usuarioRepository;
+        this.creditScoreService = creditScoreService;
     }
 
-    /**
-     * Simula um empréstimo no sistema PRICE.
-     * Recebe valor, taxa e número de parcelas e retorna DTO com totais.
-     */
+
+     // Simula um empréstimo
+     // Recebe valor, taxa e número de parcelas e retorna DTO com totais.
+
     public LoanSimulationDTO simulateLoan(LoanRequestDTO req) {
         BigDecimal principal = req.getTotalAmount();
         int months = req.getNumberOfInstallments();
@@ -70,20 +78,53 @@ public class LoanService {
         return installment;
     }
 
-    /**
-     * Cria uma solicitação de empréstimo e gera as parcelas.
-     */
+  //Cria uma solicitação de empréstimo, avalia automaticamente e gera as parcelas
+
     public LoanResponseDTO createLoanRequest(LoanRequestDTO req) {
+        // Buscar usuário
+        Usuario usuario = usuarioRepository.findById(req.getUserId())
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        // Validar limites de valor e prazo conforme tipo de empréstimo
+        if (req.getType() == LoanType.PERSONAL) {
+            if (req.getTotalAmount().compareTo(new BigDecimal("1000")) < 0 ||
+                    req.getTotalAmount().compareTo(new BigDecimal("50000")) > 0) {
+                throw new IllegalArgumentException("Valor do empréstimo pessoal deve estar entre R$1.000,00 e R$50.000,00");
+            }
+            if (req.getNumberOfInstallments() < 6 || req.getNumberOfInstallments() > 48) {
+                throw new IllegalArgumentException("Prazo do empréstimo pessoal deve estar entre 6 e 48 meses");
+            }
+            if (req.getInterestRate().compareTo(new BigDecimal("2.5")) != 0) {
+                throw new IllegalArgumentException("Taxa de juros do empréstimo pessoal deve ser 2,5% ao mês");
+            }
+        } else if (req.getType() == LoanType.CONSIGNED) {
+            if (req.getTotalAmount().compareTo(new BigDecimal("2000")) < 0 ||
+                    req.getTotalAmount().compareTo(new BigDecimal("100000")) > 0) {
+                throw new IllegalArgumentException("Valor do empréstimo consignado deve estar entre R$2.000,00 e R$100.000,00");
+            }
+            if (req.getNumberOfInstallments() < 12 || req.getNumberOfInstallments() > 84) {
+                throw new IllegalArgumentException("Prazo do empréstimo consignado deve estar entre 12 e 84 meses");
+            }
+            if (req.getInterestRate().compareTo(new BigDecimal("1.5")) != 0) {
+                throw new IllegalArgumentException("Taxa de juros do empréstimo consignado deve ser 1,5% ao mês");
+            }
+            if (usuario.getIncome() == null || usuario.getIncome().compareTo(BigDecimal.ZERO) <= 0) {
+                throw new IllegalArgumentException("Empréstimo consignado requer comprovante de renda");
+            }
+        }
+
+        // Criar empréstimo
         Loan loan = new Loan();
         loan.setTotalAmount(req.getTotalAmount());
         loan.setNumberOfInstallments(req.getNumberOfInstallments());
         loan.setInterestRate(req.getInterestRate());
         loan.setStatus(LoanStatus.EM_ANALISE);
         loan.setType(req.getType());
+        loan.setUsuario(usuario);
 
         loan = loanRepository.save(loan);
 
-        // gerar parcelas com base na simulação
+        // Gerar parcelas com base na simulação
         LoanSimulationDTO simulation = simulateLoan(req);
         BigDecimal installmentValue = simulation.getMonthlyInstallment();
 
@@ -101,6 +142,16 @@ public class LoanService {
         }
 
         installmentRepository.saveAll(installments);
+
+        // Avaliação automática de elegibilidade
+        CreditScoreService.LoanEligibilityResult eligibility = creditScoreService.evaluateLoanEligibility(usuario);
+        if (eligibility == CreditScoreService.LoanEligibilityResult.REPROVADO) {
+            loan.setStatus(LoanStatus.REPROVADO);
+        } else {
+            // Aprova automaticamente para ambos APROVADO_AUTOMATICO e APROVADO_MANUAL
+            loan.setStatus(LoanStatus.APROVADO);
+        }
+        loan = loanRepository.save(loan);
 
         LoanResponseDTO resp = new LoanResponseDTO();
         resp.setId(loan.getId());
@@ -129,7 +180,7 @@ public class LoanService {
     }
 
     public LoanResponseDTO getLoanResponse(Long id) {
-        Loan loan = loanRepository.findById(id).orElseThrow();
+        Loan loan = loanRepository.findById(id).orElseThrow(() -> new RuntimeException("Empréstimo não encontrado"));
         LoanResponseDTO dto = new LoanResponseDTO();
         dto.setId(loan.getId());
         dto.setStatus(loan.getStatus());
@@ -137,19 +188,5 @@ public class LoanService {
         dto.setNumberOfInstallments(loan.getNumberOfInstallments());
         dto.setTotalAmount(loan.getTotalAmount());
         return dto;
-    }
-
-    public LoanResponseDTO approveLoan(Long id) {
-        Loan loan = loanRepository.findById(id).orElseThrow();
-        loan.setStatus(LoanStatus.APROVADO);
-        loanRepository.save(loan);
-        return getLoanResponse(id);
-    }
-
-    public LoanResponseDTO rejectLoan(Long id) {
-        Loan loan = loanRepository.findById(id).orElseThrow();
-        loan.setStatus(LoanStatus.REPROVADO);
-        loanRepository.save(loan);
-        return getLoanResponse(id);
     }
 }

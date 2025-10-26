@@ -56,7 +56,7 @@ public class CreditScoreService {
     /**
      * Avalia a elegibilidade de empréstimo baseado no score:
      * - >300: aprovação automática
-     * - 200-300: aprovação manual
+     * - 200-300: aprovação manual (agora tratado como aprovação automática no LoanService)
      * - <200: reprovado
      */
     public LoanEligibilityResult evaluateLoanEligibility(Usuario usuario) {
@@ -73,6 +73,7 @@ public class CreditScoreService {
      * - Empréstimos inadimplentes
      * - Empréstimos ativos com parcelas vencidas
      */
+
     private boolean hasNoLatePayments(Usuario usuario) {
         // Verifica se existe algum empréstimo inadimplente
         boolean hasInadimplente = loanRepository.existsByUsuarioAndStatus(usuario, LoanStatus.INADIMPLENTE);
