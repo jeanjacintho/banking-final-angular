@@ -1,23 +1,39 @@
 package com.devstoblu.banking_system.dto.loan;
 
+
+import com.devstoblu.banking_system.enums.loans.LoanType;
+
 import java.math.BigDecimal;
 
 public class LoanSimulationDTO {
+    private BigDecimal requestedAmount;
     private BigDecimal totalAmount;
     private BigDecimal monthlyInstallment;
-    private BigDecimal totalToPay;
+    private BigDecimal totalInterest;
     private BigDecimal monthlyRate;
     private Integer numberOfInstallments;
+    private LoanType loanType;
 
     public LoanSimulationDTO() {}
 
-    public LoanSimulationDTO(BigDecimal totalAmount, BigDecimal monthlyInstallment, BigDecimal totalToPay,
-                             BigDecimal monthlyRate, Integer numberOfInstallments) {
+    public LoanSimulationDTO(BigDecimal requestedAmount, BigDecimal totalAmount, BigDecimal monthlyInstallment,
+                             BigDecimal totalInterest, BigDecimal monthlyRate,
+                             Integer numberOfInstallments, LoanType loanType) {
+        this.requestedAmount = requestedAmount;
         this.totalAmount = totalAmount;
         this.monthlyInstallment = monthlyInstallment;
-        this.totalToPay = totalToPay;
+        this.totalInterest = totalInterest;
         this.monthlyRate = monthlyRate;
         this.numberOfInstallments = numberOfInstallments;
+        this.loanType = loanType;
+    }
+
+    public BigDecimal getRequestedAmount() {
+        return requestedAmount;
+    }
+
+    public void setRequestedAmount(BigDecimal requestedAmount) {
+        this.requestedAmount = requestedAmount;
     }
 
     public BigDecimal getTotalAmount() {
@@ -28,7 +44,6 @@ public class LoanSimulationDTO {
         this.totalAmount = totalAmount;
     }
 
-
     public BigDecimal getMonthlyInstallment() {
         return monthlyInstallment;
     }
@@ -37,12 +52,12 @@ public class LoanSimulationDTO {
         this.monthlyInstallment = monthlyInstallment;
     }
 
-    public BigDecimal getTotalToPay() {
-        return totalToPay;
+    public BigDecimal getTotalInterest() {
+        return totalInterest;
     }
 
-    public void setTotalToPay(BigDecimal totalToPay) {
-        this.totalToPay = totalToPay;
+    public void setTotalInterest(BigDecimal totalInterest) {
+        this.totalInterest = totalInterest;
     }
 
     public BigDecimal getMonthlyRate() {
@@ -61,4 +76,11 @@ public class LoanSimulationDTO {
         this.numberOfInstallments = numberOfInstallments;
     }
 
+    public LoanType getLoanType() {
+        return loanType;
+    }
+
+    public void setLoanType(LoanType loanType) {
+        this.loanType = loanType;
+    }
 }

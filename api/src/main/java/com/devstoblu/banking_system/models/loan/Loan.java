@@ -6,6 +6,7 @@ import com.devstoblu.banking_system.models.Usuario;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -22,37 +23,44 @@ public class Loan {
 
     private Integer numberOfInstallments;
 
-    private LocalDate startDate = LocalDate.now();
+    private LocalDate startDate;
 
     @Enumerated(EnumType.STRING)
     private LoanType type;
 
     @Enumerated(EnumType.STRING)
-    private LoanStatus status = LoanStatus.EM_ANALISE;
+    private LoanStatus status;
 
     @OneToMany(mappedBy = "loan", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<LoanInstallment> installments;
+    private List<LoanInstallment> installments = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Usuario usuario;
 
-    public Loan() {}
+    public Loan() {
+        this.startDate = LocalDate.now();
+        this.status = LoanStatus.EM_ANALISE;
+    }
 
     public Loan(BigDecimal totalAmount, BigDecimal interestRate, Integer numberOfInstallments, LoanType type, Usuario usuario) {
+        if (totalAmount.compareTo(BigDecimal.ZERO) <= 0)
+            throw new IllegalArgumentException("O valor do empréstimo deve ser maior que zero.");
+        if (interestRate.compareTo(BigDecimal.ZERO) < 0)
+            throw new IllegalArgumentException("A taxa de juros não pode ser negativa.");
+        if (numberOfInstallments <= 0)
+            throw new IllegalArgumentException("O número de parcelas deve ser maior que zero.");
         this.totalAmount = totalAmount;
         this.interestRate = interestRate;
         this.numberOfInstallments = numberOfInstallments;
         this.type = type;
+        this.usuario = usuario;
         this.startDate = LocalDate.now();
         this.status = LoanStatus.EM_ANALISE;
-        this.usuario = usuario;
     }
 
     public Long getId() {
-        return id;
-    }
-
+        return id; }
     public void setId(Long id) {
         this.id = id;
     }
@@ -76,6 +84,7 @@ public class Loan {
     public Integer getNumberOfInstallments() {
         return numberOfInstallments;
     }
+
     public void setNumberOfInstallments(Integer numberOfInstallments) {
         this.numberOfInstallments = numberOfInstallments;
     }
@@ -119,4 +128,5 @@ public class Loan {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
+
 }

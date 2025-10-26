@@ -4,20 +4,21 @@ import com.devstoblu.banking_system.enums.loans.LoanType;
 import java.math.BigDecimal;
 
 public class LoanRequestDTO {
+
     private BigDecimal totalAmount;
     private BigDecimal interestRate;
     private Integer numberOfInstallments;
     private LoanType type;
-
     private Long userId;
 
     public LoanRequestDTO() {}
 
-    public LoanRequestDTO(BigDecimal totalAmount, BigDecimal interestRate, Integer numberOfInstallments, LoanType type) {
+    public LoanRequestDTO(BigDecimal totalAmount, BigDecimal interestRate, Integer numberOfInstallments, LoanType type, Long userId) {
         this.totalAmount = totalAmount;
         this.interestRate = interestRate;
         this.numberOfInstallments = numberOfInstallments;
         this.type = type;
+        this.userId = userId;
     }
 
     public BigDecimal getTotalAmount() {
@@ -27,7 +28,6 @@ public class LoanRequestDTO {
     public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
     }
-
 
     public BigDecimal getInterestRate() {
         return interestRate;
@@ -60,5 +60,4 @@ public class LoanRequestDTO {
     public void setUserId(Long userId) {
         this.userId = userId;
     }
-
 }

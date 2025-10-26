@@ -14,43 +14,38 @@ import java.time.Period;
 @Service
 public class CreditScoreService {
 
-    /**
-     * Calcula o score de crédito de um usuário baseado em:
-     * Tempo de conta (+10 pontos/ano)
-     * Saldo médio das contas (+1 ponto a cada R$100)
-     * Histórico de pagamentos (+50 se sem atrasos)
-     * Renda comprovada (+30 se > 0)
-     */
-
     private final LoanRepository loanRepository;
 
     public CreditScoreService(LoanRepository loanRepository) {
         this.loanRepository = loanRepository;
     }
 
+    /**
+     * Calcula o score de crédito do usuário baseado em:
+     * - Tempo de conta (+10 pontos por ano)
+     * - Saldo total das contas (+1 ponto a cada R$100)
+     * - Histórico de pagamentos (+50 se sem atrasos)
+     * - Renda comprovada (+30 se renda > 0)
+     */
     public int calculateScore(Usuario usuario) {
         int score = 0;
 
-
+        // Tempo de conta
         int years = Period.between(usuario.getAccountCreationDate(), LocalDate.now()).getYears();
         score += years * 10;
 
-        BigDecimal totalBalance = BigDecimal.ZERO;
-        int accountCount = 0;
-        for (Account account : usuario.getAccounts()) {
-            totalBalance = totalBalance.add(BigDecimal.valueOf(account.getBalance()));
-            accountCount++;
-        }
-        if (accountCount > 0) {
-            BigDecimal averageBalance = totalBalance.divide(BigDecimal.valueOf(accountCount), 0, RoundingMode.DOWN);
-            score += averageBalance.divide(BigDecimal.valueOf(100), 0, RoundingMode.DOWN).intValue();
+        // Saldo total das contas
+        BigDecimal totalBalance = usuario.getAccounts().stream()
+                .map(account -> BigDecimal.valueOf(account.getBalance()))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        score += totalBalance.divide(BigDecimal.valueOf(100), RoundingMode.DOWN).intValue();
 
-        }
-
-        if (usuarioHasNoLatePayments(usuario)) {
+        // Histórico de pagamentos
+        if (hasNoLatePayments(usuario)) {
             score += 50;
         }
 
+        // Renda comprovada
         if (usuario.getIncome() != null && usuario.getIncome().compareTo(BigDecimal.ZERO) > 0) {
             score += 30;
         }
@@ -58,44 +53,44 @@ public class CreditScoreService {
         return score;
     }
 
-
-    public String evaluateLoanEligibility(Usuario usuario) {
+    /**
+     * Avalia a elegibilidade de empréstimo baseado no score:
+     * - >300: aprovação automática
+     * - 200-300: aprovação manual
+     * - <200: reprovado
+     */
+    public LoanEligibilityResult evaluateLoanEligibility(Usuario usuario) {
         int score = calculateScore(usuario);
 
-        if (score > 300) return "APROVADO_AUTOMATICO";
-        else if (score >= 200) return "APROVADO_MANUAL";
-        else return "REPROVADO";
+        if (score > 300) return LoanEligibilityResult.APROVADO_AUTOMATICO;
+        else if (score >= 200) return LoanEligibilityResult.APROVADO_MANUAL;
+        else return LoanEligibilityResult.REPROVADO;
     }
 
-    private boolean usuarioHasNoLatePayments(Usuario usuario) {
+    /**
+     * Verifica se o usuário não possui pagamentos atrasados.
+     * Considera:
+     * - Empréstimos inadimplentes
+     * - Empréstimos ativos com parcelas vencidas
+     */
+    private boolean hasNoLatePayments(Usuario usuario) {
+        // Verifica se existe algum empréstimo inadimplente
+        boolean hasInadimplente = loanRepository.existsByUsuarioAndStatus(usuario, LoanStatus.INADIMPLENTE);
 
-        if (usuario.getAccounts() != null) {
-            for (Account account : usuario.getAccounts()) {
-                if (account.getBalance() < 0) {
-                    return false;
-                }
-            }
+        // Verifica se existe empréstimo ativo com parcela vencida
+        boolean hasOverdue = loanRepository.existsByUsuarioAndStatusAndDueDateBefore(
+                usuario,
+                LoanStatus.ATIVO,
+                LocalDate.now()
+        );
 
-            boolean temEmprestimoInadimplente = loanRepository.existsByUsuarioAndStatus(usuario, LoanStatus.INADIMPLENTE);
+        return !hasInadimplente && !hasOverdue;
+    }
 
-
-            if (temEmprestimoInadimplente) {
-                return false;
-            }
-
-            boolean temFaturaVencida = loanRepository.existsByUsuarioAndStatusAndDueDateBefore(
-                    usuario,
-                    LoanStatus.ATIVO,
-                    LocalDate.now()
-            );
-
-            if (temFaturaVencida) {
-                return false;
-            }
-        }
-            return true;
-
-
+    // Enum para retorno da elegibilidade
+    public enum LoanEligibilityResult {
+        APROVADO_AUTOMATICO,
+        APROVADO_MANUAL,
+        REPROVADO
     }
 }
-

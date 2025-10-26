@@ -20,15 +20,21 @@ public class LoanInstallment {
     private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
-    private InstallmentStatus status = InstallmentStatus.PENDENTE;
+    private InstallmentStatus status;
 
     @ManyToOne
     @JoinColumn(name = "loan_id")
     private Loan loan;
 
-    public LoanInstallment() {}
+    public LoanInstallment() {
+        this.status = InstallmentStatus.PENDENTE;
+    }
 
     public LoanInstallment(Integer number, LocalDate dueDate, BigDecimal amount, Loan loan) {
+        if (number <= 0)
+            throw new IllegalArgumentException("O número da parcela deve ser maior que zero.");
+        if (amount.compareTo(BigDecimal.ZERO) <= 0)
+            throw new IllegalArgumentException("O valor da parcela deve ser maior que zero.");
         this.number = number;
         this.dueDate = dueDate;
         this.amount = amount;
@@ -46,7 +52,6 @@ public class LoanInstallment {
     public Integer getNumber() {
         return number;
     }
-
     public void setNumber(Integer number) {
         this.number = number;
     }
@@ -63,9 +68,7 @@ public class LoanInstallment {
         return amount;
     }
 
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
+    public void setAmount(BigDecimal amount) { this.amount = amount; }
 
     public InstallmentStatus getStatus() {
         return status;
@@ -82,5 +85,4 @@ public class LoanInstallment {
     public void setLoan(Loan loan) {
         this.loan = loan;
     }
-
 }
