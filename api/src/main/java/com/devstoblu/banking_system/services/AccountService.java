@@ -62,7 +62,8 @@ public class AccountService {
   }
 
   public CheckingAccount createCheckingAccount(Long userId, double balance) {
-    Usuario user = usuarioRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado."));
+    Usuario user = usuarioRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado."));
 
     boolean hasChecking = user.getAccounts().stream().anyMatch(a -> a instanceof CheckingAccount);
     if (hasChecking) throw new IllegalArgumentException("Usuário já possui uma conta corrente.");
@@ -75,7 +76,8 @@ public class AccountService {
   }
 
   public SavingsAccount createSavingsAccount(Long userId, double balance) {
-    Usuario user = usuarioRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado."));
+    Usuario user = usuarioRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado."));
 
     boolean hasSavings = user.getAccounts().stream().anyMatch(a -> a instanceof SavingsAccount);
     if (hasSavings) throw new IllegalArgumentException("Usuário já possui uma conta poupança.");
@@ -88,7 +90,8 @@ public class AccountService {
   }
 
   public Account deposit(String accountNumber, Double value) {
-    Account account = accountRepository.findByAccountNumber(accountNumber).orElseThrow(() -> new RuntimeException("Conta não encontrada"));
+    Account account = accountRepository.findByAccountNumber(accountNumber)
+            .orElseThrow(() -> new RuntimeException("Conta não encontrada"));
     account.deposit(value);
     Account savedAccount = accountRepository.save(account);
     
@@ -99,7 +102,8 @@ public class AccountService {
   }
 
   public Account withdraw(String accountNumber, Double value) {
-    Account account = accountRepository.findByAccountNumber(accountNumber).orElseThrow(() -> new RuntimeException("Conta não encontrada"));
+    Account account = accountRepository.findByAccountNumber(accountNumber)
+            .orElseThrow(() -> new RuntimeException("Conta não encontrada"));
     account.withdraw(value);
     Account savedAccount = accountRepository.save(account);
     
@@ -111,7 +115,8 @@ public class AccountService {
 
   // Deletar conta corrente e poupança
   public void delete(String accountNumber) {
-    Account account = accountRepository.findByAccountNumber(accountNumber).orElseThrow(() -> new RuntimeException("Conta não encontrada"));
+    Account account = accountRepository.findByAccountNumber(accountNumber)
+            .orElseThrow(() -> new RuntimeException("Conta não encontrada"));
     if (account.getBalance() != 0) {
       throw new RuntimeException("Não é possível deletar conta com saldo positivo ou negativo. Saldo atual: " + account.getBalance());
     }
