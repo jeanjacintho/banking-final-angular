@@ -1,35 +1,56 @@
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NgxMaskDirective, NgxMaskPipe, provideNgxMask  } from 'ngx-mask';
 
 @Component({
   selector: 'app-register-component',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, HttpClientModule],
+  imports: [
+    ReactiveFormsModule,
+    CommonModule,
+    HttpClientModule,
+    NgxMaskDirective,
+    NgxMaskPipe,
+  ],
+  providers: [provideNgxMask()],
   templateUrl: './register-component.html',
   styleUrls: ['./register-component.css']
 })
 export class RegisterComponent {
   registerForm: FormGroup;
   isSubmiting = false;
+
+  cpfValidator(): ValidatorFn{
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value.replace(/\D/g, '');
+      if (!value) return null;
+      return this.validaCPF(value) ? null : { invalidCPF: true };
+    };
+  }
   
-  constructor(private fb: FormBuilder, private router: Router, private http: HttpClientModule) {
+  constructor(private fb: FormBuilder, private router: Router, private http: HttpClient) {
     this.registerForm = this.fb.group({
       nomeCompleto:   ['', [Validators.required, Validators.minLength(3), Validators.maxLength(120)]],
       telefone:       ['', [Validators.required, Validators.pattern(/^\d{10,11}$/)]],
       email:          ['', [Validators.required, Validators.email]],
-      cpf:            ['', [Validators.required, Validators.pattern(/^\d{11}$/), Validators.minLength(11), Validators.maxLength(11)]],
+      cpf:            ['', [Validators.required, Validators.pattern(/^\d{11}$/), Validators.minLength(11), Validators.maxLength(11), this.cpfValidator()]],
       dataNascimento: ['', [Validators.required]],
-      consentimento:  [false, Validators.requiredTrue]
+      cep:            ['', [Validators.required, Validators.pattern(/^\d{8}$/)]],
+      consentimento:  [false, Validators.requiredTrue],
+      logradouro: [{ value: '', disabled: true }],
+      bairro: [{ value: '', disabled: true }],
+      localidade: [{ value: '', disabled: true }],
+      uf: [{ value: '', disabled: true }],
     });
 
     //Log para debug
     console.log('Form criado', this.registerForm);
   }
 
-  onSubmit(){
+  public onSubmit(): void {
     console.log("submit chamado!")
     this.markFormGroupTouched();
     if (this.registerForm.invalid) {
@@ -40,6 +61,29 @@ export class RegisterComponent {
 
     console.log("Form válido!")
     this.isSubmiting = true;
+
+    const {logradouro, bairro, localidade, uf, cep, ...rest} = this.registerForm.value;
+    const enderecoCompleto = [logradouro, bairro, localidade ? `${localidade} - ${uf}` : uf, `CEP: ${cep}`].filter(Boolean).join(', ');
+
+    const payload = {
+        ...rest,
+        endereco: enderecoCompleto,
+      status: 'ATIVO',
+      userRole: 'CLIENTE'
+    };
+
+    console.log("Payload para envio:", payload);
+
+    this.http.post('https://localhost:8081/api/usuarios', payload).subscribe({
+      next: (response) => {
+        console.log("Usuário criado com sucesso!", response);
+        this.router.navigate(['/login']);
+      },
+      error: (error) => {
+        console.error("Erro ao criar usuário", error);
+        this.isSubmiting = false;
+      }
+    });
   }
 
   private markFormGroupTouched(formGroup: FormGroup = this.registerForm) {
@@ -55,8 +99,48 @@ export class RegisterComponent {
   }
 
 
-  navigateToLogin(){
+  public navigateToLogin(): void{
     this.router.navigate(['/login'])
+  }
+
+  public buscarCEP(): void {
+    const cep = this.cep?.value?.replace(/\D/g, '');
+    if (cep.length !== 8) return;
+    this.http.get<any>(`https://viacep.com.br/ws/${cep}/json/`).subscribe({
+      next: (data) => {
+        if (data.erro) {
+          console.error('CEP não encontrado');
+          return;
+        } 
+        this.registerForm.patchValue({
+          logradouro: data.logradouro,
+          bairro: data.bairro,
+          localidade: data.localidade,
+          uf: data.uf
+       });
+     },
+      error: (error) => {
+        console.error('Erro ao buscar CEP', error);
+      }
+    });
+  }
+
+  public validaCPF(cpf: string): boolean {
+    cpf = cpf.replace(/\D/g, '');
+    if(cpf.length != 11 || /^(\d)\1+$/.test(cpf)) return false;
+    let sum = 0, resto;
+
+    for (let i = 1; i <= 9; i++) sum += parseInt(cpf.substring(i-1, i)) * (11 - i);
+    resto = (sum * 10) % 11;
+    if (resto == 10 || resto == 11) resto = 0;
+    if (resto != parseInt(cpf.substring(9, 10))) return false;
+
+    sum = 0;
+    for (let i = 1; i <= 10; i++) sum += parseInt(cpf.substring(i-1, i)) * (12 - i);
+    resto = (sum * 10) % 11;
+    if (resto === 10 || resto === 11) resto = 0;
+
+    return resto === parseInt(cpf.substring(10, 11));
   }
 
   get nomeCompleto() { return this.registerForm.get('nomeCompleto'); }
@@ -64,6 +148,11 @@ export class RegisterComponent {
   get email() { return this.registerForm.get('email'); }
   get cpf() { return this.registerForm.get('cpf'); }
   get dataNascimento() { return this.registerForm.get('dataNascimento'); }
+  get cep() { return this.registerForm.get('cep'); }
   get consentimento() { return this.registerForm.get('consentimento'); }
-  
+  get logradouro() { return this.registerForm.get('logradouro'); }
+  get bairro() { return this.registerForm.get('bairro'); }
+  get localidade() { return this.registerForm.get('localidade'); }
+  get uf() { return this.registerForm.get('uf'); }
+
 }

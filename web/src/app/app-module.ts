@@ -7,7 +7,7 @@ import { LucideAngularModule,
   Building2, FileText, ArrowRightLeft, CreditCard, ChevronDown, Gift, Umbrella, Smartphone, Shield, Receipt, ArrowRight, Plus, BanknoteArrowDown,
   Eye, EyeOff, Lock, ShieldCheck, ArrowUp, ArrowDown, Coffee, DollarSign, Calculator, ArrowLeftRight, Loader2, AlertCircle, Wifi, WifiOff
 } from 'lucide-angular';
-
+import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
 import { Login } from './pages/login/login';
@@ -58,7 +58,9 @@ import { Login } from './pages/login/login';
       AlertCircle,
       Wifi,
       WifiOff
-    })
+    }),
+    NgxMaskDirective,
+    NgxMaskPipe
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),

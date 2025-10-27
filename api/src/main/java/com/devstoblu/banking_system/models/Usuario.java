@@ -48,6 +48,9 @@ public class Usuario implements UserDetails {
   @Column(nullable = false)
   private String senha;
 
+  @Column(nullable = false)
+  private Boolean consentimento;
+
   @Enumerated(EnumType.STRING)
   @Column(nullable = false, length = 10)
   private Status status;
