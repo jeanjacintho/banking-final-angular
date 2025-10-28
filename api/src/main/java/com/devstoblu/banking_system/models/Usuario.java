@@ -5,7 +5,7 @@ import com.devstoblu.banking_system.enums.UserRole;
 import com.devstoblu.banking_system.models.banking_account.Account;
 import com.devstoblu.banking_system.models.loan.Loan;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.devstoblu.banking_system.enums.Tipo;
+import com.devstoblu.banking_system.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
