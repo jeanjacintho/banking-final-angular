@@ -55,3 +55,39 @@
 
   --radius: 8px;
 }
+
+/* Animated gradient utility using project colors */
+.animated-gradient {
+  position: relative;
+  overflow: hidden;
+}
+
+.animated-gradient::before {
+  content: '';
+  position: absolute;
+  inset: -25%;
+  border-radius: inherit;
+  background: conic-gradient(
+    from 0deg,
+    var(--color-gradient-start),
+    var(--color-primary),
+    var(--color-secondary),
+    var(--color-gradient-end),
+    var(--color-gradient-start)
+  );
+  filter: blur(40px);
+  opacity: 0.8;
+  animation: spin-gradient 16s linear infinite;
+  z-index: 0;
+}
+
+.animated-gradient > * {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes spin-gradient {
+  to {
+    transform: rotate(360deg);
+  }
+}

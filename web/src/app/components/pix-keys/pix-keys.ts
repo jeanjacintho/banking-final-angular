@@ -59,7 +59,13 @@ export class PixKeysComponent implements OnInit {
       },
       error: (error) => {
         console.error('Erro ao carregar contas:', error);
-        this.errorMessage = 'Erro ao carregar suas contas';
+        // Se o backend retornar 404 ou lista vazia, não mostrar erro
+        if (error?.status === 404) {
+          this.userAccounts = [];
+          this.errorMessage = '';
+        } else {
+          this.errorMessage = 'Erro ao carregar suas contas';
+        }
       }
     });
   }

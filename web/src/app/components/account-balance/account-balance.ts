@@ -33,7 +33,12 @@ export class AccountBalanceComponent implements OnInit {
       },
       error: (error) => {
         console.error('Erro ao carregar contas:', error);
-        this.errorMessage = 'Erro ao carregar contas';
+        if (error?.status === 404) {
+          this.accounts = [];
+          this.errorMessage = '';
+        } else {
+          this.errorMessage = 'Erro ao carregar contas';
+        }
         this.isLoading = false;
       }
     });

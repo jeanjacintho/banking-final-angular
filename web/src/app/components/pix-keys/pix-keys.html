@@ -187,6 +187,16 @@
             <div class="text-xs text-muted-foreground">Clique em "Nova Chave" para criar sua primeira chave PIX</div>
         </div>
 
+        <!-- No Accounts State Block -->
+        <div *ngIf="userAccounts.length === 0 && !isLoading && !errorMessage"
+            class="bg-white rounded-lg p-8 border border-border text-center">
+            <div class="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                <lucide-icon name="Wallet" size="24" class="text-muted-foreground"></lucide-icon>
+            </div>
+            <div class="text-sm text-muted-foreground mb-2">Nenhuma conta encontrada</div>
+            <div class="text-xs text-muted-foreground">Crie uma conta para gerenciar suas chaves PIX</div>
+        </div>
+
         <!-- Loading State Block -->
         <div *ngIf="isLoading" class="bg-white rounded-lg p-8 border border-border text-center">
             <div class="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
