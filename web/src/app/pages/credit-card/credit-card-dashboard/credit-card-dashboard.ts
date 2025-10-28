@@ -77,3 +77,4 @@ export class CreditCardDashboardComponent implements OnInit {
       .reduce((sum, tx) => sum + Math.abs(tx.amount), 0);
   }
 }
+

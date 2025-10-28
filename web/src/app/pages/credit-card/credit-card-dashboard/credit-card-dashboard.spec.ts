@@ -2,13 +2,13 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CreditCardDashboardComponent } from './credit-card-dashboard';
 
-describe('CreditCardDashboard', () => {
+describe('CreditCardDashboardComponent', () => {
   let component: CreditCardDashboardComponent;
   let fixture: ComponentFixture<CreditCardDashboardComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CreditCardDashboardComponent]
+      imports: [CreditCardDashboardComponent]
     })
     .compileComponents();
 
@@ -21,3 +21,4 @@ describe('CreditCardDashboard', () => {
     expect(component).toBeTruthy();
   });
 });
+
