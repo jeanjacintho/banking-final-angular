@@ -1,4 +1,4 @@
-package com.devstoblu.banking_system.controller;
+package com.devstoblu.banking_system.controllers;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

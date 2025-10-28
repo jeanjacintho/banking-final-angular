@@ -1,6 +1,6 @@
 @import 'tailwindcss';
 
-:root {
+@theme {
   /* 🌞 Base (Light) Palette */
   --color-background: #f8f8ff; /* branco frio levemente azulado */
   --color-foreground: #111111;
