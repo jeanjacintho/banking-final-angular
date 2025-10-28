@@ -25,7 +25,7 @@ services:
     buildCommand: |
       cd web &&
       npm ci &&
-      npm run build
+      npm run build -- --configuration production
     staticPublishPath: ./web/dist/banking
     headers:
       - path: /*
