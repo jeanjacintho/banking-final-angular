@@ -174,7 +174,6 @@ public class AccountService {
       case INTERNAL -> processInternalTransfer(from, to, value);
       case TED -> processTED(from, to, value);
       case PIX -> processPIX(from, to, value);
-      case CREDIT -> processCREDIT(from, value);
       default -> throw new RuntimeException("Tipo de transferência inválido.");
     }
 
@@ -183,9 +182,6 @@ public class AccountService {
     accountRepository.save(to);
 
     // Registra transação no banco
-    if(type.equals(TransferType.CREDIT)){
-      registerCreditTransactionHistory(from, value);
-    }
     registerTransactionHistory(from, to, value, type);
 
     // Retorna informações detalhadas
@@ -196,6 +192,28 @@ public class AccountService {
     response.put("type", type.name());
     response.put("fromBalanceAfter", from.getBalance());
     response.put("toBalanceAfter", to.getBalance());
+    response.put("message", "Transferência realizada com sucesso!");
+    return response;
+  }
+
+  @Transactional
+  public Map<String, Object> transferCredit(String fromAccount, TransferType type, Double value){
+    if (value == null || value <= 0)
+      throw new RuntimeException("O valor da transferência deve ser positivo.");
+    Account from = accountRepository.findByAccountNumber(fromAccount)
+            .orElseThrow(() -> new RuntimeException("Conta de origem não encontrada."));
+
+    processCREDIT(from, value);
+
+    accountRepository.save(from);
+
+    registerCreditTransactionHistory(from, value);
+
+    Map<String, Object> response = new HashMap<>();
+    response.put("fromAccount", from.getAccountNumber());
+    response.put("amount", value);
+    response.put("type", type.name());
+    response.put("fromBalanceAfter", from.getUsuario().getCreditCard().getAvailableLimit());
     response.put("message", "Transferência realizada com sucesso!");
     return response;
   }

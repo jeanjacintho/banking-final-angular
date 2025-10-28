@@ -9,6 +9,7 @@ import com.devstoblu.banking_system.models.banking_account.CheckingAccount;
 import com.devstoblu.banking_system.models.banking_account.SavingsAccount;
 import com.devstoblu.banking_system.repositories.UsuarioRepository;
 import com.devstoblu.banking_system.services.AccountService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -182,6 +183,36 @@ public class AccountController {
         Map<String, Object> errorResponse = new HashMap<>();
         errorResponse.put("error", "Erro interno do servidor: " + e.getMessage());
         return ResponseEntity.status(500).body(errorResponse);
+    }
+  }
+
+  @PostMapping("/transfer/credit")
+  public ResponseEntity<?> transferCredit(@RequestBody Map<String, Object> request){
+    try{
+      String fromAccount = (String) request.get("fromAccount");
+      String toAccount = "";
+      Double value = Double.valueOf(request.get("amount").toString());
+      String typeStr = (String) request.get("type");
+      TransferType type = TransferType.valueOf(typeStr.toUpperCase());
+
+      Map<String, Object> response;
+
+      if (type == TransferType.CREDIT){
+        response = service.transferCredit(fromAccount, type, value);
+        return ResponseEntity.ok(response);
+      }
+      else {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Limite insuficiente");
+      }
+
+    } catch (RuntimeException e) {
+      Map<String, Object> errorResponse = new HashMap<>();
+      errorResponse.put("error", e.getMessage());
+      return ResponseEntity.badRequest().body(errorResponse);
+    } catch (Exception e) {
+      Map<String, Object> errorResponse = new HashMap<>();
+      errorResponse.put("error", "Erro interno do servidor: " + e.getMessage());
+      return ResponseEntity.status(500).body(errorResponse);
     }
   }
 }
