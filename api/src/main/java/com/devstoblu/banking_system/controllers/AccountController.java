@@ -215,4 +215,24 @@ public class AccountController {
       return ResponseEntity.status(500).body(errorResponse);
     }
   }
+
+  @PostMapping("/pay-credit-card-bill")
+  public ResponseEntity<?> payCreditCardBill(@RequestBody Map<String, Object> request){
+    try{
+      String fromAccount = (String) request.get("fromAccount");
+      Double value = Double.valueOf(request.get("amount").toString());
+
+      Map<String, Object> response = service.payCreditCardBill(fromAccount, value);
+      return ResponseEntity.ok(response);
+
+    } catch (RuntimeException e) {
+      Map<String, Object> errorResponse = new HashMap<>();
+      errorResponse.put("error", e.getMessage());
+      return ResponseEntity.badRequest().body(errorResponse);
+    } catch (Exception e) {
+      Map<String, Object> errorResponse = new HashMap<>();
+      errorResponse.put("error", "Erro interno do servidor: " + e.getMessage());
+      return ResponseEntity.status(500).body(errorResponse);
+    }
+  }
 }
