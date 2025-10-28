@@ -2,7 +2,6 @@ services:
   - type: web
     name: banking-backend
     runtime: docker
-    plan: free
     dockerfilePath: ./infra/docker/Dockerfile.backend
     healthCheckPath: /actuator/health
     envVars:
@@ -23,7 +22,6 @@ services:
   - type: web
     name: banking-frontend
     runtime: static
-    plan: free
     buildCommand: |
       cd web &&
       npm ci &&
