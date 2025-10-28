@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiBase: '/api'
+  apiBase: 'https://bankr-api.onrender.com/api'
 };
 
 
