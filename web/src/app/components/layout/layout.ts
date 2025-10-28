@@ -10,7 +10,7 @@ import { filter } from 'rxjs/operators';
   selector: 'app-layout',
   imports: [CommonModule, LucideAngularModule, RouterModule, AccountBalanceComponent],
   templateUrl: './layout.html',
-  styleUrl: './layout.css'
+  styleUrls: ['./layout.css']
 })
 export class Layout {
   @Input() pageTitle: string = 'Dashboard';

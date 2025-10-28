@@ -7,7 +7,7 @@ import { CreditCard } from '../../../models/credit-card.model';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './credit-card.html',
-  styleUrl: './credit-card.css'
+  styleUrls: ['./credit-card.css']
 })
 export class CreditCardComponent {
   @Input() creditCard!: {

@@ -7,7 +7,7 @@ type InvoiceItem = { date: string; description: string; amount: number };
   standalone: true,
   imports: [CommonModule,  CurrencyPipe],
   templateUrl: './invoice-summary.html',
-  styleUrl: './invoice-summary.css'
+  styleUrls: ['./invoice-summary.css']
 })
 export class InvoiceSummaryComponent {
   @Input() loading: boolean = false;

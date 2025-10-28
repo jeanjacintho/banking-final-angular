@@ -11,7 +11,6 @@ import { LucideAngularModule,
 
 import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
-import { Login } from './pages/login/login';
 
 @NgModule({
   declarations: [
@@ -21,7 +20,6 @@ import { Login } from './pages/login/login';
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
-    Login,
     LucideAngularModule.pick({
       LayoutDashboard,
       Wallet,

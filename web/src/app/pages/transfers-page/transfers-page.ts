@@ -7,7 +7,7 @@ import { TransferHistoryComponent } from '../../components/transfer-history/tran
   selector: 'app-transfers-page',
   imports: [Layout, TransfersComponent, TransferHistoryComponent],
   templateUrl: './transfers-page.html',
-  styleUrl: './transfers-page.css'
+  styleUrls: ['./transfers-page.css']
 })
 export class TransfersPage {
 

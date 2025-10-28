@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { Login } from './pages/login/login';
-import { Home } from './pages/home/home';
-import { Dashboard } from './pages/dashboard/dashboard';
-import { TransfersPage } from './pages/transfers-page/transfers-page';
-import { TransfersPageComponent } from './pages/transfers/transfers';
+import { Login } from './Pages/login/login';
+import { Home } from './Pages/home/home';
+import { Dashboard } from './Pages/dashboard/dashboard';
+import { TransfersPage } from './Pages/transfers-page/transfers-page';
+import { TransfersPageComponent } from './Pages/transfers/transfers';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -17,7 +17,7 @@ export const routes: Routes = [
       {
         path: '',
         loadComponent: () =>
-          import('./pages/credit-card/credit-card-dashboard/credit-card-dashboard').then(
+          import('./Pages/credit-card/credit-card-dashboard/credit-card-dashboard').then(
             (m) => m.CreditCardDashboardComponent
           ),
       },
