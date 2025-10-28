@@ -2,28 +2,20 @@ services:
   - type: web
     name: banking-backend
     runtime: docker
-    plan: starter
+    plan: free
     dockerfilePath: ./infra/docker/Dockerfile.backend
     healthCheckPath: /actuator/health
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: production
       - key: SPRING_DATASOURCE_URL
-        fromDatabase:
-          name: banking-db
-          property: connectionString
+        value: jdbc:postgresql://<NEON_HOST>/<NEON_DB>?sslmode=require
       - key: SPRING_DATASOURCE_USERNAME
-        fromDatabase:
-          name: banking-db
-          property: user
+        value: <NEON_USER>
       - key: SPRING_DATASOURCE_PASSWORD
-        fromDatabase:
-          name: banking-db
-          property: password
+        value: <NEON_PASSWORD>
       - key: JWT_SECRET
         generateValue: true
-      - key: SERVER_PORT
-        value: "10000"
       - key: CORS_ALLOWED_ORIGINS
         value: https://banking-frontend.onrender.com
     autoDeploy: true
@@ -31,9 +23,10 @@ services:
   - type: web
     name: banking-frontend
     runtime: static
+    plan: free
     buildCommand: |
-      cd web && 
-      npm ci && 
+      cd web &&
+      npm ci &&
       npm run build
     staticPublishPath: ./web/dist/banking
     headers:
@@ -57,9 +50,3 @@ services:
         source: /api/*
         destination: https://banking-backend.onrender.com/api/*
     autoDeploy: true
-
-databases:
-  - name: banking-db
-    plan: starter
-    databaseName: banking
-    user: banking_user
