@@ -174,6 +174,7 @@ public class AccountService {
       case INTERNAL -> processInternalTransfer(from, to, value);
       case TED -> processTED(from, to, value);
       case PIX -> processPIX(from, to, value);
+      case CREDIT -> processCREDIT(from, value);
       default -> throw new RuntimeException("Tipo de transferência inválido.");
     }
 
@@ -182,6 +183,9 @@ public class AccountService {
     accountRepository.save(to);
 
     // Registra transação no banco
+    if(type.equals(TransferType.CREDIT)){
+      registerCreditTransactionHistory(from, value);
+    }
     registerTransactionHistory(from, to, value, type);
 
     // Retorna informações detalhadas
@@ -281,6 +285,14 @@ public class AccountService {
     to.deposit(value);
   }
 
+  //CREDIT
+  private void processCREDIT(Account from, Double value){
+    if (from.getUsuario().getCreditCard().getAvailableLimit() < value)
+      throw new RuntimeException("Limite insuficiente para Compra.");
+
+    from.getUsuario().getCreditCard().setAvailableLimit(from.getUsuario().getCreditCard().getAvailableLimit() - value);
+  }
+
   // PIX
   private void processPIX(Account from, Account to, Double value) {
     // Limite máximo por transação
@@ -340,6 +352,15 @@ public class AccountService {
     tx.setToAccount(null); // Saque não tem conta destino
     tx.setAmount(value);
     tx.setType(TransferType.WITHDRAW);
+    tx.setTimestamp(LocalDateTime.now());
+    transactionRepository.save(tx);
+  }
+
+  private void registerCreditTransactionHistory(Account from, Double value){
+    Transaction tx = new Transaction();
+    tx.setFromAccount(from);
+    tx.setAmount(value);
+    tx.setType(TransferType.CREDIT);
     tx.setTimestamp(LocalDateTime.now());
     transactionRepository.save(tx);
   }

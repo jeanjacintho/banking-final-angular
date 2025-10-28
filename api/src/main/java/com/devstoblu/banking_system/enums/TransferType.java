@@ -5,5 +5,6 @@ public enum TransferType {
     TED,
     PIX,
     DEPOSIT,
-    WITHDRAW
+    WITHDRAW,
+    CREDIT
 }

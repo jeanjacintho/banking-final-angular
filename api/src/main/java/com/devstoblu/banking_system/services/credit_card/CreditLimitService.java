@@ -8,7 +8,7 @@ import java.math.RoundingMode;
 
 @Service
 public class CreditLimitService {
-    public BigDecimal calculate(CreditCardRequestDTO dto, int score) {
+    public Double calculate(CreditCardRequestDTO dto, int score) {
         BigDecimal fator = new BigDecimal("0.35");
         if (score > 750) fator = new BigDecimal("0.6");
         else if (score < 500) fator = new BigDecimal("0.2");
@@ -18,7 +18,7 @@ public class CreditLimitService {
         BigDecimal max = new BigDecimal("20000");
         if (limite.compareTo(min) < 0) limite = min;
         if (limite.compareTo(max) > 0) limite = max;
-        return limite.setScale(2, RoundingMode.HALF_UP);
+        return limite.setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 }
 

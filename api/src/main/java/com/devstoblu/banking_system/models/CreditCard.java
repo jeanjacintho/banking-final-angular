@@ -46,7 +46,7 @@ public class CreditCard {
     private BigDecimal creditLimit;
 
     @Column(nullable = false)
-    private BigDecimal availableLimit;
+    private Double availableLimit;
 
     @Column(nullable = false)
     private Boolean isActive = true;
@@ -64,7 +64,7 @@ public class CreditCard {
     public CreditCard() {
     }
 
-    public CreditCard(Long id, String cardNumber, String cardHolderName, Integer expMonth, Integer expYear, String cvvHash, String maskedPan, String panToken, String brand, BigDecimal creditLimit, BigDecimal availableLimit, Boolean isActive, LocalDateTime createdAt, LocalDateTime updatedAt, Usuario usuario) {
+    public CreditCard(Long id, String cardNumber, String cardHolderName, Integer expMonth, Integer expYear, String cvvHash, String maskedPan, String panToken, String brand, BigDecimal creditLimit, Double availableLimit, Boolean isActive, LocalDateTime createdAt, LocalDateTime updatedAt, Usuario usuario) {
         this.id = id;
         this.cardNumber = cardNumber;
         this.cardHolderName = cardHolderName;
@@ -162,11 +162,11 @@ public class CreditCard {
         this.creditLimit = creditLimit;
     }
 
-    public BigDecimal getAvailableLimit() {
+    public Double getAvailableLimit() {
         return availableLimit;
     }
 
-    public void setAvailableLimit(BigDecimal availableLimit) {
+    public void setAvailableLimit(Double availableLimit) {
         this.availableLimit = availableLimit;
     }
 

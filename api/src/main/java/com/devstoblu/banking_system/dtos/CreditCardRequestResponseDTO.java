@@ -5,7 +5,7 @@ import java.util.List;
 
 public record CreditCardRequestResponseDTO (
         String statusSolicitacao,
-        BigDecimal limiteAprovado,
+        Double limiteAprovado,
         String brand,
         String maskedPan,
         String cardToken,

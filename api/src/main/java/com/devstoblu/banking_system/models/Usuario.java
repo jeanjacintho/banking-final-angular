@@ -73,6 +73,17 @@ public class Usuario implements UserDetails {
   @JsonIgnoreProperties("usuario")
   private List<Account> accounts;
 
+  @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+  private CreditCard creditCard;
+
+  public CreditCard getCreditCard() {
+    return creditCard;
+  }
+
+  public void setCreditCard(CreditCard creditCard) {
+    this.creditCard = creditCard;
+  }
+
   public Long getId() {
     return id;
   }

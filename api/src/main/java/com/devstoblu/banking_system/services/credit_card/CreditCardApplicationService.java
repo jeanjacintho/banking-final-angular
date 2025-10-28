@@ -32,7 +32,7 @@ public class CreditCardApplicationService {
         }
 
         int score = riskScoringService.score(dto);
-        BigDecimal limite = creditLimitService.calculate(dto, score);
+        Double limite = creditLimitService.calculate(dto, score);
 
         if (score < 450) {
             return new CreditCardRequestResponseDTO(
@@ -50,7 +50,7 @@ public class CreditCardApplicationService {
         card.setExpMonth(issued.expMonth());
         card.setExpYear(issued.expYear());
         card.setBrand(brand);
-        card.setCreditLimit(limite);
+        card.setCreditLimit(BigDecimal.valueOf(limite));
         card.setAvailableLimit(limite);
         card.setMaskedPan(issued.maskedPan());
         card.setCvvHash(issued.cvvHash());
