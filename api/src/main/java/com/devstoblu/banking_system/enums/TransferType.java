@@ -6,5 +6,6 @@ public enum TransferType {
     PIX,
     DEPOSIT,
     WITHDRAW,
-    CREDIT
+    CREDIT,
+    CREDIT_CARD_PAYMENT
 }

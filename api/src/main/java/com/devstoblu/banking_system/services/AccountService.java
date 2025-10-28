@@ -205,7 +205,9 @@ public class AccountService {
 
     processCREDIT(from, value);
 
+    // Salva as alterações
     accountRepository.save(from);
+    usuarioRepository.save(from.getUsuario());
 
     registerCreditTransactionHistory(from, value);
 
@@ -214,7 +216,59 @@ public class AccountService {
     response.put("amount", value);
     response.put("type", type.name());
     response.put("fromBalanceAfter", from.getUsuario().getCreditCard().getAvailableLimit());
-    response.put("message", "Transferência realizada com sucesso!");
+    response.put("message", "Compra com cartão de crédito realizada com sucesso!");
+    return response;
+  }
+
+  @Transactional
+  public Map<String, Object> payCreditCardBill(String fromAccount, Double value) {
+    if (value == null || value <= 0)
+      throw new RuntimeException("O valor a pagar deve ser positivo.");
+    
+    Account from = accountRepository.findByAccountNumber(fromAccount)
+            .orElseThrow(() -> new RuntimeException("Conta não encontrada."));
+
+    // Verifica se o usuário possui cartão de crédito
+    if (from.getUsuario().getCreditCard() == null)
+      throw new RuntimeException("Usuário não possui cartão de crédito cadastrado.");
+
+    // Verifica se o cartão está ativo
+    if (!from.getUsuario().getCreditCard().getActive())
+      throw new RuntimeException("Cartão de crédito inativo.");
+
+    // Calcula o limite usado (quanto o usuário gastou no cartão)
+    Double limitUsed = from.getUsuario().getCreditCard().getCreditLimit().doubleValue() 
+                      - from.getUsuario().getCreditCard().getAvailableLimit();
+
+    // Verifica se o valor a pagar é menor ou igual ao limite usado
+    if (value > limitUsed)
+      throw new RuntimeException("O valor a pagar não pode ser maior que o limite usado. Limite usado: " + limitUsed);
+
+    // Verifica se há saldo suficiente na conta (o método withdraw só permite se balance > value)
+    if (from.getBalance() <= value)
+      throw new RuntimeException("Saldo insuficiente para pagar a fatura do cartão de crédito.");
+
+    // Deduz o valor da conta bancária
+    from.withdraw(value);
+
+    // Restaura o limite disponível do cartão
+    Double newAvailableLimit = from.getUsuario().getCreditCard().getAvailableLimit() + value;
+    from.getUsuario().getCreditCard().setAvailableLimit(newAvailableLimit);
+
+    // Salva as alterações
+    accountRepository.save(from);
+    usuarioRepository.save(from.getUsuario());
+
+    // Registra transação
+    registerCreditCardPaymentHistory(from, value);
+
+    Map<String, Object> response = new HashMap<>();
+    response.put("fromAccount", from.getAccountNumber());
+    response.put("amount", value);
+    response.put("type", "CREDIT_CARD_PAYMENT");
+    response.put("fromBalanceAfter", from.getBalance());
+    response.put("creditCardLimitAfter", from.getUsuario().getCreditCard().getAvailableLimit());
+    response.put("message", "Fatura do cartão de crédito paga com sucesso!");
     return response;
   }
 
@@ -227,7 +281,7 @@ public class AccountService {
             .orElseThrow(() -> new RuntimeException("Conta de origem não encontrada."));
 
     Account to = pixKeyService.resolveAccountByKey(pixKeyType, pixKeyValue)
-            .orElseThrow(() -> new RuntimeException("Chave PIX não encontrada ou inativa."));
+            .orElseThrow(() -> new RuntimeException("Chave PIX não encontratada ou inativa."));
 
     if (from.getAccountNumber().equals(to.getAccountNumber())) {
       throw new RuntimeException("Não é possível transferir para a mesma conta.");
@@ -303,11 +357,21 @@ public class AccountService {
     to.deposit(value);
   }
 
-  //CREDIT
+  //CREDIT - Compra com cartão de crédito
   private void processCREDIT(Account from, Double value){
-    if (from.getUsuario().getCreditCard().getAvailableLimit() < value)
-      throw new RuntimeException("Limite insuficiente para Compra.");
+    // Verifica se o usuário possui cartão de crédito
+    if (from.getUsuario().getCreditCard() == null)
+      throw new RuntimeException("Usuário não possui cartão de crédito cadastrado.");
 
+    // Verifica se o cartão está ativo
+    if (!from.getUsuario().getCreditCard().getActive())
+      throw new RuntimeException("Cartão de crédito inativo.");
+
+    // Verifica se há limite disponível
+    if (from.getUsuario().getCreditCard().getAvailableLimit() < value)
+      throw new RuntimeException("Limite insuficiente para compra. Limite disponível: " + from.getUsuario().getCreditCard().getAvailableLimit());
+
+    // Reduz o limite disponível
     from.getUsuario().getCreditCard().setAvailableLimit(from.getUsuario().getCreditCard().getAvailableLimit() - value);
   }
 
@@ -379,6 +443,16 @@ public class AccountService {
     tx.setFromAccount(from);
     tx.setAmount(value);
     tx.setType(TransferType.CREDIT);
+    tx.setTimestamp(LocalDateTime.now());
+    transactionRepository.save(tx);
+  }
+
+  private void registerCreditCardPaymentHistory(Account from, Double value){
+    Transaction tx = new Transaction();
+    tx.setFromAccount(from);
+    tx.setToAccount(null); // Pagamento de cartão não tem conta destino
+    tx.setAmount(value);
+    tx.setType(TransferType.CREDIT_CARD_PAYMENT);
     tx.setTimestamp(LocalDateTime.now());
     transactionRepository.save(tx);
   }
