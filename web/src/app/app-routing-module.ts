@@ -5,8 +5,6 @@ import { Home } from './pages/home/home';
 import { Dashboard } from './pages/dashboard/dashboard';
 import { TransfersPage } from './pages/transfers-page/transfers-page';
 import { TransfersPageComponent } from './pages/transfers/transfers';
-import { CreditCardRequestComponent } from './components/credit-card/credit-card-request/credit-card-request';
-import { CreditCardDashboardComponent } from './pages/credit-card/credit-card-dashboard/credit-card-dashboard';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -16,8 +14,20 @@ export const routes: Routes = [
   {
     path: 'credit-card',
     children: [
-      { path: '', component: CreditCardDashboardComponent },
-      { path: 'request', component: CreditCardRequestComponent },
+      {
+        path: '',
+        loadComponent: () =>
+          import('./pages/credit-card/credit-card-dashboard/credit-card-dashboard').then(
+            (m) => m.CreditCardDashboardComponent
+          ),
+      },
+      {
+        path: 'request',
+        loadComponent: () =>
+          import('./components/credit-card/credit-card-request/credit-card-request').then(
+            (m) => m.CreditCardRequestComponent
+          ),
+      },
     ],
   },
 ];
