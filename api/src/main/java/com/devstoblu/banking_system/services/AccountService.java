@@ -201,6 +201,28 @@ public class AccountService {
   }
 
   @Transactional
+  public Map<String, Object> transferCredit(String fromAccount, TransferType type, Double value){
+    if (value == null || value <= 0)
+      throw new RuntimeException("O valor da transferência deve ser positivo.");
+    Account from = accountRepository.findByAccountNumber(fromAccount)
+            .orElseThrow(() -> new RuntimeException("Conta de origem não encontrada."));
+
+    processCREDIT(from, value);
+
+    accountRepository.save(from);
+
+    registerCreditTransactionHistory(from, value);
+
+    Map<String, Object> response = new HashMap<>();
+    response.put("fromAccount", from.getAccountNumber());
+    response.put("amount", value);
+    response.put("type", type.name());
+    response.put("fromBalanceAfter", from.getUsuario().getCreditCard().getAvailableLimit());
+    response.put("message", "Transferência realizada com sucesso!");
+    return response;
+  }
+
+  @Transactional
   public Map<String, Object> transferByPixKey(String fromAccountNumber, PixKeyType pixKeyType, String pixKeyValue, Double value) {
     if (value == null || value <= 0)
       throw new RuntimeException("O valor da transferência deve ser positivo.");
