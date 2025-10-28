@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { CommonModule, NgFor, NgClass, CurrencyPipe } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { CreditCardComponent } from '../../../components/credit-card/credit-card/credit-card';
 import { InvoiceSummaryComponent } from '../../../components/credit-card/invoice-summary/invoice-summary';
 import { CreditCardService } from '../../../services/credit-card-service';
@@ -18,14 +18,13 @@ type InvoiceItem = {
   templateUrl: './credit-card-dashboard.html',
   imports: [
     CommonModule,
-    NgFor,
     CurrencyPipe,
     CreditCardComponent,
     InvoiceSummaryComponent,
     RouterModule,
   ],
 })
-export class CreditCardDashboardComponent {
+export class CreditCardDashboardComponent implements OnInit {
   constructor(private creditCardService: CreditCardService) {}
 
   cards: CreditCard[] = [];

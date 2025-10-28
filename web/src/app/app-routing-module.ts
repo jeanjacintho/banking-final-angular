@@ -4,7 +4,6 @@ import { Login } from './pages/login/login';
 import { Home } from './pages/home/home';
 import { Dashboard } from './pages/dashboard/dashboard';
 import { TransfersPage } from './pages/transfers-page/transfers-page';
-import { TransfersPageComponent } from './pages/transfers/transfers';
 import { CreditCardRequestComponent } from './components/credit-card/credit-card-request/credit-card-request';
 import { CreditCardDashboardComponent } from './pages/credit-card/credit-card-dashboard/credit-card-dashboard';
 
