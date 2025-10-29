@@ -1,8 +1,8 @@
-<div
-    class="min-h-screen bg-gradient-to-b from-background to-gradient-start/40 text-text grid grid-rows-[auto,1fr,auto]">
+<div class="min-h-screen bg-background text-text grid grid-rows-[auto,1fr,auto]">
     <header class="flex justify-between items-center px-4 md:px-8 py-4">
-        <div class="flex items-center">
-            <img src="assets/bankr-logo.png" alt="Logo" class="h-10 md:h-12" />
+        <div class="flex items-center gap-3">
+            <div class="text-2xl font-extrabold text-primary tracking-tight">bankr</div>
+            <div class="text-muted-foreground hidden md:block">Internet Banking</div>
         </div>
 
         <nav class="hidden md:flex gap-6 text-sm text-text-light">
@@ -90,10 +90,51 @@
         </div>
     </section>
 
-    <section class="bg-dark text-bg rounded-xl flex items-center justify-between self-end w-full">
-        <div class="flex items-center gap-4">
-            <img src="assets/bg-bankr.png" alt="Icon" class="" />
-
+    <section class="rounded-xl flex items-stretch self-end w-full py-6 min-h-[360px]">
+        <div class="w-full h-full flex items-stretch justify-center gap-4">
+            <div class="w-[400px]">
+                <app-currency-converter class="w-full h-full"></app-currency-converter>
+            </div>
+            <div
+                class="animated-gradient text-white rounded-2xl p-4 w-[500px] bg-primary border border-border flex flex-col">
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="text-xs uppercase tracking-wider border border-white/30 rounded-lg px-3 py-1.5">
+                        Câmbio de Moedas
+                    </span>
+                </div>
+                <h2 class="text-3xl font-bold mb-4">Envie. Receba. Negocie.</h2>
+                <p class="text-sm leading-relaxed text-white/90">
+                    Com uma conta moderna, você pode enviar, receber e negociar entre moedas de forma mais rápida,
+                    barata e fácil. Transferências instantâneas com taxas transparentes e sem custos ocultos ou
+                    complicações.
+                </p>
+            </div>
+            <div class="w-[400px] bg-white rounded-2xl p-4 border border-border">
+                Send. Receive. Transact.
+            </div>
         </div>
+    </section>
+
+    <section class="rounded-xl flex items-center justify-between self-end w-full">
+        <div class="bg-red-500 w-full h-[300px]">
+            <div>Who we are?</div>
+            <div>
+                <p>
+                    We are a team of developers who are passionate about creating beautiful and functional websites.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="rounded-xl flex items-center justify-between self-end w-full">
+        <div class="bg-green-500 w-full h-[300px]"></div>
+    </section>
+
+    <section class="rounded-xl flex items-center justify-between self-end w-full">
+        <div class="bg-yellow-500 w-full h-[300px]"></div>
+    </section>
+
+    <section class="rounded-xl flex items-center justify-between self-end w-full">
+        <div class="bg-purple-500 w-full h-[300px]"></div>
     </section>
 </div>

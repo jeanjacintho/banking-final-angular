@@ -3,7 +3,9 @@ package com.devstoblu.banking_system.models;
 import com.devstoblu.banking_system.enums.Status;
 import com.devstoblu.banking_system.enums.UserRole;
 import com.devstoblu.banking_system.models.banking_account.Account;
+import com.devstoblu.banking_system.models.loan.Loan;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.devstoblu.banking_system.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +14,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -58,6 +62,15 @@ public class Usuario implements UserDetails {
   @Enumerated(EnumType.STRING)
   @Column(nullable = false, length = 10)
   private UserRole userRole;
+
+  @Column(name = "renda_mensal")
+  private BigDecimal income;
+
+  @Column(name = "data_criacao_conta")
+  private LocalDate accountCreationDate = LocalDate.now();
+
+  @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Loan> loans = new ArrayList<>();
 
   @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
   @JsonIgnoreProperties("usuario")
@@ -150,6 +163,30 @@ public class Usuario implements UserDetails {
   public void setAccounts(List<Account> accounts) {
     this.accounts = accounts;
   }
+
+    public BigDecimal getIncome() {
+        return income;
+    }
+
+    public void setIncome(BigDecimal income) {
+        this.income = income;
+    }
+
+    public LocalDate getAccountCreationDate() {
+        return accountCreationDate;
+    }
+
+    public void setAccountCreationDate(LocalDate accountCreationDate) {
+        this.accountCreationDate = accountCreationDate;
+    }
+
+    public List<Loan> getLoans() {
+        return loans;
+    }
+
+    public void setLoans(List<Loan> loans) {
+        this.loans = loans;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

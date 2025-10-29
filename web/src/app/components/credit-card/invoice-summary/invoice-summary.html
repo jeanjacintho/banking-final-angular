@@ -1,0 +1,31 @@
+<div
+  class="my-4 max-w-md mx-auto rounded-xl p-6 shadow-[var(--shadow-lg)] bg-[color:var(--color-card)] text-[color:var(--color-card-foreground)] border border-[color:var(--color-border)]"
+>
+  <h2 class="text-lg font-semibold mb-4">Resumo da Fatura</h2>
+
+  <!-- Valor da Fatura -->
+  <div class="mb-4">
+    <p class="text-sm text-[color:var(--color-text-light)]">Fatura Atual</p>
+    <p class="text-2xl font-bold text-[color:var(--color-destructive)]">
+      {{ invoiceTotal | currency : 'BRL' }}
+    </p>
+  </div>
+
+  <!-- Limite disponível -->
+  <div class="mb-4">
+    <p class="text-sm text-[color:var(--color-text-light)]">Limite Disponível</p>
+    <p class="text-xl font-semibold text-[color:var(--color-accent)]">
+      {{ availableLimit | currency : 'BRL' }} / {{ creditLimit | currency : 'BRL' }}
+    </p>
+  </div>
+
+  <!-- Barra de Progresso -->
+  <div
+    class="h-3 w-full rounded-full overflow-hidden bg-[color:var(--color-muted)] border border-[color:var(--color-border)]"
+  >
+    <div
+      class="h-3 transition-all bg-[linear-gradient(90deg,var(--color-gradient-start),var(--color-gradient-end))]"
+      [style.width.%]="progressPercentage"
+    ></div>
+  </div>
+</div>

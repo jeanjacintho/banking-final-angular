@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
 
 export interface BankAccount {
   id: number;
@@ -52,7 +53,7 @@ export interface TransactionHistoryItem {
 export class AccountService {
   private readonly http = inject(HttpClient);
   private readonly authService = inject(AuthService);
-  private readonly baseUrl = 'http://localhost:8080/account';
+  private readonly baseUrl = `${environment.apiBase}/account`;
 
   private getHeaders(): HttpHeaders {
     const token = this.authService.getToken();

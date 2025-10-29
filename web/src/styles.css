@@ -1,7 +1,7 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
-   /* 🌞 Base (Light) Palette */
+  /* 🌞 Base (Light) Palette */
   --color-background: #f8f8ff; /* branco frio levemente azulado */
   --color-foreground: #111111;
 
@@ -12,21 +12,21 @@
   --color-popover-foreground: #111111;
 
   /* 🔮 Primária (Roxo Magenta Neon) */
-  --color-primary: #9A1AFF;
+  --color-primary: #9a1aff;
   --color-primary-foreground: #ffffff;
   --color-primary-hover: #8220db;
 
   /* 🔥 Secundária (Laranja Coral Neon) */
-  --color-secondary: #FF6B3C;
+  --color-secondary: #ff6b3c;
   --color-secondary-foreground: #ffffff;
   --color-secondary-hover: #e85d30;
 
   /* 🎨 Gradiente principal */
-  --color-gradient-start: #9A1AFF;
-  --color-gradient-end: #FF6B3C;
+  --color-gradient-start: #9a1aff;
+  --color-gradient-end: #ff6b3c;
 
   /* 🌈 Acentos e suporte */
-  --color-accent: #00E5FF; /* ciano elétrico sutil */
+  --color-accent: #00e5ff; /* ciano elétrico sutil */
   --color-accent-foreground: #0b0c10;
 
   --color-muted: #eaeaf2;
@@ -38,12 +38,56 @@
   /* ✏️ Interface */
   --color-border: #e5e7eb;
   --color-input: #e5e7eb;
-  --color-ring: #9A1AFF;
+  --color-ring: #9a1aff;
 
   /* 🩶 Texto e sombras */
   --color-text: #111111;
   --color-text-light: #6a7282;
   --color-shadow: 0 0 15px rgba(154, 26, 255, 0.15);
 
+  /* Shadows padronizadas */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.12), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+
+  /* Sombra “neon” opcional alinhada à primary (se quiser um toque de cor) */
+  --shadow-primary: 0 0 15px rgba(154, 26, 255, 0.15);
+
   --radius: 8px;
+}
+
+/* Animated gradient utility using project colors */
+.animated-gradient {
+  position: relative;
+  overflow: hidden;
+}
+
+.animated-gradient::before {
+  content: '';
+  position: absolute;
+  inset: -25%;
+  border-radius: inherit;
+  background: conic-gradient(
+    from 0deg,
+    var(--color-gradient-start),
+    var(--color-primary),
+    var(--color-secondary),
+    var(--color-gradient-end),
+    var(--color-gradient-start)
+  );
+  filter: blur(40px);
+  opacity: 0.8;
+  animation: spin-gradient 16s linear infinite;
+  z-index: 0;
+}
+
+.animated-gradient > * {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes spin-gradient {
+  to {
+    transform: rotate(360deg);
+  }
 }

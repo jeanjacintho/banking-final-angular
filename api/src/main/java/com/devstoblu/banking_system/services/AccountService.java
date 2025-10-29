@@ -1,5 +1,6 @@
 package com.devstoblu.banking_system.services;
 
+import com.devstoblu.banking_system.enums.PixKeyType;
 import com.devstoblu.banking_system.enums.TransferType;
 import com.devstoblu.banking_system.models.Transaction;
 import com.devstoblu.banking_system.models.Usuario;
@@ -27,11 +28,13 @@ public class AccountService {
   private final AccountRepository accountRepository;
   private final UsuarioRepository usuarioRepository;
   private final TransactionRepository transactionRepository;
+  private final PixKeyService pixKeyService;
 
-  public AccountService(AccountRepository repository, UsuarioRepository usuarioRepository, TransactionRepository transactionRepository) {
+  public AccountService(AccountRepository repository, UsuarioRepository usuarioRepository, TransactionRepository transactionRepository, PixKeyService pixKeyService) {
     this.accountRepository = repository;
     this.usuarioRepository = usuarioRepository;
     this.transactionRepository = transactionRepository;
+    this.pixKeyService = pixKeyService;
   }
 
   public List<Account> findAll() {
@@ -59,7 +62,8 @@ public class AccountService {
   }
 
   public CheckingAccount createCheckingAccount(Long userId, double balance) {
-    Usuario user = usuarioRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado."));
+    Usuario user = usuarioRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado."));
 
     boolean hasChecking = user.getAccounts().stream().anyMatch(a -> a instanceof CheckingAccount);
     if (hasChecking) throw new IllegalArgumentException("Usuário já possui uma conta corrente.");
@@ -72,7 +76,8 @@ public class AccountService {
   }
 
   public SavingsAccount createSavingsAccount(Long userId, double balance) {
-    Usuario user = usuarioRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado."));
+    Usuario user = usuarioRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado."));
 
     boolean hasSavings = user.getAccounts().stream().anyMatch(a -> a instanceof SavingsAccount);
     if (hasSavings) throw new IllegalArgumentException("Usuário já possui uma conta poupança.");
@@ -85,7 +90,8 @@ public class AccountService {
   }
 
   public Account deposit(String accountNumber, Double value) {
-    Account account = accountRepository.findByAccountNumber(accountNumber).orElseThrow(() -> new RuntimeException("Conta não encontrada"));
+    Account account = accountRepository.findByAccountNumber(accountNumber)
+            .orElseThrow(() -> new RuntimeException("Conta não encontrada"));
     account.deposit(value);
     Account savedAccount = accountRepository.save(account);
     
@@ -96,7 +102,8 @@ public class AccountService {
   }
 
   public Account withdraw(String accountNumber, Double value) {
-    Account account = accountRepository.findByAccountNumber(accountNumber).orElseThrow(() -> new RuntimeException("Conta não encontrada"));
+    Account account = accountRepository.findByAccountNumber(accountNumber)
+            .orElseThrow(() -> new RuntimeException("Conta não encontrada"));
     account.withdraw(value);
     Account savedAccount = accountRepository.save(account);
     
@@ -108,7 +115,8 @@ public class AccountService {
 
   // Deletar conta corrente e poupança
   public void delete(String accountNumber) {
-    Account account = accountRepository.findByAccountNumber(accountNumber).orElseThrow(() -> new RuntimeException("Conta não encontrada"));
+    Account account = accountRepository.findByAccountNumber(accountNumber)
+            .orElseThrow(() -> new RuntimeException("Conta não encontrada"));
     if (account.getBalance() != 0) {
       throw new RuntimeException("Não é possível deletar conta com saldo positivo ou negativo. Saldo atual: " + account.getBalance());
     }
@@ -185,6 +193,41 @@ public class AccountService {
     response.put("fromBalanceAfter", from.getBalance());
     response.put("toBalanceAfter", to.getBalance());
     response.put("message", "Transferência realizada com sucesso!");
+    return response;
+  }
+
+  @Transactional
+  public Map<String, Object> transferByPixKey(String fromAccountNumber, PixKeyType pixKeyType, String pixKeyValue, Double value) {
+    if (value == null || value <= 0)
+      throw new RuntimeException("O valor da transferência deve ser positivo.");
+
+    Account from = accountRepository.findByAccountNumber(fromAccountNumber)
+            .orElseThrow(() -> new RuntimeException("Conta de origem não encontrada."));
+
+    Account to = pixKeyService.resolveAccountByKey(pixKeyType, pixKeyValue)
+            .orElseThrow(() -> new RuntimeException("Chave PIX não encontrada ou inativa."));
+
+    if (from.getAccountNumber().equals(to.getAccountNumber())) {
+      throw new RuntimeException("Não é possível transferir para a mesma conta.");
+    }
+
+    processPIX(from, to, value);
+
+    accountRepository.save(from);
+    accountRepository.save(to);
+
+    registerTransactionHistory(from, to, value, TransferType.PIX);
+
+    Map<String, Object> response = new HashMap<>();
+    response.put("fromAccount", from.getAccountNumber());
+    response.put("toAccount", to.getAccountNumber());
+    response.put("pixKeyType", pixKeyType.name());
+    response.put("pixKeyValue", pixKeyValue);
+    response.put("amount", value);
+    response.put("type", TransferType.PIX.name());
+    response.put("fromBalanceAfter", from.getBalance());
+    response.put("toBalanceAfter", to.getBalance());
+    response.put("message", "Transferência PIX realizada com sucesso!");
     return response;
   }
 

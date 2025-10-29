@@ -6,7 +6,8 @@ COPY web/package*.json ./
 RUN npm ci
 
 COPY web/ ./
-RUN npm run build
+# Build with production configuration to use production API URL
+RUN npm run build -- --configuration production
 
 FROM nginx:alpine
 

@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { RegisterComponent } from '../../components/register-component/register-component';
+import { CurrencyConverterComponent } from "../../components/currency-converter/currency-converter";
 
 @Component({
   selector: 'app-home',
@@ -11,6 +12,8 @@ import { RegisterComponent } from '../../components/register-component/register-
     CommonModule,
     RegisterComponent
 ],
+    CurrencyConverterComponent
+  ],
   styleUrls: ['./home.css']
 })
 export class Home {

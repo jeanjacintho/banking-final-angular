@@ -42,7 +42,13 @@ export class TransferHistoryComponent implements OnInit {
       },
       error: (error) => {
         console.error('Erro ao carregar transações:', error);
-        this.errorMessage = 'Erro ao carregar histórico de transações';
+        // Se o backend retornar 404 ou lista vazia por não haver contas, mostrar mensagem amigável
+        if (error?.status === 404) {
+          this.items = [];
+          this.errorMessage = '';
+        } else {
+          this.errorMessage = 'Erro ao carregar histórico de transações';
+        }
         this.isLoading = false;
       }
     });

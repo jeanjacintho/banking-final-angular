@@ -1,0 +1,51 @@
+package com.devstoblu.banking_system.models.investment;
+
+import com.devstoblu.banking_system.models.banking_account.Account;
+import jakarta.persistence.*;
+
+@Entity
+public class CDB extends Investment {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long id;
+
+  public CDB() {
+  }
+
+  public CDB(double investmentTermChosen, double investmentValue) {
+    setInvestmentTerm(investmentTermChosen); // Contagem em anos
+    setCurrentTerm(investmentTermChosen * 12); // Contagem em meses
+
+    // Rendimento bonus de 10% ao ano. % final calculada em cima do CDI atual
+    setYield(getCDI() * (1 + (0.1 * investmentTermChosen)));
+    setInvestmentValue(investmentValue);
+  }
+
+  @Override
+  public void applyInvestment(Account account, double currentCDI) {
+    double term = getCurrentTerm();
+
+    // Se o periodo de investimento acabou, retorna o valor com juros
+    if (term <= 0) {
+      double totalReturn = (getYield() + 1) * getInvestmentValue();
+      account.setBalance(totalReturn + account.getBalance());
+      setActive(false);
+      setInvestmentReturn(getYield() * getInvestmentValue());
+    } else {
+      setCurrentTerm(term - 1);
+
+      if (getCurrentTerm() <= 0) {
+        double totalReturn = (getYield() + 1) * getInvestmentValue();
+        account.setBalance(totalReturn + account.getBalance());
+        setActive(false);
+        setInvestmentReturn(getYield() * getInvestmentValue());
+      }
+    }
+  }
+
+  @Override
+  public String getInvestmentType() {
+    return "CDB";
+  }
+}

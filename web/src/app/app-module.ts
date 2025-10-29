@@ -5,7 +5,8 @@ import { authInterceptor } from './interceptors/auth.interceptor';
 import { LucideAngularModule, 
   LayoutDashboard, Wallet, BarChart3, MoreHorizontal, Calendar, Bell, Settings, LogOut, Search,
   Building2, FileText, ArrowRightLeft, CreditCard, ChevronDown, Gift, Umbrella, Smartphone, Shield, Receipt, ArrowRight, Plus, BanknoteArrowDown,
-  Eye, EyeOff, Lock, ShieldCheck, ArrowUp, ArrowDown, Coffee, DollarSign, Calculator, ArrowLeftRight, Loader2, AlertCircle, Wifi, WifiOff
+  Eye, EyeOff, Lock, ShieldCheck, ArrowUp, ArrowDown, Coffee, DollarSign, Calculator, ArrowLeftRight, Loader2, AlertCircle, Wifi, WifiOff,
+  X, CheckCircle
 } from 'lucide-angular';
 import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 import { AppRoutingModule } from './app-routing-module';
@@ -61,6 +62,10 @@ import { Login } from './pages/login/login';
     }),
     NgxMaskDirective,
     NgxMaskPipe
+      WifiOff,
+      X,
+      CheckCircle
+    })
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),

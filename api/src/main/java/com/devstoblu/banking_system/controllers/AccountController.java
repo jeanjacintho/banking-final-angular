@@ -1,5 +1,6 @@
 package com.devstoblu.banking_system.controllers;
 
+import com.devstoblu.banking_system.enums.PixKeyType;
 import com.devstoblu.banking_system.enums.TransferType;
 import com.devstoblu.banking_system.models.Usuario;
 import com.devstoblu.banking_system.models.banking_account.Account;
@@ -101,7 +102,6 @@ public class AccountController {
       return ResponseEntity.ok(updatedAccount);
     } catch (RuntimeException e) {
 
-      // Mensagem de erro Json
       Map<String, Object> errorResponse = new HashMap<>();
       errorResponse.put("error", e.getMessage());
       errorResponse.put("accountNumber", accountNumber);
@@ -117,7 +117,6 @@ public class AccountController {
       return ResponseEntity.ok(updatedAccount);
     } catch (RuntimeException e) {
 
-      // Mensagem de erro Json
       Map<String, Object> errorResponse = new HashMap<>();
       errorResponse.put("error", e.getMessage());
       errorResponse.put("accountNumber", accountNumber);
@@ -127,7 +126,7 @@ public class AccountController {
   }
 
   @DeleteMapping("/{accountNumber}")
-  public ResponseEntity<?> deleteChecking(@PathVariable String accountNumber) {
+  public ResponseEntity<?> delete(@PathVariable String accountNumber) {
     try {
       service.delete(accountNumber);
 
@@ -153,23 +152,36 @@ public class AccountController {
   }
 
   @PostMapping("/transfer")
-public ResponseEntity<?> transfer(@RequestBody Map<String, Object> request) {
+  public ResponseEntity<?> transfer(@RequestBody Map<String, Object> request) {
     try {
         String fromAccount = (String) request.get("fromAccount");
-        String toAccount = (String) request.get("toAccount");
         Double value = Double.valueOf(request.get("amount").toString());
         String typeStr = (String) request.get("type");
-
         TransferType type = TransferType.valueOf(typeStr.toUpperCase());
 
-        Map<String, Object> response = service.transfer(fromAccount, toAccount, value, type);
+        Map<String, Object> response;
+
+        if (type == TransferType.PIX && request.containsKey("toPixKey")) {
+            Map<String, Object> toPixKey = (Map<String, Object>) request.get("toPixKey");
+            PixKeyType pixKeyType = PixKeyType.valueOf(toPixKey.get("type").toString().toUpperCase());
+            String pixKeyValue = toPixKey.get("value").toString();
+            
+            response = service.transferByPixKey(fromAccount, pixKeyType, pixKeyValue, value);
+        } else {
+            String toAccount = (String) request.get("toAccount");
+            response = service.transfer(fromAccount, toAccount, value, type);
+        }
+
         return ResponseEntity.ok(response);
 
     } catch (RuntimeException e) {
         Map<String, Object> errorResponse = new HashMap<>();
         errorResponse.put("error", e.getMessage());
         return ResponseEntity.badRequest().body(errorResponse);
+    } catch (Exception e) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("error", "Erro interno do servidor: " + e.getMessage());
+        return ResponseEntity.status(500).body(errorResponse);
     }
-}
-
+  }
 }

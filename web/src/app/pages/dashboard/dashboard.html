@@ -1,6 +1,5 @@
 <app-layout pageTitle="Dashboard">
     <div class="col-span-12 lg:col-span-8">
-        <!-- Quick actions tiles to mirror the screenshot -->
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-6 cursor-pointer" routerLink="/transfers">
             <div class="bg-white rounded-xl border border-border p-4 flex flex-col items-center gap-2">
                 <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
@@ -44,6 +43,13 @@
                 </div>
                 <div class="text-xs text-text">Seguros</div>
             </div>
+            <div class="bg-white rounded-xl border border-border p-4 flex flex-col items-center gap-2 cursor-pointer"
+                (click)="scrollToPixKeys()">
+                <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                    <lucide-icon name="CreditCard" size="20" class="text-primary"></lucide-icon>
+                </div>
+                <div class="text-xs text-text">Chaves PIX</div>
+            </div>
         </div>
     </div>
     <div class="space-y-2 grid grid-cols-2 gap-4">
@@ -51,5 +57,10 @@
         <app-currency-converter></app-currency-converter>
         <app-credit-card></app-credit-card>
         <app-transfer-history></app-transfer-history>
+    </div>
+
+    <!-- Componente PIX Keys -->
+    <div class="col-span-12 mt-6" #pixKeysSection>
+        <app-pix-keys></app-pix-keys>
     </div>
 </app-layout>
