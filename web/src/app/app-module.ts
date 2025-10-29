@@ -8,7 +8,7 @@ import { LucideAngularModule,
   Eye, EyeOff, Lock, ShieldCheck, ArrowUp, ArrowDown, Coffee, DollarSign, Calculator, ArrowLeftRight, Loader2, AlertCircle, Wifi, WifiOff,
   X, CheckCircle
 } from 'lucide-angular';
-
+import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
 import { Login } from './pages/login/login';
@@ -58,6 +58,10 @@ import { Login } from './pages/login/login';
       Loader2,
       AlertCircle,
       Wifi,
+      WifiOff
+    }),
+    NgxMaskDirective,
+    NgxMaskPipe
       WifiOff,
       X,
       CheckCircle

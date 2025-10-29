@@ -15,11 +15,31 @@
         <div class="hidden md:flex items-center gap-4">
             <button class="font-medium px-4 py-2 hover:cursor-pointer" (click)="navigateToLogin()">Entrar</button>
             <button class="flex items-center gap-2 px-4 py-2 rounded-xl font-medium 
-                    text-white bg-gradient-to-r from-gradient-start to-gradient-end 
-                    shadow-sm hover:scale-105 transition-transform hover:cursor-pointer">
+                    text-text bg-gradient-to-r from-gradient-start to-gradient-end 
+                    shadow-sm hover:scale-105 transition-transform hover:cursor-pointer" (click)="openForm()">
                 <span class="text-lg">✦</span>Criar uma conta
             </button>
         </div>
+        
+        @if (isVisible) {
+            <div class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 ">
+                <div
+                    class="bg-gradient-to-b from-background to-gradient-start/40 text-text rounded-2xl shadow-lg p-6 max-w-3xl w-full relative transform scale-95 opacity-0 transition-all duration-300 ease-out"
+                    [ngClass]="{
+                    'scale-100 opacity-100': showForm,
+                    'scale-95 opacity-0': !showForm
+                     }"
+                    >
+                    <button
+                        class="absolute top-3 right-3 text-2xl font-bold hover:scale-110 transition"
+                        (click)="closeForm()"
+                    >
+                    ×
+                    </button>
+                    <app-register-component></app-register-component>
+                </div>
+            </div>
+        }        
 
         <button class="md:hidden p-2" (click)="toggleMenu()" aria-label="Abrir menu">
             <span class="block w-6 h-0.5 bg-text"></span>
@@ -28,29 +48,32 @@
         </button>
     </header>
 
-    <div *ngIf="menuOpen" class="md:hidden px-4 pb-4">
-        <nav class="flex flex-col gap-3 text-sm text-text-light">
-            <a href="#" (click)="toggleMenu()">Contas</a>
-            <a href="#" (click)="toggleMenu()">Soluções</a>
-            <a href="#" (click)="toggleMenu()">Sobre nós</a>
-            <a href="#" (click)="toggleMenu()">Blog</a>
-        </nav>
-        <div class="mt-3 flex flex-col gap-2">
-            <button class="font-medium px-4 py-2 text-left" (click)="navigateToLogin(); toggleMenu()">Entrar</button>
-            <button class="flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium 
-                    text-text bg-gradient-to-r from-gradient-start to-gradient-end 
-                    shadow-sm">
-                <span class="text-lg">✦</span>Criar uma conta
-            </button>
+     @if (menuOpen){
+        <div class="md:hidden px-4 pb-4">
+            <nav class="flex flex-col gap-3 text-sm text-text-light">
+                <a href="#" (click)="toggleMenu()">Contas</a>
+                <a href="#" (click)="toggleMenu()">Soluções</a>
+                <a href="#" (click)="toggleMenu()">Sobre nós</a>
+                <a href="#" (click)="toggleMenu()">Blog</a>
+            </nav>
+            <div class="mt-3 flex flex-col gap-2">
+                <button class="font-medium px-4 py-2 text-left" (click)="navigateToLogin(); toggleMenu()">Entrar</button>
+                <button class="flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium 
+                        text-text bg-gradient-to-r from-gradient-start to-gradient-end 
+                        shadow-sm" (click)="openForm()">
+                    <span class="text-lg">✦</span>Criar uma conta
+                </button>
+            </div>
         </div>
-    </div>
+    }
+    
 
     <section class="px-8 py-12 items-center justify-center">
         <div class="space-y-6 flex flex-col items-center justify-center">
             <span class="flex items-center gap-2 px-4 py-1 rounded-xl font-medium 
                     text-text bg-gradient-start
                     shadow-sm text-sm transition-transform">
-                Sua vida. Do seu jeito
+                Sua vida. Do seu jeito!
             </span>
             <h1 class="text-5xl font-bold leading-tight text-center">
                 Mais que um banco:<br />
@@ -61,7 +84,7 @@
             </p>
             <button class="flex items-center gap-2 px-4 py-2 rounded-xl font-medium 
                     text-text bg-gradient-to-r from-gradient-start to-gradient-end 
-                    shadow-sm hover:scale-105 transition-transform">
+                    shadow-sm hover:scale-105 transition-transform" (click)="openForm()">
                 <span class="text-lg">✦</span>Criar uma conta
             </button>
         </div>
