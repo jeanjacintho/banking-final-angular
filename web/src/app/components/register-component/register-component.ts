@@ -3,7 +3,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { NgxMaskDirective, NgxMaskPipe, provideNgxMask  } from 'ngx-mask';
+import { NgxMaskDirective, provideNgxMask  } from 'ngx-mask';
 
 @Component({
   selector: 'app-register-component',
@@ -13,7 +13,6 @@ import { NgxMaskDirective, NgxMaskPipe, provideNgxMask  } from 'ngx-mask';
     CommonModule,
     HttpClientModule,
     NgxMaskDirective,
-    NgxMaskPipe,
   ],
   providers: [provideNgxMask()],
   templateUrl: './register-component.html',

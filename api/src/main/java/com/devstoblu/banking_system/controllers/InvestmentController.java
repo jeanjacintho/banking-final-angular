@@ -4,6 +4,10 @@ import com.devstoblu.banking_system.models.investment.CDB;
 import com.devstoblu.banking_system.models.investment.Investment;
 import com.devstoblu.banking_system.models.investment.RendaFixa;
 import com.devstoblu.banking_system.services.InvestmentService;
+import com.devstoblu.banking_system.repositories.UsuarioRepository;
+import com.devstoblu.banking_system.models.Usuario;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,13 +16,15 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/investment")
+@RequestMapping("/api/investment")
 public class InvestmentController {
 
   private final InvestmentService service;
+  private final UsuarioRepository usuarioRepository;
 
-  public InvestmentController(InvestmentService service) {
+  public InvestmentController(InvestmentService service, UsuarioRepository usuarioRepository) {
     this.service = service;
+    this.usuarioRepository = usuarioRepository;
   }
 
   @GetMapping
@@ -26,15 +32,39 @@ public class InvestmentController {
     return ResponseEntity.ok(service.findAll());
   }
 
+  @GetMapping("/my")
+  public ResponseEntity<List<Investment>> myInvestments(@AuthenticationPrincipal UserDetails principal) {
+    if (principal == null) return ResponseEntity.status(401).build();
+    String cpf = principal.getUsername();
+    UserDetails userDetails = usuarioRepository.findByCpf(cpf);
+    if (userDetails instanceof Usuario usuario) {
+      return ResponseEntity.ok(service.findByUser(usuario.getId()));
+    }
+    return ResponseEntity.status(404).build();
+  }
+
   @PostMapping("/cdb/{accountNumber}")
-  public ResponseEntity<CDB> createInvestmentCdb(@PathVariable String accountNumber, @RequestBody Map<String, Double> data) {
-    CDB newInvestment = service.createInvestmentCdb(accountNumber, data.get("term"), data.get("value"));
+  public ResponseEntity<?> createInvestmentCdb(@PathVariable String accountNumber, @RequestBody Map<String, Number> data) {
+    if (data == null || !data.containsKey("term") || !data.containsKey("value") || data.get("term") == null || data.get("value") == null) {
+      Map<String, Object> error = new HashMap<>();
+      error.put("error", "Payload inválido. Envie { term: number, value: number }.");
+      return ResponseEntity.badRequest().body(error);
+    }
+    double term = data.get("term").doubleValue();
+    double value = data.get("value").doubleValue();
+    CDB newInvestment = service.createInvestmentCdb(accountNumber, term, value);
     return ResponseEntity.ok(newInvestment);
   }
 
   @PostMapping("/renda-fixa/{accountNumber}")
-  public ResponseEntity<RendaFixa> createInvestmentRendaFixa(@PathVariable String accountNumber, @RequestBody Map<String, Double> data) {
-    RendaFixa newInvestment = service.createInvestmentRenda(accountNumber, data.get("value"));
+  public ResponseEntity<?> createInvestmentRendaFixa(@PathVariable String accountNumber, @RequestBody Map<String, Number> data) {
+    if (data == null || !data.containsKey("value") || data.get("value") == null) {
+      Map<String, Object> error = new HashMap<>();
+      error.put("error", "Payload inválido. Envie { value: number }.");
+      return ResponseEntity.badRequest().body(error);
+    }
+    double value = data.get("value").doubleValue();
+    RendaFixa newInvestment = service.createInvestmentRenda(accountNumber, value);
     return ResponseEntity.ok(newInvestment);
   }
 

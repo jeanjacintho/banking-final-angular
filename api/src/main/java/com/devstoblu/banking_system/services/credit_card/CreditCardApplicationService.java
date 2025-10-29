@@ -3,8 +3,9 @@ package com.devstoblu.banking_system.services.credit_card;
 import com.devstoblu.banking_system.dtos.CreditCardRequestDTO;
 import com.devstoblu.banking_system.dtos.CreditCardRequestResponseDTO;
 import com.devstoblu.banking_system.models.CreditCard;
+import com.devstoblu.banking_system.models.Usuario;
 import com.devstoblu.banking_system.repositories.CreditCardRepository;
-import lombok.RequiredArgsConstructor;
+import com.devstoblu.banking_system.repositories.UsuarioRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,20 +17,25 @@ public class CreditCardApplicationService {
     private final CreditLimitService creditLimitService;
     private final CardIssuanceService cardIssuanceService;
     private final CreditCardRepository cardRepository;
+    private final UsuarioRepository usuarioRepository;
 
-    public CreditCardApplicationService(RiskScoringService riskScoringService, CreditLimitService creditLimitService, CardIssuanceService cardIssuanceService, CreditCardRepository cardRepository) {
+    public CreditCardApplicationService(RiskScoringService riskScoringService, CreditLimitService creditLimitService, CardIssuanceService cardIssuanceService, CreditCardRepository cardRepository, UsuarioRepository usuarioRepository) {
         this.riskScoringService = riskScoringService;
         this.creditLimitService = creditLimitService;
         this.cardIssuanceService = cardIssuanceService;
         this.cardRepository = cardRepository;
+        this.usuarioRepository = usuarioRepository;
     }
 
     @Transactional
-    public CreditCardRequestResponseDTO processApplication(CreditCardRequestDTO dto) {
+    public CreditCardRequestResponseDTO processApplication(CreditCardRequestDTO dto, Long userId) {
         if (!Boolean.TRUE.equals(dto.acceptTerms()) || !Boolean.TRUE.equals(dto.authorizationCreditConsultation())) {
             return new CreditCardRequestResponseDTO("recusado", null, null,
                     null, null, null, java.util.List.of("Consentimentos obrigatórios não marcados"), "Solicitação recusada.");
         }
+
+        Usuario user = usuarioRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
         int score = riskScoringService.score(dto);
         BigDecimal limite = creditLimitService.calculate(dto, score);
@@ -55,6 +61,7 @@ public class CreditCardApplicationService {
         card.setMaskedPan(issued.maskedPan());
         card.setCvvHash(issued.cvvHash());
         card.setPanToken(issued.token());
+        card.setUsuario(user);
 
         cardRepository.save(card);
 

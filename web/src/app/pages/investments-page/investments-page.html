@@ -1,1 +1,74 @@
-<p>investments-page works!</p>
+<app-layout pageTitle="Investimentos">
+  <div class="max-w-3xl mx-auto">
+    @if (error(); as err) {
+    <div class="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
+      <div class="flex items-center gap-2">
+        <lucide-icon name="AlertCircle" size="16" class="text-red-600"></lucide-icon>
+        <p class="text-sm text-red-800">{{ err }}</p>
+      </div>
+    </div>
+    }
+
+    @if (success(); as msg) {
+    <div class="bg-green-50 border border-green-200 rounded-xl p-4 mb-6">
+      <div class="flex items-center gap-2">
+        <lucide-icon name="CheckCircle" size="16" class="text-green-600"></lucide-icon>
+        <p class="text-sm text-green-800">{{ msg }}</p>
+      </div>
+    </div>
+    }
+
+    <div class="bg-white rounded-xl p-4 border border-border">
+      <div class="flex items-center gap-2 mb-4">
+        <lucide-icon name="DollarSign" size="20" class="text-primary"></lucide-icon>
+        <h2 class="text-sm font-semibold text-text">Criar investimento</h2>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-4">
+        <div>
+          <label class="block text-xs font-medium mb-2 text-text">Conta</label>
+          <select formControlName="accountNumber"
+            class="w-full px-4 py-2.5 border border-border rounded-lg text-sm bg-background text-text">
+            @for (acc of accounts(); track acc.accountNumber) {
+            <option [value]="acc.accountNumber">{{ acc.accountNumber }} • {{ acc.accountType }} • {{ acc.balance | currency:'BRL' }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div>
+            <label class="block text-xs font-medium mb-2 text-text">Tipo</label>
+            <select formControlName="type"
+              class="w-full px-4 py-2.5 border border-border rounded-lg text-sm bg-background text-text">
+              <option value="CDB">CDB</option>
+              <option value="RENDA_FIXA">Renda Fixa</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium mb-2 text-text">Valor (R$)</label>
+            <input type="number" formControlName="value" min="1" step="0.01"
+              class="w-full px-4 py-2.5 border border-border rounded-lg text-sm bg-background text-text"
+              placeholder="0,00" />
+          </div>
+        </div>
+
+        @if (form.get('type')?.value === 'CDB') {
+        <div>
+          <label class="block text-xs font-medium mb-2 text-text">Prazo (meses)</label>
+          <input type="number" formControlName="term" min="1"
+            class="w-full px-4 py-2.5 border border-border rounded-lg text-sm bg-background text-text"
+            placeholder="12" />
+        </div>
+        }
+
+        <div class="pt-2">
+          <button type="submit" [disabled]="form.invalid || loading()"
+            class="w-full bg-gradient-to-r from-gradient-start to-gradient-end text-white font-medium py-2.5 px-6 rounded-lg">
+            Criar investimento
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</app-layout>

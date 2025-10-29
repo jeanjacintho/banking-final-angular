@@ -30,14 +30,21 @@ public class CreditScoreService {
     public int calculateScore(Usuario usuario) {
         int score = 0;
 
-        // Tempo de conta
-        int years = Period.between(usuario.getAccountCreationDate(), LocalDate.now()).getYears();
+        LocalDate accountCreation = usuario.getAccountCreationDate();
+        int years = 0;
+        if (accountCreation != null) {
+            years = Period.between(accountCreation, LocalDate.now()).getYears();
+        }
         score += years * 10;
 
         // Saldo total das contas
-        BigDecimal totalBalance = usuario.getAccounts().stream()
-                .map(account -> BigDecimal.valueOf(account.getBalance()))
+        BigDecimal totalBalance = BigDecimal.ZERO;
+        if (usuario.getAccounts() != null) {
+            totalBalance = usuario.getAccounts().stream()
+                .map(Account::getBalance)
+                .map(BigDecimal::valueOf)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+        }
         score += totalBalance.divide(BigDecimal.valueOf(100), RoundingMode.DOWN).intValue();
 
         // Histórico de pagamentos

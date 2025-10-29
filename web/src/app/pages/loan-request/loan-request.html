@@ -1,0 +1,264 @@
+<app-layout pageTitle="Solicitar Empréstimo">
+  <div class="max-w-5xl mx-auto">
+    @if (error(); as err) {
+    <div class="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
+      <div class="flex items-center gap-2">
+        <lucide-icon name="AlertCircle" size="16" class="text-red-600"></lucide-icon>
+        <p class="text-sm text-red-800">{{ err }}</p>
+      </div>
+    </div>
+    }
+
+    @if (!loanResult()) {
+    <div class="bg-white rounded-xl p-4 border border-border">
+      <div class="flex justify-between items-center mb-6">
+        <div class="flex items-center gap-2">
+          <lucide-icon name="BanknoteArrowDown" size="20" class="text-primary"></lucide-icon>
+          <div>
+            <h2 class="text-sm font-semibold text-text">Solicitar Empréstimo</h2>
+            <p class="text-xs text-muted-foreground">
+              Preencha os dados para simular e solicitar seu empréstimo
+            </p>
+          </div>
+        </div>
+
+        <a routerLink="/dashboard"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-text hover:bg-muted rounded-lg transition-colors border border-border">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          Voltar
+        </a>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="simulateLoan()">
+        <div class="space-y-6">
+          <div>
+            <h3 class="text-xs text-muted-foreground mb-4">Tipo de Empréstimo</h3>
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+              @for (loanType of loanTypes; track loanType.value) {
+              <label
+                class="flex items-start gap-3 p-4 rounded-lg border cursor-pointer transition-colors hover:bg-muted/50"
+                [class.border-primary]="form.get('type')?.value === loanType.value"
+                [class.bg-primary/5]="form.get('type')?.value === loanType.value"
+                [class.border-border]="form.get('type')?.value !== loanType.value">
+                <input type="radio" formControlName="type" [value]="loanType.value" class="mt-0.5" />
+                <div class="flex-1">
+                  <div class="text-sm font-semibold text-text">{{ loanType.label }}</div>
+                  <div class="text-xs text-muted-foreground mt-1">{{ loanType.description }}</div>
+                </div>
+              </label>
+              }
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-xs text-muted-foreground mb-4">Dados do Empréstimo</h3>
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div>
+                <label class="block text-xs font-medium mb-2 text-text">
+                  Valor Solicitado (R$)
+                </label>
+                <input type="number" formControlName="totalAmount" step="0.01" min="0"
+                  class="w-full px-4 py-2.5 border border-border rounded-lg text-sm bg-background text-text focus:outline-none focus:border-gradient-start focus:ring-3 focus:ring-gradient-start/10 transition-colors"
+                  [class.border-red-500]="isInvalid(form.get('totalAmount'))"
+                  placeholder="0.00" />
+                @if (isInvalid(form.get('totalAmount'))) {
+                <div class="mt-1 text-xs text-red-600">
+                  {{ getErrorMessage(form.get('totalAmount')) }}
+                </div>
+                }
+                @if (!isInvalid(form.get('totalAmount')) && form.get('totalAmount')?.value) {
+                <div class="mt-1 text-xs text-muted-foreground">
+                  Faixa: {{ formatCurrency(getMinAmount()) }} a {{ formatCurrency(getMaxAmount()) }}
+                </div>
+                }
+              </div>
+
+              <div>
+                <label class="block text-xs font-medium mb-2 text-text">
+                  Número de Parcelas
+                </label>
+                <input type="number" formControlName="numberOfInstallments" min="1"
+                  class="w-full px-4 py-2.5 border border-border rounded-lg text-sm bg-background text-text focus:outline-none focus:border-gradient-start focus:ring-3 focus:ring-gradient-start/10 transition-colors"
+                  [class.border-red-500]="isInvalid(form.get('numberOfInstallments'))"
+                  placeholder="24" />
+                @if (isInvalid(form.get('numberOfInstallments'))) {
+                <div class="mt-1 text-xs text-red-600">
+                  {{ getErrorMessage(form.get('numberOfInstallments')) }}
+                </div>
+                }
+                @if (!isInvalid(form.get('numberOfInstallments')) && form.get('numberOfInstallments')?.value) {
+                <div class="mt-1 text-xs text-muted-foreground">
+                  Prazo: {{ getMinInstallments() }} a {{ getMaxInstallments() }} meses
+                </div>
+                }
+              </div>
+            </div>
+
+            <div class="mt-4 p-3 bg-muted/30 rounded-lg border border-border">
+              <div class="flex items-center gap-2 mb-2">
+                <lucide-icon name="Info" size="14" class="text-primary"></lucide-icon>
+                <span class="text-xs font-medium text-text">Informações</span>
+              </div>
+              <div class="text-xs text-muted-foreground space-y-1">
+                <p>Taxa de juros: {{ getInterestRate() }}% ao mês</p>
+                <p>Valor mínimo: {{ formatCurrency(getMinAmount()) }}</p>
+                <p>Valor máximo: {{ formatCurrency(getMaxAmount()) }}</p>
+                <p>Prazo mínimo: {{ getMinInstallments() }} meses</p>
+                <p>Prazo máximo: {{ getMaxInstallments() }} meses</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-border">
+            <button type="submit" [disabled]="form.invalid || simulating() || !userId()"
+              class="w-full bg-gradient-to-r from-gradient-start to-gradient-end text-white font-medium py-2.5 px-6 rounded-lg hover:brightness-105 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+              @if (simulating()) {
+              <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                </path>
+              </svg>
+              <span class="text-sm">Simulando...</span>
+              }
+              @if (!simulating()) {
+              <lucide-icon name="Calculator" size="16"></lucide-icon>
+              <span class="text-sm">Simular Empréstimo</span>
+              }
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    @if (simulation(); as sim) {
+    <div class="mt-6 bg-white rounded-xl p-4 border border-border">
+      <div class="flex items-center gap-2 mb-4">
+        <lucide-icon name="CheckCircle" size="20" class="text-green-600"></lucide-icon>
+        <h3 class="text-sm font-semibold text-text">Resultado da Simulação</h3>
+      </div>
+
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div class="p-4 bg-muted/30 rounded-lg border border-border">
+          <div class="text-xs text-muted-foreground mb-1">Valor Solicitado</div>
+          <div class="text-lg font-semibold text-text">{{ formatCurrency(sim.requestedAmount) }}</div>
+        </div>
+
+        <div class="p-4 bg-muted/30 rounded-lg border border-border">
+          <div class="text-xs text-muted-foreground mb-1">Valor Total a Pagar</div>
+          <div class="text-lg font-semibold text-text">{{ formatCurrency(sim.totalAmount) }}</div>
+        </div>
+
+        <div class="p-4 bg-muted/30 rounded-lg border border-border">
+          <div class="text-xs text-muted-foreground mb-1">Parcela Mensal</div>
+          <div class="text-lg font-semibold text-text">{{ formatCurrency(sim.monthlyInstallment) }}</div>
+        </div>
+
+        <div class="p-4 bg-muted/30 rounded-lg border border-border">
+          <div class="text-xs text-muted-foreground mb-1">Total de Juros</div>
+          <div class="text-lg font-semibold text-text">{{ formatCurrency(sim.totalInterest) }}</div>
+        </div>
+
+        <div class="p-4 bg-muted/30 rounded-lg border border-border">
+          <div class="text-xs text-muted-foreground mb-1">Taxa Mensal</div>
+          <div class="text-lg font-semibold text-text">{{ sim.monthlyRate }}%</div>
+        </div>
+
+        <div class="p-4 bg-muted/30 rounded-lg border border-border">
+          <div class="text-xs text-muted-foreground mb-1">Número de Parcelas</div>
+          <div class="text-lg font-semibold text-text">{{ sim.numberOfInstallments }}x</div>
+        </div>
+      </div>
+
+      <div class="mt-6 pt-4 border-t border-border">
+        <button type="button" (click)="requestLoan()" [disabled]="loading()"
+          class="w-full bg-gradient-to-r from-gradient-start to-gradient-end text-white font-medium py-2.5 px-6 rounded-lg hover:brightness-105 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+          @if (loading()) {
+          <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+            viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+            </path>
+          </svg>
+          <span class="text-sm">Solicitando...</span>
+          }
+          @if (!loading()) {
+          <lucide-icon name="BanknoteArrowDown" size="16"></lucide-icon>
+          <span class="text-sm">Confirmar Solicitação</span>
+          }
+        </button>
+      </div>
+    </div>
+    }
+    }
+
+    @if (loanResult(); as result) {
+    <div class="bg-white rounded-xl p-4 border border-border">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-2">
+          <lucide-icon name="CheckCircle" size="20" class="text-green-600"></lucide-icon>
+          <div>
+            <h2 class="text-sm font-semibold text-text">Empréstimo Solicitado com Sucesso!</h2>
+            <p class="text-xs text-muted-foreground">Sua solicitação foi processada</p>
+          </div>
+        </div>
+
+        <span class="px-3 py-1 rounded-lg text-xs font-medium border {{ getStatusClass(result.status) }}">
+          {{ getStatusLabel(result.status) }}
+        </span>
+      </div>
+
+      <div class="space-y-4">
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div class="p-4 bg-muted/30 rounded-lg border border-border">
+            <div class="text-xs text-muted-foreground mb-1">ID do Empréstimo</div>
+            <div class="text-lg font-semibold text-text">#{{ result.id }}</div>
+          </div>
+
+          <div class="p-4 bg-muted/30 rounded-lg border border-border">
+            <div class="text-xs text-muted-foreground mb-1">Valor Solicitado</div>
+            <div class="text-lg font-semibold text-text">{{ formatCurrency(result.totalAmount) }}</div>
+          </div>
+
+          <div class="p-4 bg-muted/30 rounded-lg border border-border">
+            <div class="text-xs text-muted-foreground mb-1">Parcela Mensal</div>
+            <div class="text-lg font-semibold text-text">{{ formatCurrency(result.monthlyInstallment) }}</div>
+          </div>
+
+          <div class="p-4 bg-muted/30 rounded-lg border border-border">
+            <div class="text-xs text-muted-foreground mb-1">Número de Parcelas</div>
+            <div class="text-lg font-semibold text-text">{{ result.numberOfInstallments }}x</div>
+          </div>
+
+          <div class="p-4 bg-muted/30 rounded-lg border border-border">
+            <div class="text-xs text-muted-foreground mb-1">Taxa de Juros</div>
+            <div class="text-lg font-semibold text-text">{{ result.interestRate }}% ao mês</div>
+          </div>
+
+          <div class="p-4 bg-muted/30 rounded-lg border border-border">
+            <div class="text-xs text-muted-foreground mb-1">Data de Início</div>
+            <div class="text-lg font-semibold text-text">{{ formatDate(result.startDate) }}</div>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-border flex gap-3">
+          <button type="button" (click)="loanResult.set(null); simulation.set(null)"
+            class="flex-1 bg-border text-text font-medium py-2.5 px-6 rounded-lg hover:bg-border/80 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+            <span class="text-sm">Solicitar Novo Empréstimo</span>
+          </button>
+
+          <a routerLink="/dashboard"
+            class="flex-1 bg-gradient-to-r from-gradient-start to-gradient-end text-white font-medium py-2.5 px-6 rounded-lg hover:brightness-105 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 text-center">
+            <span class="text-sm">Voltar ao Dashboard</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+</app-layout>
+

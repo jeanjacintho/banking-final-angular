@@ -43,8 +43,10 @@ export interface TransactionHistoryItem {
   fromAccount: BankAccount | null;
   toAccount: BankAccount | null;
   amount: number;
-  type: 'INTERNAL' | 'TED' | 'PIX' | 'DEPOSIT' | 'WITHDRAW';
+  type: 'INTERNAL' | 'TED' | 'PIX' | 'DEPOSIT' | 'WITHDRAW' | 'CREDIT_CARD';
   timestamp: string;
+  merchantName?: string;
+  installmentsTotal?: number;
 }
 
 @Injectable({

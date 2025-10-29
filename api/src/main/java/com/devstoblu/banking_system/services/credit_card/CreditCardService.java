@@ -1,6 +1,7 @@
 package com.devstoblu.banking_system.services.credit_card;
 
 import com.devstoblu.banking_system.models.CreditCard;
+import com.devstoblu.banking_system.models.Usuario;
 import com.devstoblu.banking_system.repositories.CreditCardRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,10 @@ public class CreditCardService {
 
     public List<CreditCard> getAll() {
         return repository.findAll();
+    }
+
+    public List<CreditCard> getByUser(Usuario user) {
+        return repository.findByUsuario(user);
     }
 
     public CreditCard getByCardNumber(String cardNumber) {

@@ -10,25 +10,19 @@ import { CreditCard } from '../../../models/credit-card.model';
   styleUrl: './credit-card.css'
 })
 export class CreditCardComponent {
-  @Input() creditCard!: {
-    id: number;
-    cardNumber: string;
-    expirationDate: string;
-    brand: string;
-    cardHolderName: string;
-  }; // Recebe os dados de fora
-
   @Input() card!: CreditCard;
   @Input() selected = false;
   @Output() select = new EventEmitter<CreditCard>();
 
   onClick() {
-    this.select.emit(this.card);
+    if (this.card) {
+      this.select.emit(this.card);
+    }
   }
 
   // Mostra apenas os 4 últimos dígitos
   maskCardNumber(num: string): string {
-    if (!num) return '';
+    if (!num) return '•••• •••• •••• ••••';
     const last4 = num.slice(-4);
     return '•••• •••• •••• ' + last4;
   }
@@ -41,5 +35,13 @@ export class CreditCardComponent {
       return `${parts[0]}/${parts[1].slice(-2)}`;
     }
     return date;
+  }
+
+  // Formata data de expiração a partir de expMonth e expYear
+  formatExpiryDate(): string {
+    if (!this.card) return '';
+    const month = this.card.expMonth ? String(this.card.expMonth).padStart(2, '0') : '00';
+    const year = this.card.expYear ? String(this.card.expYear).slice(-2) : '00';
+    return `${month}/${year}`;
   }
 }

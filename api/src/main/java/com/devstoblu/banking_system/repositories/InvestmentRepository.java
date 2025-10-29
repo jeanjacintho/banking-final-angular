@@ -14,4 +14,7 @@ public interface InvestmentRepository extends JpaRepository<Investment, Long> {
 
   // Busca todos os investimentos ativos ou não de uma conta
   List<Investment> findByAccount_AccountNumber(String accountNumber);
+
+  // Busca todos os investimentos por usuário
+  List<Investment> findByAccount_Usuario_Id(Long userId);
 }

@@ -1,0 +1,256 @@
+<!-- Bank-style split register layout -->
+<div class="min-h-screen w-full bg-background grid grid-cols-1 lg:grid-cols-2">
+    <!-- Left hero / brand panel -->
+    <section class="hidden lg:flex relative overflow-hidden animated-gradient">
+        <div class="relative z-10 w-full h-full px-12 py-10 flex flex-col justify-between text-white">
+            <div class="flex items-center gap-3">
+                <div class="text-3xl font-extrabold tracking-tight">bankr</div>
+                <div class="opacity-90">Internet Banking</div>
+            </div>
+            <div>
+                <h1 class="text-4xl font-bold leading-tight">Faça parte do futuro das finanças</h1>
+                <p class="mt-4 text-white/90 max-w-lg">Crie sua conta gratuita e tenha acesso a todas as funcionalidades
+                    do bankr: transferências instantâneas, investimentos inteligentes e muito mais.</p>
+                <div class="mt-8 grid grid-cols-2 gap-4 max-w-xl">
+                    <div class="bg-white/10 backdrop-blur rounded-xl p-4 border border-white/20">
+                        <div class="flex items-center gap-3">
+                            <lucide-icon name="UserPlus" size="18" class="text-white"></lucide-icon>
+                            <span class="text-sm">Cadastro grátis</span>
+                        </div>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur rounded-xl p-4 border border-white/20">
+                        <div class="flex items-center gap-3">
+                            <lucide-icon name="Zap" size="18" class="text-white"></lucide-icon>
+                            <span class="text-sm">Aprovação rápida</span>
+                        </div>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur rounded-xl p-4 border border-white/20">
+                        <div class="flex items-center gap-3">
+                            <lucide-icon name="Smartphone" size="18" class="text-white"></lucide-icon>
+                            <span class="text-sm">Acesso total</span>
+                        </div>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur rounded-xl p-4 border border-white/20">
+                        <div class="flex items-center gap-3">
+                            <lucide-icon name="ShieldCheck" size="18" class="text-white"></lucide-icon>
+                            <span class="text-sm">Segurança garantida</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 text-white/80 text-sm">
+                <lucide-icon name="Shield" size="16" class="text-white"></lucide-icon>
+                <span>Seus dados protegidos • 24/7</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Right registration form -->
+    <section class="flex items-center justify-center px-6 py-10 lg:px-10 bg-white relative z-20 overflow-y-auto">
+        <div class="w-full max-w-2xl relative py-8">
+            <div class="flex items-center justify-center mb-6 lg:hidden">
+                <div class="text-2xl font-extrabold text-primary tracking-tight">bankr</div>
+                <span class="ml-3 text-muted-foreground">Internet Banking</span>
+            </div>
+
+            <div class="border border-border rounded-2xl shadow-shadow/50 p-6 md:p-8 bg-white relative z-10">
+                <div class="flex items-center justify-center gap-2 text-primary mb-4">
+                    <lucide-icon name="UserPlus" size="18" class="text-primary"></lucide-icon>
+                    <span class="text-xs font-medium">Criar conta</span>
+                </div>
+
+                <h2 class="text-2xl font-semibold text-center text-text">Crie sua conta</h2>
+                <p class="text-center text-muted-foreground text-sm mt-2">Preencha os dados para começar</p>
+
+                <form [formGroup]="registerForm" (ngSubmit)="onSubmit()"
+                    class="space-y-4 mt-6 max-h-[600px] overflow-y-auto pr-2">
+
+                    <!-- Nome completo e Telefone -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Nome -->
+                        <div>
+                            <label for="nomeCompleto" class="block text-sm font-medium mb-2 text-text">Nome
+                                completo</label>
+                            <input id="nomeCompleto" type="text" formControlName="nomeCompleto"
+                                class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 bg-white"
+                                [class.border-gray-300]="!nomeCompleto?.touched || !nomeCompleto?.invalid"
+                                [class.border-red-500]="nomeCompleto?.touched && nomeCompleto?.invalid"
+                                placeholder="Digite seu nome" />
+                            @if (nomeCompleto?.touched && nomeCompleto?.invalid) {
+                            <div class="mt-1 text-sm text-red-600">
+                                @if (nomeCompleto?.errors?.['required']) { <span>Nome é obrigatório</span> }
+                                @if (nomeCompleto?.errors?.['minlength']) { <span>Nome deve ter pelo menos 3
+                                    caracteres</span> }
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Telefone -->
+                        <div>
+                            <label for="telefone" class="block text-sm font-medium mb-2 text-text">Telefone</label>
+                            <input id="telefone" type="text" mask="(00) 00000-0000" formControlName="telefone"
+                                class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 bg-white"
+                                [class.border-gray-300]="!telefone?.touched || !telefone?.invalid"
+                                [class.border-red-500]="telefone?.touched && telefone?.invalid"
+                                placeholder="Digite seu telefone" />
+                            @if (telefone?.touched && telefone?.invalid) {
+                            <div class="mt-1 text-sm text-red-600">
+                                @if (telefone?.errors?.['required']) { <span>Telefone é obrigatório</span> }
+                            </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- CPF e Data de Nascimento -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- CPF -->
+                        <div>
+                            <label for="cpf" class="block text-sm font-medium mb-2 text-text">CPF</label>
+                            <input id="cpf" type="text" mask="000.000.000-00" formControlName="cpf"
+                                class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 bg-white"
+                                [class.border-gray-300]="!cpf?.touched || !cpf?.invalid"
+                                [class.border-red-500]="cpf?.touched && cpf?.invalid" placeholder="Digite seu CPF" />
+                            @if (cpf?.touched && cpf?.invalid) {
+                            <div class="mt-1 text-sm text-red-600">
+                                @if (cpf?.errors?.['required']) { <span>CPF é obrigatório</span> }
+                                @if (cpf?.errors?.['minlength'] || cpf?.errors?.['maxlength']) { <span>CPF deve ter 11
+                                    dígitos</span> }
+                                @else if (cpf?.errors?.['invalidCPF']) { <span>CPF inválido</span> }
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Data de Nascimento -->
+                        <div>
+                            <label for="dataNascimento" class="block text-sm font-medium mb-2 text-text">Data de
+                                Nascimento</label>
+                            <input id="dataNascimento" type="date" formControlName="dataNascimento"
+                                class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 bg-white"
+                                [class.border-gray-300]="!dataNascimento?.touched || !dataNascimento?.invalid"
+                                [class.border-red-500]="dataNascimento?.touched && dataNascimento?.invalid" />
+                            @if (dataNascimento?.touched && dataNascimento?.invalid) {
+                            <div class="mt-1 text-sm text-red-600">
+                                @if (dataNascimento?.errors?.['required']) { <span>Data é obrigatória</span> }
+                                @if (dataNascimento?.errors?.['underage']) { <span>Você deve ter pelo menos 18
+                                    anos</span> }
+                            </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Email e Senha -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Email -->
+                        <div>
+                            <label for="email" class="block text-sm font-medium mb-2 text-text">E-mail</label>
+                            <input id="email" type="email" formControlName="email"
+                                class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 bg-white"
+                                [class.border-gray-300]="!email?.touched || !email?.invalid"
+                                [class.border-red-500]="email?.touched && email?.invalid"
+                                placeholder="Digite seu e-mail" />
+                            @if (email?.touched && email?.invalid) {
+                            <div class="mt-1 text-sm text-red-600">
+                                @if (email?.errors?.['required']) { <span>Email é obrigatório</span> }
+                                @if (email?.errors?.['email']) { <span>Email inválido</span> }
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Senha -->
+                        <div>
+                            <label for="senha" class="block text-sm font-medium mb-2 text-text">Senha</label>
+                            <input id="senha" type="password" formControlName="senha"
+                                class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 bg-white"
+                                [class.border-gray-300]="!senha?.touched || !senha?.invalid"
+                                [class.border-red-500]="senha?.touched && senha?.invalid"
+                                placeholder="Digite sua senha" />
+                            @if (senha?.touched && senha?.invalid) {
+                            <div class="mt-1 text-sm text-red-600">
+                                @if (senha?.errors?.['required']) { <span>Senha é obrigatória</span> }
+                                @if (senha?.errors?.['weakPassword']) {
+                                <span class="text-xs">8+ caracteres, 1 maiúscula, 1 número e 1 especial</span>
+                                }
+                            </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- CEP -->
+                    <div>
+                        <label for="cep" class="block text-sm font-medium mb-2 text-text">CEP</label>
+                        <input id="cep" type="text" mask="00000-000" formControlName="cep"
+                            class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 bg-white"
+                            (blur)="buscarCEP()" [class.border-gray-300]="!cep?.touched || !cep?.invalid"
+                            [class.border-red-500]="cep?.touched && cep?.invalid" placeholder="Digite o CEP" />
+                        @if (cep?.touched && cep?.invalid) {
+                        <div class="mt-1 text-sm text-red-600">
+                            @if (cep?.errors?.['required']) { <span>CEP é obrigatório</span> }
+                            @if (cep?.errors?.['pattern']) { <span>CEP inválido</span> }
+                        </div>
+                        }
+                    </div>
+
+                    <!-- Endereço -->
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="col-span-2">
+                            <label for="logradouro" class="block text-sm font-medium mb-2 text-text">Logradouro</label>
+                            <input id="logradouro" type="text" formControlName="logradouro"
+                                class="w-full px-4 py-3 border rounded-lg bg-gray-50 cursor-not-allowed" readonly />
+                        </div>
+                        <div>
+                            <label for="bairro" class="block text-sm font-medium mb-2 text-text">Bairro</label>
+                            <input id="bairro" type="text" formControlName="bairro"
+                                class="w-full px-4 py-3 border rounded-lg bg-gray-50 cursor-not-allowed" readonly />
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="col-span-2">
+                            <label for="localidade" class="block text-sm font-medium mb-2 text-text">Cidade</label>
+                            <input id="localidade" type="text" formControlName="localidade"
+                                class="w-full px-4 py-3 border rounded-lg bg-gray-50 cursor-not-allowed" readonly />
+                        </div>
+                        <div>
+                            <label for="uf" class="block text-sm font-medium mb-2 text-text">UF</label>
+                            <input id="uf" type="text" formControlName="uf" maxlength="2"
+                                class="w-full px-4 py-3 border rounded-lg bg-gray-50 cursor-not-allowed text-center"
+                                readonly />
+                        </div>
+                    </div>
+
+                    <!-- Consentimento -->
+                    <div class="flex items-start gap-2 text-sm">
+                        <input type="checkbox" id="consentimento" formControlName="consentimento"
+                            class="w-4 h-4 rounded border-white/20 bg-background focus:ring-gradient-start mt-1">
+                        <label for="consentimento" class="text-text">Autorizo o bankr a tratar meus dados pessoais para
+                            envio de comunicações sobre seus produtos e serviços e também estou de acordo com a <a
+                                class="text-primary hover:underline cursor-pointer">Política de Privacidade.</a></label>
+                    </div>
+
+                    <!-- Botão -->
+                    <button type="submit" [disabled]="isSubmiting || !consentimento?.value"
+                        class="w-full bg-gradient-to-r from-gradient-start to-gradient-end text-white font-medium py-3.5 px-6 rounded-lg hover:brightness-105 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-sm">
+                        @if (isSubmiting) {
+                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg"
+                            fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                            </circle>
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                            </path>
+                        </svg>
+                        }
+                        <span>{{ isSubmiting ? 'Criando conta...' : 'Criar conta' }}</span>
+                    </button>
+
+                    <p class="text-center text-sm text-text">
+                        Já tem uma conta?
+                        <a (click)="navigateToLogin()" class="text-primary hover:underline cursor-pointer font-medium">
+                            Entrar
+                        </a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>

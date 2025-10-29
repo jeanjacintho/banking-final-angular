@@ -49,6 +49,40 @@
   box-shadow: 0 4px 12px rgba(141, 255, 106, 0.15);
 }
 
+/* Grid layout adjustments */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+/* Make components fill available space */
+app-bank-accounts,
+app-currency-converter,
+app-credit-card,
+app-transfer-history {
+  display: block;
+  height: 100%;
+}
+
+/* Ensure card containers are flexible */
+app-bank-accounts ::ng-deep > *:first-child,
+app-currency-converter ::ng-deep > *:first-child,
+app-credit-card ::ng-deep > *:first-child,
+app-transfer-history ::ng-deep > *:first-child {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensure components with empty states still fill space */
+app-bank-accounts ::ng-deep .flex.flex-col,
+app-currency-converter ::ng-deep .flex.flex-col,
+app-credit-card ::ng-deep .flex.flex-col,
+app-transfer-history ::ng-deep .flex.flex-col {
+  flex: 1;
+}
+
 
 
 

@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { RegisterComponent } from '../../components/register-component/register-component';
+import { Router, RouterModule } from '@angular/router';
 import { CurrencyConverterComponent } from "../../components/currency-converter/currency-converter";
 
 @Component({
@@ -10,17 +9,14 @@ import { CurrencyConverterComponent } from "../../components/currency-converter/
   templateUrl: './home.html',
   imports: [
     CommonModule,
-    RegisterComponent
-],
-    CurrencyConverterComponent
+    CurrencyConverterComponent,
+    RouterModule
   ],
   styleUrls: ['./home.css']
 })
 export class Home {
 
   menuOpen = false;
-  showForm = false;
-  isVisible = false
 
   constructor(private router: Router) {}
 
@@ -30,16 +26,6 @@ export class Home {
 
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
-  }
-
-  openForm(){
-    this.isVisible = true;
-    setTimeout(() => this.showForm = true, 10)
-  }
-
-  closeForm(){
-    this.showForm = false;
-    setTimeout(() => this.isVisible = false, 300)
   }
 
 }

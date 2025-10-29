@@ -1,0 +1,41 @@
+<div class="bg-white rounded-xl p-4 border border-border h-full flex flex-col">
+  <div class="flex justify-between items-center mb-6">
+    <div class="flex items-center gap-2">
+      <lucide-icon name="CreditCard" size="20" class="text-primary"></lucide-icon>
+      <span class="text-sm text-muted-foreground">Gastos Recentes (Cartão)</span>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="text-muted-foreground text-sm text-center py-8">
+    Carregando...
+  </div>
+
+  <div *ngIf="!isLoading && items.length === 0" class="text-muted-foreground text-center py-8">
+    Nenhuma compra encontrada.
+  </div>
+
+  <div *ngIf="!isLoading && items.length > 0" class="space-y-2">
+    <div *ngFor="let item of items" class="flex items-center gap-4 p-2 hover:bg-muted rounded-lg transition-colors">
+      <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+        <lucide-icon name="CreditCard" size="20" class="text-primary"></lucide-icon>
+      </div>
+      <div class="flex-1">
+        <div class="text-text text-sm font-semibold">
+          {{ item.merchantName }}
+          <span *ngIf="item.installmentsTotal" class="text-muted-foreground"> ({{ item.installmentsTotal }}x)</span>
+        </div>
+        <div class="text-xs text-muted-foreground mt-1">
+          {{ item.card.brand }} • {{ item.card.maskedPan || (item.card.cardNumber | slice: -4) }} ·
+          {{ formatDate(item.createdAt) }}
+        </div>
+      </div>
+      <div class="text-right">
+        <div class="font-semibold text-destructive text-sm">
+          - {{ formatAmount(item.amount) }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

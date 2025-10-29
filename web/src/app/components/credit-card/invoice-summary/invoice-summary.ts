@@ -14,12 +14,24 @@ export class InvoiceSummaryComponent {
   @Input() items: InvoiceItem[] = [];
   @Input() invoiceTotal: number = 0;
   @Input() creditLimit: number = 0;
+  @Input() availableLimit?: number; // Pode ser passado diretamente do backend
   
-  get availableLimit(): number {
+  get calculatedAvailableLimit(): number {
+    // Usa o availableLimit do backend se fornecido, senão calcula
+    if (this.availableLimit !== undefined && this.availableLimit !== null) {
+      return this.availableLimit;
+    }
     return this.creditLimit - this.invoiceTotal;
   }
 
+  get usedAmount(): number {
+    return this.creditLimit - this.calculatedAvailableLimit;
+  }
+
   get progressPercentage(): number {
-    return this.creditLimit ? (this.invoiceTotal / this.creditLimit) * 100 : 0;
+    if (!this.creditLimit || this.creditLimit === 0) return 0;
+    // Calcula porcentagem baseado no valor usado
+    const used = this.usedAmount;
+    return Math.min((used / this.creditLimit) * 100, 100);
   }
 }

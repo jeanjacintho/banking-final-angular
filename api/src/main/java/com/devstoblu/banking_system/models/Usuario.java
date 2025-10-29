@@ -5,7 +5,6 @@ import com.devstoblu.banking_system.enums.UserRole;
 import com.devstoblu.banking_system.models.banking_account.Account;
 import com.devstoblu.banking_system.models.loan.Loan;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.devstoblu.banking_system.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -52,8 +51,8 @@ public class Usuario implements UserDetails {
   @Column(nullable = false)
   private String senha;
 
-  @Column(nullable = false)
-  private Boolean consentimento;
+  @Column(nullable = false, columnDefinition = "boolean default false")
+  private Boolean consentimento = false;
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false, length = 10)

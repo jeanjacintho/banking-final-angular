@@ -1,18 +1,19 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CreditCard } from '../models/credit-card.model';
+import { environment } from '../../environments/environment';
+import { CreditCardTransaction, CreateCreditCardTransactionRequest } from '../models/credit-card-transaction.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CreditCardService {
-  private apiUrl = 'http://localhost:8081/api/credit-cards'; // URL da API
-
-  constructor(private http: HttpClient){ }
+  private http = inject(HttpClient);
+  private apiUrl = `${environment.apiBase}/credit-cards`;
 
   getAllCards(): Observable<CreditCard[]> {
-    return this.http.get<CreditCard[]>(this.apiUrl);
+    return this.http.get<CreditCard[]>(`${this.apiUrl}/my-cards`);
   }
 
   addCard(card: CreditCard): Observable<CreditCard> {
@@ -33,5 +34,13 @@ export class CreditCardService {
 
   getCardByNumber(cardNumber: string): Observable<CreditCard> {
     return this.http.get<CreditCard>(`${this.apiUrl}/number/${cardNumber}`);
+  }
+
+  listTransactions(cardId: number): Observable<CreditCardTransaction[]> {
+    return this.http.get<CreditCardTransaction[]>(`${this.apiUrl}/${cardId}/transactions`);
+  }
+
+  createTransaction(cardId: number, req: CreateCreditCardTransactionRequest): Observable<CreditCardTransaction> {
+    return this.http.post<CreditCardTransaction>(`${this.apiUrl}/${cardId}/transactions`, req);
   }
 }
