@@ -28,6 +28,10 @@ public class InvestmentService {
     return investmentRepository.findAll();
   }
 
+  public List<Investment> findByUser(Long userId) {
+    return investmentRepository.findByAccount_Usuario_Id(userId);
+  }
+
   public CDB createInvestmentCdb(String accountNumber, double term, double value) {
     Account account = accountRepository.findByAccountNumber(accountNumber)
             .orElseThrow(() -> new IllegalArgumentException("Conta não encontrada."));

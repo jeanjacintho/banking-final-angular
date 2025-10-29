@@ -3,6 +3,8 @@ package com.devstoblu.banking_system.models.loan;
 import com.devstoblu.banking_system.enums.loans.LoanStatus;
 import com.devstoblu.banking_system.enums.loans.LoanType;
 import com.devstoblu.banking_system.models.Usuario;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -11,6 +13,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "loans")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Loan {
 
     @Id
@@ -32,10 +35,12 @@ public class Loan {
     private LoanStatus status;
 
     @OneToMany(mappedBy = "loan", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<LoanInstallment> installments = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private Usuario usuario;
 
     public Loan() {

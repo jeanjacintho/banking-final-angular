@@ -17,6 +17,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class LoanService {
@@ -24,14 +25,17 @@ public class LoanService {
     private final LoanRepository loanRepository;
     private final LoanInstallmentRepository installmentRepository;
     private final UsuarioRepository usuarioRepository;
+    private final AccountService accountService;
     private final CreditScoreService creditScoreService;
 
     public LoanService(LoanRepository loanRepository, LoanInstallmentRepository installmentRepository,
-                       UsuarioRepository usuarioRepository, CreditScoreService creditScoreService) {
+                       UsuarioRepository usuarioRepository, CreditScoreService creditScoreService,
+                       AccountService accountService) {
         this.loanRepository = loanRepository;
         this.installmentRepository = installmentRepository;
         this.usuarioRepository = usuarioRepository;
         this.creditScoreService = creditScoreService;
+        this.accountService = accountService;
     }
 
 
@@ -80,6 +84,7 @@ public class LoanService {
 
   //Cria uma solicitação de empréstimo, avalia automaticamente e gera as parcelas
 
+    @Transactional
     public LoanResponseDTO createLoanRequest(LoanRequestDTO req) {
         // Buscar usuário
         Usuario usuario = usuarioRepository.findById(req.getUserId())
@@ -150,6 +155,13 @@ public class LoanService {
         } else {
             // Aprova automaticamente para ambos APROVADO_AUTOMATICO e APROVADO_MANUAL
             loan.setStatus(LoanStatus.APROVADO);
+
+            // Crédito automático do valor do empréstimo na conta do usuário
+            var accounts = accountService.findByUserId(usuario.getId());
+            if (accounts != null && !accounts.isEmpty()) {
+                var target = accounts.get(0);
+                accountService.deposit(target.getAccountNumber(), req.getTotalAmount().doubleValue());
+            }
         }
         loan = loanRepository.save(loan);
 

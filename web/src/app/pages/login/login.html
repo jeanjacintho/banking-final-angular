@@ -1,10 +1,7 @@
 <!-- Bank-style split login layout -->
 <div class="min-h-screen w-full bg-background grid grid-cols-1 lg:grid-cols-2">
     <!-- Left hero / brand panel -->
-    <section class="hidden lg:flex relative overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-br from-gradient-start to-gradient-end opacity-90"></div>
-        <img src="assets/bg-bankr.png" alt="Background"
-            class="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-60" />
+    <section class="hidden lg:flex relative overflow-hidden animated-gradient">
         <div class="relative z-10 w-full h-full px-12 py-10 flex flex-col justify-between text-white">
             <div class="flex items-center gap-3">
                 <div class="text-3xl font-extrabold tracking-tight">bankr</div>
@@ -49,14 +46,14 @@
     </section>
 
     <!-- Right secure login card -->
-    <section class="flex items-center justify-center px-6 py-10 lg:px-10 bg-white">
-        <div class="w-full max-w-[440px]">
+    <section class="flex items-center justify-center px-6 py-10 lg:px-10 bg-white relative z-20">
+        <div class="w-full max-w-[440px] relative">
             <div class="flex items-center justify-center mb-8 lg:hidden">
                 <div class="text-2xl font-extrabold text-primary tracking-tight">bankr</div>
                 <span class="ml-3 text-muted-foreground">Internet Banking</span>
             </div>
 
-            <div class="border border-border rounded-2xl shadow-shadow/50 p-6 md:p-8">
+            <div class="border border-border rounded-2xl shadow-shadow/50 p-6 md:p-8 bg-white relative z-10">
                 <div class="flex items-center justify-center gap-2 text-primary mb-4">
                     <lucide-icon name="Lock" size="18" class="text-primary"></lucide-icon>
                     <span class="text-xs font-medium">Acesso seguro</span>

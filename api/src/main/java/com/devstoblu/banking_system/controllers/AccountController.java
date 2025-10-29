@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 @RestController
-@RequestMapping("/account")
+@RequestMapping("/api/account")
 public class AccountController {
   private final AccountService service;
   private final UsuarioRepository usuarioRepository;
@@ -84,14 +84,16 @@ public class AccountController {
   }
 
   @PostMapping("/checking/{userId}")
-  public ResponseEntity<CheckingAccount> createChecking(@PathVariable Long userId, @RequestBody CheckingAccount account) {
-    CheckingAccount newAccount = service.createCheckingAccount(userId, account.getBalance());
+  public ResponseEntity<CheckingAccount> createChecking(@PathVariable Long userId, @RequestBody Map<String, Double> request) {
+    double balance = request.getOrDefault("balance", 0.0);
+    CheckingAccount newAccount = service.createCheckingAccount(userId, balance);
     return ResponseEntity.ok(newAccount);
   }
 
   @PostMapping("/savings/{userId}")
-  public ResponseEntity<SavingsAccount> createSavings(@PathVariable Long userId, @RequestBody SavingsAccount account) {
-    SavingsAccount newAccount = service.createSavingsAccount(userId, account.getBalance());
+  public ResponseEntity<SavingsAccount> createSavings(@PathVariable Long userId, @RequestBody Map<String, Double> request) {
+    double balance = request.getOrDefault("balance", 0.0);
+    SavingsAccount newAccount = service.createSavingsAccount(userId, balance);
     return ResponseEntity.ok(newAccount);
   }
 

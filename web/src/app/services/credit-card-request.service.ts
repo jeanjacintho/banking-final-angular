@@ -1,14 +1,15 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
+import { environment } from "../../environments/environment";
 
 export interface CreditCardRequest {
-  nomeCompleto: string;
+  name: string;
   cpf: string;
-  dataNascimento: string; // ISO YYYY-MM-DD
+  dateOfBirth: string; // ISO YYYY-MM-DD
   email: string;
-  telefone: string;
-  endereco: {
+  phoneNumber: string;
+  address: {
     logradouro: string;
     numero: string;
     complemento?: string;
@@ -17,15 +18,14 @@ export interface CreditCardRequest {
     estado: string;
     cep: string;
   };
-  rendaMensal: number;
-  fonteRenda: 'CLT' | 'PJ' | 'Autonomo' | 'Aposentado' | 'Estudante' | 'Outros';
-  empresa?: string;
-  tempoEmpregoMeses?: number;
-  despesasMensaisAproximadas?: number;
-  tipoFatura?: 'digital' | 'papel';
-  diaVencimentoPreferido?: number;
-  aceiteTermos: boolean;
-  autorizacaoConsultaCredito: boolean;
+  monthlyIncome: number;
+  sourceIncome: 'CLT' | 'PJ' | 'Autonomo' | 'Aposentado' | 'Estudante' | 'Outros';
+  company?: string;
+  employmentTimeMonths?: number;
+  invoiceType?: 'digital' | 'papel';
+  preferredDueDate?: number;
+  acceptTerms: boolean;
+  authorizationCreditConsultation: boolean;
 }
 
 export interface CreditCardRequestResponse {
@@ -44,7 +44,7 @@ export interface CreditCardRequestResponse {
 })
 export class CreditCardRequestService {
     private http = inject(HttpClient);
-    private baseUrl = 'http://localhost:8081/api/credit-cards';
+    private baseUrl = `${environment.apiBase}/credit-cards`;
 
     solicitarCartao(payload: CreditCardRequest): Observable<CreditCardRequestResponse> {
         return this.http.post<CreditCardRequestResponse>(`${this.baseUrl}/requests`, payload);

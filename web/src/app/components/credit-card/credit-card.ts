@@ -2,8 +2,11 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
+import { RouterModule } from '@angular/router';
+import { CreditCardService } from '../../services/credit-card-service';
+import { CreditCard } from '../../models/credit-card.model';
 
-export interface CreditCard {
+interface DisplayCard {
   id: number;
   cardNumber: string;
   cardHolder: string;
@@ -16,43 +19,68 @@ export interface CreditCard {
 @Component({
   selector: 'app-credit-card',
   standalone: true,
-  imports: [CommonModule, FormsModule, LucideAngularModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule, RouterModule],
   templateUrl: './credit-card.html'
 })
 export class CreditCardComponent implements OnInit {
+  private creditCardService = inject(CreditCardService);
   
-  cards: CreditCard[] = [];
+  cards: DisplayCard[] = [];
   currentCardIndex = 0;
+  isLoading = false;
+  errorMessage = '';
 
   ngOnInit() {
     this.loadCards();
   }
 
   loadCards() {
-    // Mock data - em produção viria de um serviço
-    this.cards = [
-      {
-        id: 1,
-        cardNumber: '4532 1234 5678 2431',
-        cardHolder: 'João Silva',
-        expiryDate: '17/24',
-        balance: 1023.00,
-        cardType: 'VISA',
-        isActive: true
+    this.isLoading = true;
+    this.errorMessage = '';
+    
+    this.creditCardService.getAllCards().subscribe({
+      next: (apiCards) => {
+        console.log('Cartões recebidos:', apiCards);
+        this.cards = apiCards.map(card => this.mapApiCardToDisplay(card));
+        this.isLoading = false;
       },
-      {
-        id: 2,
-        cardNumber: '5555 4444 3333 2222',
-        cardHolder: 'João Silva',
-        expiryDate: '12/25',
-        balance: 2500.50,
-        cardType: 'MASTERCARD',
-        isActive: true
+      error: (error) => {
+        console.error('Erro ao carregar cartões:', error);
+        this.errorMessage = `Erro ao carregar cartões: ${error.message}`;
+        this.isLoading = false;
       }
-    ];
+    });
   }
 
-  get currentCard(): CreditCard | null {
+  private mapApiCardToDisplay(apiCard: CreditCard): DisplayCard {
+    // Mapear formato da API para formato de exibição
+    const cardType = this.getCardTypeFromBrand(apiCard.brand);
+    
+    // Formatar data de expiração
+    const expMonth = String(apiCard.expMonth || 1).padStart(2, '0');
+    const expYear = String(apiCard.expYear || 24).slice(-2);
+    const expiryDate = `${expMonth}/${expYear}`;
+    
+    return {
+      id: apiCard.id,
+      cardNumber: apiCard.maskedPan || apiCard.cardNumber,
+      cardHolder: apiCard.cardHolderName,
+      expiryDate: expiryDate,
+      balance: Number(apiCard.availableLimit),
+      cardType: cardType,
+      isActive: apiCard.isActive
+    };
+  }
+
+  private getCardTypeFromBrand(brand: string): 'VISA' | 'MASTERCARD' | 'AMEX' {
+    const brandUpper = brand?.toUpperCase() || '';
+    if (brandUpper.includes('VISA')) return 'VISA';
+    if (brandUpper.includes('MASTERCARD')) return 'MASTERCARD';
+    if (brandUpper.includes('AMEX')) return 'AMEX';
+    return 'VISA'; // default
+  }
+
+  get currentCard(): DisplayCard | null {
     return this.cards[this.currentCardIndex] || null;
   }
 

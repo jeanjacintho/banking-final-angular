@@ -1,0 +1,62 @@
+<app-layout pageTitle="Meus Investimentos">
+  <div class="max-w-5xl mx-auto">
+    @if (error(); as err) {
+    <div class="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
+      <div class="flex items-center gap-2">
+        <lucide-icon name="AlertCircle" size="16" class="text-red-600"></lucide-icon>
+        <p class="text-sm text-red-800">{{ err }}</p>
+      </div>
+    </div>
+    }
+
+    @if (loading()) {
+    <div class="flex items-center justify-center py-12">
+      <div class="text-center">
+        <div class="animate-spin h-12 w-12 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+        <p class="text-muted-foreground text-sm">Carregando seus investimentos...</p>
+      </div>
+    </div>
+    }
+
+    @if (!loading()) {
+    <div class="bg-white rounded-xl p-4 border border-border">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-2">
+          <lucide-icon name="BarChart3" size="20" class="text-primary"></lucide-icon>
+          <h2 class="text-sm font-semibold text-text">Investimentos</h2>
+        </div>
+
+        <a routerLink="/investiment/request"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-gradient-to-r from-gradient-start to-gradient-end rounded-lg transition-colors">
+          <lucide-icon name="Plus" size="14"></lucide-icon>
+          Novo
+        </a>
+      </div>
+
+      @if ((items() || []).length === 0) {
+      <div class="text-center py-10 text-sm text-muted-foreground">
+        Você ainda não possui investimentos.
+      </div>
+      }
+
+      @if ((items() || []).length > 0) {
+      <div class="space-y-3">
+        @for (inv of items(); track inv.id) {
+        <div class="border border-border rounded-lg p-3 flex items-center justify-between">
+          <div class="space-y-1">
+            <div class="text-sm font-medium text-text">#{{ inv.id }} • {{ inv.investmentType }}</div>
+            <div class="text-xs text-muted-foreground">
+              Valor aplicado: <span class="font-medium text-text">{{ formatCurrency(inv.investmentValue) }}</span>
+              @if (inv.investmentTerm) {
+              • Prazo: <span class="font-medium text-text">{{ inv.investmentTerm }} meses</span>
+              }
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+      }
+    </div>
+    }
+  </div>
+</app-layout>

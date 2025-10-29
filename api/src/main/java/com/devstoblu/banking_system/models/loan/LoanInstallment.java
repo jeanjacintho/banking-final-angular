@@ -1,12 +1,15 @@
 package com.devstoblu.banking_system.models.loan;
 
 import com.devstoblu.banking_system.enums.loans.InstallmentStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "loan_installments")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class LoanInstallment {
 
     @Id
@@ -24,6 +27,7 @@ public class LoanInstallment {
 
     @ManyToOne
     @JoinColumn(name = "loan_id")
+    @JsonIgnore
     private Loan loan;
 
     public LoanInstallment() {

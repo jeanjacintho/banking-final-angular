@@ -1,397 +1,352 @@
-<div class="min-h-screen p-8 bg-[color:var(--color-background)] text-[color:var(--color-text)]">
-  <div class="max-w-5xl mx-auto space-y-8">
-    <!-- Header -->
-    <div class="flex items-center justify-between">
-      <div>
-        <h1 class="text-2xl font-bold">Solicitar novo cartão</h1>
-        <p class="text-sm mt-1 text-[color:var(--color-text-light)]">
-          Preencha seus dados para analisarmos seu crédito.
-        </p>
-      </div>
-
-      <a
-        routerLink=".."
-        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg transition text-[color:var(--color-primary-foreground)] bg-[color:var(--color-primary)] hover:bg-[color:var(--color-primary-hover)] border border-[color:var(--color-border)] shadow-[var(--color-shadow)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-ring)]"
-      >
-        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M15 19l-7-7 7-7"
-          />
-        </svg>
-        Voltar
-      </a>
+<app-layout pageTitle="Solicitar Cartão">
+  <!-- Loading State -->
+  @if (loadingUserData()) {
+  <div class="flex items-center justify-center py-12">
+    <div class="text-center">
+      <div class="animate-spin h-12 w-12 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+      <p class="text-muted-foreground text-sm">Carregando seus dados...</p>
     </div>
+  </div>
+  }
 
-    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-8">
-      <!-- Dados pessoais -->
-      <section
-        class="rounded-xl p-6 shadow-[var(--shadow-sm)] bg-[color:var(--color-card)] text-[color:var(--color-card-foreground)] border border-[color:var(--color-border)]"
-      >
-        <h2 class="text-lg font-semibold mb-4">Dados pessoais</h2>
-
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <!-- Nome -->
-          <div>
-            <label class="block text-sm mb-1 text-[color:var(--color-text-light)]"
-              >Nome completo</label
-            >
-            <input
-              formControlName="name"
-              [class.border-[color:var(--color-destructive)]]="isInvalid(form.get('nomeCompleto'))"
-              class="w-full rounded-lg px-3 py-2 bg-[color:var(--color-card)] text-[color:var(--color-text)] placeholder:text-[color:var(--color-muted-foreground)] border border-[color:var(--color-input)] focus:border-[color:var(--color-ring)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-ring)] shadow-[var(--color-shadow)]"
-              placeholder="Seu nome"
-            />
-            <p
-              *ngIf="isInvalid(form.get('nomeCompleto'))"
-              class="mt-1 text-xs text-[color:var(--color-destructive)]"
-            >
-              Informe um nome com pelo menos 5 caracteres.
-            </p>
+  @if (!loadingUserData()) {
+  <div class="max-w-5xl mx-auto">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <!-- Card Principal -->
+      <div class="bg-white rounded-xl p-4 border border-border">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-6">
+          <div class="flex items-center gap-2">
+            <lucide-icon name="CreditCard" size="20" class="text-primary"></lucide-icon>
+            <div>
+              <h2 class="text-sm font-semibold text-text">Solicitar Novo Cartão</h2>
+              <p class="text-xs text-muted-foreground">
+                Preencha seus dados para analisarmos seu crédito
+              </p>
+            </div>
           </div>
 
-          <!-- CPF -->
+          <a routerLink=".."
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-text hover:bg-muted rounded-lg transition-colors border border-border">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            Voltar
+          </a>
+        </div>
+
+        <div class="space-y-6">
+          <!-- Seção: Dados Pessoais -->
           <div>
-            <label class="block text-sm mb-1 text-[color:var(--color-text-light)]">CPF</label>
-            <input
-              formControlName="cpf"
-              [class.border-[color:var(--color-destructive)]]="isInvalid(form.get('cpf'))"
-              class="w-full rounded-lg px-3 py-2 bg-[color:var(--color-card)] text-[color:var(--color-text)] placeholder:text-[color:var(--color-muted-foreground)] border border-[color:var(--color-input)] focus:border-[color:var(--color-ring)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-ring)] shadow-[var(--color-shadow)]"
-              placeholder="000.000.000-00"
-            />
-            <p
-              *ngIf="isInvalid(form.get('cpf'))"
-              class="mt-1 text-xs text-[color:var(--color-destructive)]"
-            >
-              CPF inválido. Use o formato 000.000.000-00.
-            </p>
+            <h3 class="text-xs text-muted-foreground mb-4">Dados pessoais</h3>
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <!-- Nome -->
+              <div>
+                <label class="block text-xs font-medium mb-2 text-text">Nome completo</label>
+                <input formControlName="name"
+                  class="w-full px-4 py-2.5 border border-border rounded-lg text-sm bg-background text-text focus:outline-none focus:border-gradient-start focus:ring-3 focus:ring-gradient-start/10 transition-colors"
+                  [class.border-red-500]="form.get('name')?.touched && form.get('name')?.invalid"
+                  placeholder="Seu nome" />
+                @if (form.get('name')?.touched && form.get('name')?.invalid) {
+                <div class="mt-1 text-sm text-red-600">
+                  @if (form.get('name')?.errors?.['required']) {
+                  <span>Nome é obrigatório</span>
+                  }
+                  @if (form.get('name')?.errors?.['minlength']) {
+                  <span>Nome deve ter pelo menos 5 caracteres</span>
+                  }
+                </div>
+                }
+              </div>
+
+              <!-- CPF -->
+              <div>
+                <label class="block text-xs font-medium mb-2 text-text">CPF</label>
+                <input formControlName="cpf"
+                  class="w-full px-4 py-2.5 border border-border rounded-lg text-sm bg-background text-text focus:outline-none focus:border-gradient-start focus:ring-3 focus:ring-gradient-start/10 transition-colors"
+                  [class.border-red-500]="form.get('cpf')?.touched && form.get('cpf')?.invalid"
+                  placeholder="000.000.000-00" />
+                @if (form.get('cpf')?.touched && form.get('cpf')?.invalid) {
+                <div class="mt-1 text-sm text-red-600">
+                  @if (form.get('cpf')?.errors?.['required']) {
+                  <span>CPF é obrigatório</span>
+                  }
+                  @if (form.get('cpf')?.errors?.['pattern']) {
+                  <span>Use o formato 000.000.000-00</span>
+                  }
+                </div>
+                }
+              </div>
+
+              <!-- Data nasc -->
+              <div>
+                <label class="block text-xs font-medium mb-2 text-text">Data de nascimento</label>
+                <input type="date" formControlName="dateOfBirth"
+                  class="w-full px-4 py-2.5 border border-border rounded-lg text-sm bg-background text-text focus:outline-none focus:border-gradient-start focus:ring-3 focus:ring-gradient-start/10 transition-colors"
+                  [class.border-red-500]="form.get('dateOfBirth')?.touched && form.get('dateOfBirth')?.invalid" />
+                @if (form.get('dateOfBirth')?.touched && form.get('dateOfBirth')?.invalid) {
+                <div class="mt-1 text-sm text-red-600">
+                  @if (form.get('dateOfBirth')?.errors?.['required']) {
+                  <span>Data de nascimento é obrigatória</span>
+                  }
+                </div>
+                }
+              </div>
+
+              <!-- Email -->
+              <div>
+                <label class="block text-xs font-medium mb-2 text-text">Email</label>
+                <input type="email" formControlName="email"
+                  class="w-full px-4 py-2.5 border border-border rounded-lg text-sm bg-background text-text focus:outline-none focus:border-gradient-start focus:ring-3 focus:ring-gradient-start/10 transition-colors"
+                  [class.border-red-500]="form.get('email')?.touched && form.get('email')?.invalid"
+                  placeholder="voce@exemplo.com" />
+                @if (form.get('email')?.touched && form.get('email')?.invalid) {
+                <div class="mt-1 text-sm text-red-600">
+                  @if (form.get('email')?.errors?.['required']) {
+                  <span>Email é obrigatório</span>
+                  }
+                  @if (form.get('email')?.errors?.['email']) {
+                  <span>Informe um email válido</span>
+                  }
+                </div>
+                }
+              </div>
+
+              <!-- Telefone -->
+              <div>
+                <label class="block text-xs font-medium mb-2 text-text">Telefone</label>
+                <input formControlName="phoneNumber"
+                  class="w-full px-4 py-2.5 border border-border rounded-lg text-sm bg-background text-text focus:outline-none focus:border-gradient-start focus:ring-3 focus:ring-gradient-start/10 transition-colors"
+                  [class.border-red-500]="form.get('phoneNumber')?.touched && form.get('phoneNumber')?.invalid"
+                  placeholder="(00) 0000-0000" />
+                @if (form.get('phoneNumber')?.touched && form.get('phoneNumber')?.invalid) {
+                <div class="mt-1 text-sm text-red-600">
+                  @if (form.get('phoneNumber')?.errors?.['required']) {
+                  <span>Telefone é obrigatório</span>
+                  }
+                  @if (form.get('phoneNumber')?.errors?.['pattern']) {
+                  <span>Informe um telefone válido</span>
+                  }
+                </div>
+                }
+              </div>
+            </div>
+
           </div>
 
-          <!-- Data nasc -->
-          <div>
-            <label class="block text-sm mb-1 text-[color:var(--color-text-light)]"
-              >Data de nascimento</label
-            >
-            <input
-              type="date"
-              formControlName="dateOfBirth"
-              [class.border-[color:var(--color-destructive)]]="
-                isInvalid(form.get('dataNascimento'))
-              "
-              class="w-full rounded-lg px-3 py-2 bg-[color:var(--color-card)] text-[color:var(--color-text)] border border-[color:var(--color-input)] focus:border-[color:var(--color-ring)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-ring)] shadow-[var(--color-shadow)]"
-            />
-            <p
-              *ngIf="isInvalid(form.get('dataNascimento'))"
-              class="mt-1 text-xs text-[color:var(--color-destructive)]"
-            >
-              Data de nascimento é obrigatória.
-            </p>
-          </div>
-
-          <!-- Email -->
-          <div>
-            <label class="block text-sm mb-1 text-[color:var(--color-text-light)]">Email</label>
-            <input
-              type="email"
-              formControlName="email"
-              [class.border-[color:var(--color-destructive)]]="isInvalid(form.get('email'))"
-              class="w-full rounded-lg px-3 py-2 bg-[color:var(--color-card)] text-[color:var(--color-text)] placeholder:text-[color:var(--color-muted-foreground)] border border-[color:var(--color-input)] focus:border-[color:var(--color-ring)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-ring)] shadow-[var(--color-shadow)]"
-              placeholder="voce@exemplo.com"
-            />
-            <p
-              *ngIf="isInvalid(form.get('email'))"
-              class="mt-1 text-xs text-[color:var(--color-destructive)]"
-            >
-              Informe um email válido.
-            </p>
-          </div>
-
-          <!-- Telefone -->
-          <div>
-            <label class="block text-sm mb-1 text-[color:var(--color-text-light)]">Telefone</label>
-            <input
-              formControlName="phoneNumber"
-              [class.border-[color:var(--color-destructive)]]="isInvalid(form.get('telefone'))"
-              class="w-full rounded-lg px-3 py-2 bg-[color:var(--color-card)] text-[color:var(--color-text)] placeholder:text-[color:var(--color-muted-foreground)] border border-[color:var(--color-input)] focus:border-[color:var(--color-ring)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-ring)] shadow-[var(--color-shadow)]"
-              placeholder="(00) 0000-0000"
-            />
-            <p
-              *ngIf="isInvalid(form.get('telefone'))"
-              class="mt-1 text-xs text-[color:var(--color-destructive)]"
-            >
-              Informe um telefone válido.
-            </p>
+          <!-- Endereço -->
+          <div class="md:col-span-2">
+            <h3 class="text-xs text-muted-foreground mb-4">Endereço</h3>
+            <div formGroupName="address" class="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div class="md:col-span-2">
+                <label class="block text-xs font-medium mb-2 text-text">CEP</label>
+                <input formControlName="cep" placeholder="00000-000" (blur)="onCepBlur()"
+                  class="w-full px-4 py-2.5 border border-border rounded-lg text-sm bg-background text-text focus:outline-none focus:border-gradient-start focus:ring-3 focus:ring-gradient-start/10 transition-colors"
+                  [class.border-red-500]="form.get('address.cep')?.touched && form.get('address.cep')?.invalid" />
+                @if (loadingCep()) {
+                <div class="mt-1 text-xs text-primary">Buscando CEP...</div>
+                }
+                @if (cepError()) {
+                <div class="mt-1 text-xs text-red-600">{{ cepError() }}</div>
+                }
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-xs font-medium mb-2 text-text">Logradouro</label>
+                <input formControlName="logradouro"
+                  class="w-full px-4 py-2.5 border border-border rounded-lg text-sm bg-background text-text focus:outline-none focus:border-gradient-start focus:ring-3 focus:ring-gradient-start/10 transition-colors"
+                  [class.border-red-500]="form.get('address.logradouro')?.touched && form.get('address.logradouro')?.invalid" />
+              </div>
+              <div>
+                <label class="block text-xs font-medium mb-2 text-text">Número</label>
+                <input formControlName="numero"
+                  class="w-full px-4 py-2.5 border border-border rounded-lg text-sm bg-background text-text focus:outline-none focus:border-gradient-start focus:ring-3 focus:ring-gradient-start/10 transition-colors"
+                  [class.border-red-500]="form.get('address.numero')?.touched && form.get('address.numero')?.invalid" />
+              </div>
+              <div>
+                <label class="block text-xs font-medium mb-2 text-text">Complemento</label>
+                <input formControlName="complemento"
+                  class="w-full px-4 py-2.5 border border-border rounded-lg text-sm bg-background text-text focus:outline-none focus:border-gradient-start focus:ring-3 focus:ring-gradient-start/10 transition-colors" />
+              </div>
+              <div>
+                <label class="block text-xs font-medium mb-2 text-text">Bairro</label>
+                <input formControlName="bairro"
+                  class="w-full px-4 py-2.5 border border-border rounded-lg text-sm bg-background text-text focus:outline-none focus:border-gradient-start focus:ring-3 focus:ring-gradient-start/10 transition-colors"
+                  [class.border-red-500]="form.get('address.bairro')?.touched && form.get('address.bairro')?.invalid" />
+              </div>
+              <div>
+                <label class="block text-xs font-medium mb-2 text-text">Cidade</label>
+                <input formControlName="cidade"
+                  class="w-full px-4 py-2.5 border border-border rounded-lg text-sm bg-background text-text focus:outline-none focus:border-gradient-start focus:ring-3 focus:ring-gradient-start/10 transition-colors"
+                  [class.border-red-500]="form.get('address.cidade')?.touched && form.get('address.cidade')?.invalid" />
+              </div>
+              <div>
+                <label class="block text-xs font-medium mb-2 text-text">Estado</label>
+                <input formControlName="estado" maxlength="2" placeholder="SP"
+                  class="w-full uppercase px-4 py-2.5 border border-border rounded-lg text-sm bg-background text-text focus:outline-none focus:border-gradient-start focus:ring-3 focus:ring-gradient-start/10 transition-colors"
+                  [class.border-red-500]="form.get('address.estado')?.touched && form.get('address.estado')?.invalid" />
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- Endereço -->
-        <div formGroupName="address" class="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div>
-            <label class="block text-sm mb-1 text-[color:var(--color-text-light)]"
-              >Logradouro</label
-            >
-            <input
-              formControlName="logradouro"
-              class="w-full rounded-lg px-3 py-2 bg-[color:var(--color-card)] text-[color:var(--color-text)] placeholder:text-[color:var(--color-muted-foreground)] border border-[color:var(--color-input)] focus:border-[color:var(--color-ring)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-ring)] shadow-[var(--color-shadow)]"
-            />
+        <!-- Dados Financeiros -->
+        <div>
+          <h3 class="text-xs text-muted-foreground mb-4">Dados financeiros</h3>
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <h2 class="text-sm font-semibold mb-4 text-text">Dados financeiros</h2>
+
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div>
+                <label class="block text-xs font-medium mb-2 text-text">Renda mensal (R$)</label>
+                <input type="number" formControlName="monthlyIncome"
+                  class="w-full px-4 py-3 border border-border rounded-lg text-sm bg-background text-text focus:outline-none focus:border-gradient-start focus:ring-3 focus:ring-gradient-start/10 transition-colors"
+                  [class.border-red-500]="form.get('monthlyIncome')?.touched && form.get('monthlyIncome')?.invalid"
+                  placeholder="0.00" />
+                @if (form.get('monthlyIncome')?.touched && form.get('monthlyIncome')?.invalid) {
+                <div class="mt-1 text-sm text-red-600">
+                  @if (form.get('monthlyIncome')?.errors?.['required']) {
+                  <span>Renda é obrigatória</span>
+                  }
+                  @if (form.get('monthlyIncome')?.errors?.['min']) {
+                  <span>Renda deve ser maior que zero</span>
+                  }
+                </div>
+                }
+              </div>
+
+              <div>
+                <label class="block text-xs font-medium mb-2 text-text">Fonte de renda</label>
+                <select formControlName="sourceIncome"
+                  class="w-full px-4 py-2.5 border border-border rounded-lg text-sm bg-background text-text focus:outline-none focus:border-gradient-start focus:ring-3 focus:ring-gradient-start/10 transition-colors">
+                  <option value="CLT">CLT</option>
+                  <option value="PJ">PJ</option>
+                  <option value="Autonomo">Autônomo</option>
+                  <option value="Aposentado">Aposentado</option>
+                  <option value="Estudante">Estudante</option>
+                  <option value="Outros">Outros</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-medium mb-2 text-text">Empresa</label>
+                <input formControlName="company"
+                  class="w-full px-4 py-2.5 border border-border rounded-lg text-sm bg-background text-text focus:outline-none focus:border-gradient-start focus:ring-3 focus:ring-gradient-start/10 transition-colors"
+                  placeholder="Nome da empresa" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-medium mb-2 text-text">Tempo de emprego (meses)</label>
+                <input type="number" formControlName="employmentTimeMonths"
+                  class="w-full px-4 py-2.5 border border-border rounded-lg text-sm bg-background text-text focus:outline-none focus:border-gradient-start focus:ring-3 focus:ring-gradient-start/10 transition-colors"
+                  placeholder="12" />
+              </div>
+            </div>
           </div>
+
+          <!-- Preferências -->
           <div>
-            <label class="block text-sm mb-1 text-[color:var(--color-text-light)]">Número</label>
-            <input
-              formControlName="numero"
-              class="w-full rounded-lg px-3 py-2 bg-[color:var(--color-card)] text-[color:var(--color-text)] placeholder:text-[color:var(--color-muted-foreground)] border border-[color:var(--color-input)] focus:border-[color:var(--color-ring)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-ring)] shadow-[var(--color-shadow)]"
-            />
+            <h3 class="text-xs text-muted-foreground mb-4">Preferências</h3>
+
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div>
+                <label class="block text-xs font-medium mb-2 text-text">Tipo de fatura</label>
+                <select formControlName="invoiceType"
+                  class="w-full px-4 py-2.5 border border-border rounded-lg text-sm bg-background text-text focus:outline-none focus:border-gradient-start focus:ring-3 focus:ring-gradient-start/10 transition-colors">
+                  <option value="digital">Digital</option>
+                  <option value="papel">Papel</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-medium mb-2 text-text">Dia de vencimento</label>
+                <input type="number" min="1" max="28" formControlName="preferredDueDate"
+                  class="w-full px-4 py-2.5 border border-border rounded-lg text-sm bg-background text-text focus:outline-none focus:border-gradient-start focus:ring-3 focus:ring-gradient-start/10 transition-colors"
+                  placeholder="10" />
+              </div>
+            </div>
+
+            <hr class="my-4 border-border" />
+
+            <h3 class="text-xs text-muted-foreground mb-3">Consentimentos</h3>
+            <div class="space-y-3">
+              <label class="flex items-center gap-3">
+                <input type="checkbox" formControlName="acceptTerms" class="size-4 rounded border-border" />
+                <span class="text-xs text-text">Declaro que li e aceito os termos.</span>
+              </label>
+              <label class="flex items-center gap-3">
+                <input type="checkbox" formControlName="authorizationCreditConsultation"
+                  class="size-4 rounded border-border" />
+                <span class="text-xs text-text">Autorizo consulta aos bureaus de crédito.</span>
+              </label>
+            </div>
           </div>
-          <div>
-            <label class="block text-sm mb-1 text-[color:var(--color-text-light)]"
-              >Complemento</label
-            >
-            <input
-              formControlName="complemento"
-              class="w-full rounded-lg px-3 py-2 bg-[color:var(--color-card)] text-[color:var(--color-text)] placeholder:text-[color:var(--color-muted-foreground)] border border-[color:var(--color-input)] focus:border-[color:var(--color-ring)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-ring)] shadow-[var(--color-shadow)]"
-            />
-          </div>
-          <div>
-            <label class="block text-sm mb-1 text-[color:var(--color-text-light)]">Bairro</label>
-            <input
-              formControlName="bairro"
-              class="w-full rounded-lg px-3 py-2 bg-[color:var(--color-card)] text-[color:var(--color-text)] placeholder:text-[color:var(--color-muted-foreground)] border border-[color:var(--color-input)] focus:border-[color:var(--color-ring)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-ring)] shadow-[var(--color-shadow)]"
-            />
-          </div>
-          <div>
-            <label class="block text-sm mb-1 text-[color:var(--color-text-light)]">Cidade</label>
-            <input
-              formControlName="cidade"
-              class="w-full rounded-lg px-3 py-2 bg-[color:var(--color-card)] text-[color:var(--color-text)] placeholder:text-[color:var(--color-muted-foreground)] border border-[color:var(--color-input)] focus:border-[color:var(--color-ring)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-ring)] shadow-[var(--color-shadow)]"
-            />
-          </div>
-          <div>
-            <label class="block text-sm mb-1 text-[color:var(--color-text-light)]">Estado</label>
-            <input
-              formControlName="estado"
-              maxlength="2"
-              class="w-full uppercase rounded-lg px-3 py-2 bg-[color:var(--color-card)] text-[color:var(--color-text)] placeholder:text-[color:var(--color-muted-foreground)] border border-[color:var(--color-input)] focus:border-[color:var(--color-ring)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-ring)] shadow-[var(--color-shadow)]"
-            />
-          </div>
-          <div>
-            <label class="block text-sm mb-1 text-[color:var(--color-text-light)]">CEP</label>
-            <input
-              formControlName="cep"
-              placeholder="0000-000"
-              class="w-full rounded-lg px-3 py-2 bg-[color:var(--color-card)] text-[color:var(--color-text)] placeholder:text-[color:var(--color-muted-foreground)] border border-[color:var(--color-input)] focus:border-[color:var(--color-ring)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-ring)] shadow-[var(--color-shadow)]"
-            />
+
+          <!-- Botão de Submissão -->
+          <div class="pt-4 border-t border-border">
+            <button type="submit" [disabled]="form.invalid || loading()"
+              class="w-full bg-gradient-to-r from-gradient-start to-gradient-end text-white font-medium py-2.5 px-6 rounded-lg hover:brightness-105 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
+              @if (loading()) {
+              <svg class="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                </path>
+              </svg>
+              }
+              @if (!loading()) {
+              <span class="text-sm">Enviar solicitação</span>
+              }
+              @if (loading()) {
+              <span class="text-sm">Enviando...</span>
+              }
+            </button>
           </div>
         </div>
-      </section>
-
-      <!-- Dados financeiros -->
-      <section
-        class="rounded-xl p-6 shadow-[var(--shadow-sm)] bg-[color:var(--color-card)] text-[color:var(--color-card-foreground)] border border-[color:var(--color-border)]"
-      >
-        <h2 class="text-lg font-semibold mb-4">Dados financeiros</h2>
-
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div>
-            <label class="block text-sm mb-1 text-[color:var(--color-text-light)]"
-              >Renda mensal (R$)</label
-            >
-            <input
-              type="number"
-              formControlName="monthlyIncome"
-              [class.border-[color:var(--color-destructive)]]="isInvalid(form.get('rendaMensal'))"
-              class="w-full rounded-lg px-3 py-2 bg-[color:var(--color-card)] text-[color:var(--color-text)] border border-[color:var(--color-input)] placeholder:text-[color:var(--color-muted-foreground)] focus:border-[color:var(--color-ring)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-ring)] shadow-[var(--color-shadow)]"
-            />
-            <p
-              *ngIf="isInvalid(form.get('rendaMensal'))"
-              class="mt-1 text-xs text-[color:var(--color-destructive)]"
-            >
-              Informe uma renda válida.
-            </p>
-          </div>
-
-          <div>
-            <label class="block text-sm mb-1 text-[color:var(--color-text-light)]"
-              >Fonte de renda</label
-            >
-            <select
-              formControlName="sourceIncome"
-              class="w-full rounded-lg px-3 py-2 bg-[color:var(--color-card)] text-[color:var(--color-text)] border border-[color:var(--color-input)] focus:border-[color:var(--color-ring)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-ring)] shadow-[var(--color-shadow)]"
-            >
-              <option class="bg-[color:var(--color-card)]" value="CLT">CLT</option>
-              <option class="bg-[color:var(--color-card)]" value="PJ">PJ</option>
-              <option class="bg-[color:var(--color-card)]" value="Autonomo">Autônomo</option>
-              <option class="bg-[color:var(--color-card)]" value="Aposentado">Aposentado</option>
-              <option class="bg-[color:var(--color-card)]" value="Estudante">Estudante</option>
-              <option class="bg-[color:var(--color-card)]" value="Outros">Outros</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="block text-sm mb-1 text-[color:var(--color-text-light)]">Empresa</label>
-            <input
-              formControlName="company"
-              class="w-full rounded-lg px-3 py-2 bg-[color:var(--color-card)] text-[color:var(--color-text)] placeholder:text-[color:var(--color-muted-foreground)] border border-[color:var(--color-input)] focus:border-[color:var(--color-ring)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-ring)] shadow-[var(--color-shadow)]"
-            />
-          </div>
-
-          <div>
-            <label class="block text-sm mb-1 text-[color:var(--color-text-light)]"
-              >Tempo de emprego (meses)</label
-            >
-            <input
-              type="number"
-              formControlName="employmentTimeMonths"
-              class="w-full rounded-lg px-3 py-2 bg-[color:var(--color-card)] text-[color:var(--color-text)] placeholder:text-[color:var(--color-muted-foreground)] border border-[color:var(--color-input)] focus:border-[color:var(--color-ring)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-ring)] shadow-[var(--color-shadow)]"
-            />
-          </div>
-        </div>
-      </section>
-
-      <!-- Preferências e consentimentos -->
-      <section
-        class="rounded-xl p-6 shadow-[var(--shadow-sm)] bg-[color:var(--color-card)] text-[color:var(--color-card-foreground)] border border-[color:var(--color-border)]"
-      >
-        <h2 class="text-lg font-semibold mb-4">Preferências</h2>
-
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-          <div>
-            <label class="block text-sm mb-1 text-[color:var(--color-text-light)]"
-              >Tipo de fatura</label
-            >
-            <select
-              formControlName="invoiceType"
-              class="w-full rounded-lg px-3 py-2 bg-[color:var(--color-card)] text-[color:var(--color-text)] border border-[color:var(--color-input)] focus:border-[color:var(--color-ring)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-ring)] shadow-[var(--color-shadow)]"
-            >
-              <option class="bg-[color:var(--color-card)]" value="digital">Digital</option>
-              <option class="bg-[color:var(--color-card)]" value="papel">Papel</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="block text-sm mb-1 text-[color:var(--color-text-light)]"
-              >Dia de vencimento</label
-            >
-            <input
-              type="number"
-              min="1"
-              max="28"
-              formControlName="preferredDueDate"
-              class="w-full rounded-lg px-3 py-2 bg-[color:var(--color-card)] text-[color:var(--color-text)] placeholder:text-[color:var(--color-muted-foreground)] border border-[color:var(--color-input)] focus:border-[color:var(--color-ring)] focus:outline-none focus:ring-2 focus:ring-[color:var(--color-ring)] shadow-[var(--color-shadow)]"
-            />
-          </div>
-        </div>
-
-        <hr class="my-6 border-[color:var(--color-border)]" />
-
-        <h2 class="text-lg font-semibold mb-3">Consentimentos</h2>
-        <div class="space-y-3">
-          <label class="flex items-center gap-3">
-            <input
-              type="checkbox"
-              formControlName="acceptTerms"
-              class="h-4 w-4 rounded bg-[color:var(--color-card)] text-[color:var(--color-primary)] border border-[color:var(--color-input)] focus:ring-[color:var(--color-ring)]"
-            />
-            <span class="text-sm text-[color:var(--color-text-light)]"
-              >Declaro que li e aceito os termos.</span
-            >
-          </label>
-          <label class="flex items-center gap-3">
-            <input
-              type="checkbox"
-              formControlName="authorizationCreditConsultation"
-              class="h-4 w-4 rounded bg-[color:var(--color-card)] text-[color:var(--color-primary)] border border-[color:var(--color-input)] focus:ring-[color:var(--color-ring)]"
-            />
-            <span class="text-sm text-[color:var(--color-text-light)]"
-              >Autorizo consulta aos bureaus de crédito.</span
-            >
-          </label>
-        </div>
-      </section>
-
-      <!-- Ações -->
-      <div class="flex items-center gap-3">
-        <button
-          type="submit"
-          [disabled]="form.invalid || loading()"
-          class="inline-flex items-center justify-center px-5 py-2.5 rounded-lg transition text-[color:var(--color-primary-foreground)] bg-[color:var(--color-primary)] hover:bg-[color:var(--color-primary-hover)] border border-[color:var(--color-border)] shadow-[var(--color-shadow)] disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          <svg
-            *ngIf="loading()"
-            class="mr-2 h-4 w-4 animate-spin text-[color:var(--color-primary-foreground)]"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              class="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              stroke-width="4"
-            ></circle>
-            <path
-              class="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-            ></path>
-          </svg>
-          Enviar solicitação
-        </button>
-
-        <span *ngIf="form.invalid" class="text-sm text-[color:var(--color-text-light)]"
-          >Preencha os campos obrigatórios.</span
-        >
       </div>
     </form>
 
     <!-- Resultado -->
-    <section
-      *ngIf="result() as r"
-      class="rounded-xl p-6 shadow-[var(--shadow-sm)] bg-[color:var(--color-card)] text-[color:var(--color-card-foreground)] border border-[color:var(--color-border)]"
-    >
-      <h2 class="text-lg font-semibold mb-3">Resultado da solicitação</h2>
-      <p class="text-sm text-[color:var(--color-text-light)]">
-        Status:
-        <span class="font-medium text-[color:var(--color-text)]">{{ r.statusSolicitacao }}</span>
+    @if (result(); as r) {
+    <div class="mt-4 bg-white rounded-xl p-4 border border-border">
+      <h3 class="text-sm font-semibold mb-3 text-text">Resultado da solicitação</h3>
+      <p class="text-xs text-muted-foreground mb-3">
+        Status: <span class="font-medium text-text">{{ r.statusSolicitacao }}</span>
       </p>
 
-      <div
-        *ngIf="r.statusSolicitacao !== 'recusado'"
-        class="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2"
-      >
-        <p class="text-sm text-[color:var(--color-text-light)]">
-          Limite aprovado:
-          <span class="font-medium text-[color:var(--color-text)]">{{
-            r.limiteAprovado | currency : 'BRL'
-          }}</span>
+      @if (r.statusSolicitacao !== 'recusado') {
+      <div class="grid grid-cols-1 gap-2 md:grid-cols-2">
+        <p class="text-xs text-muted-foreground">
+          Limite: <span class="font-medium text-text">{{ r.limiteAprovado | currency : 'BRL' }}</span>
         </p>
-        <p class="text-sm text-[color:var(--color-text-light)]">
-          Bandeira:
-          <span class="font-medium text-[color:var(--color-text)]">{{ r.brand }}</span>
+        <p class="text-xs text-muted-foreground">
+          Bandeira: <span class="font-medium text-text">{{ r.brand }}</span>
         </p>
-        <p class="text-sm text-[color:var(--color-text-light)]">
-          Cartão:
-          <span class="font-medium text-[color:var(--color-text)]">{{ r.maskedPan }}</span>
+        <p class="text-xs text-muted-foreground">
+          Cartão: <span class="font-medium text-text">{{ r.maskedPan }}</span>
         </p>
-        <p class="text-sm text-[color:var(--color-text-light)]">
-          Vencimento da fatura:
-          <span class="font-medium text-[color:var(--color-text)]">{{
-            r.dataVencimentoFatura
-          }}</span>
+        <p class="text-xs text-muted-foreground">
+          Vencimento: <span class="font-medium text-text">{{ r.dataVencimentoFatura }}</span>
         </p>
       </div>
+      }
 
-      <div *ngIf="r.pendencias?.length" class="mt-3">
-        <p class="text-sm font-medium text-[color:var(--color-text)]">Pendências:</p>
-        <ul class="mt-1 list-disc pl-5 text-sm text-[color:var(--color-text-light)]">
-          <li *ngFor="let p of r.pendencias">{{ p }}</li>
+      @if (r.pendencias?.length) {
+      <div class="mt-3">
+        <p class="text-xs font-medium text-text">Pendências:</p>
+        <ul class="mt-1 list-disc pl-4 text-xs text-muted-foreground">
+          @for (p of r.pendencias; track p) {
+          <li>{{ p }}</li>
+          }
         </ul>
       </div>
+      }
 
-      <p *ngIf="r.mensagem" class="mt-3 text-sm text-[color:var(--color-text-light)]">
-        {{ r.mensagem }}
-      </p>
-    </section>
+      @if (r.mensagem) {
+      <p class="mt-3 text-xs text-muted-foreground">{{ r.mensagem }}</p>
+      }
+    </div>
+    }
   </div>
-</div>
+  }
+</app-layout>
