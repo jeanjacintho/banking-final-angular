@@ -23,23 +23,16 @@ export class RegisterComponent {
   registerForm: FormGroup;
   isSubmiting = false;
 
-  cpfValidator(): ValidatorFn{
-    return (control: AbstractControl): ValidationErrors | null => {
-      const value = control.value.replace(/\D/g, '');
-      if (!value) return null;
-      return this.validaCPF(value) ? null : { invalidCPF: true };
-    };
-  }
-  
   constructor(private fb: FormBuilder, private router: Router, private http: HttpClient) {
     this.registerForm = this.fb.group({
       nomeCompleto:   ['', [Validators.required, Validators.minLength(3), Validators.maxLength(120)]],
       telefone:       ['', [Validators.required, Validators.pattern(/^\d{10,11}$/)]],
       email:          ['', [Validators.required, Validators.email]],
       cpf:            ['', [Validators.required, Validators.pattern(/^\d{11}$/), Validators.minLength(11), Validators.maxLength(11), this.cpfValidator()]],
-      dataNascimento: ['', [Validators.required]],
+      dataNascimento: ['', [Validators.required, this.minimumAgeValidator(18)]],
       cep:            ['', [Validators.required, Validators.pattern(/^\d{8}$/)]],
       consentimento:  [false, Validators.requiredTrue],
+      senha:          ['', [Validators.required, this.strongPasswordValidator()]],
       logradouro: [{ value: '', disabled: true }],
       bairro: [{ value: '', disabled: true }],
       localidade: [{ value: '', disabled: true }],
@@ -66,15 +59,15 @@ export class RegisterComponent {
     const enderecoCompleto = [logradouro, bairro, localidade ? `${localidade} - ${uf}` : uf, `CEP: ${cep}`].filter(Boolean).join(', ');
 
     const payload = {
-        ...rest,
-        endereco: enderecoCompleto,
+      ...rest,
+      enderecoCompleto: enderecoCompleto,
       status: 'ATIVO',
       userRole: 'CLIENTE'
     };
 
     console.log("Payload para envio:", payload);
 
-    this.http.post('https://localhost:8081/api/usuarios', payload).subscribe({
+    this.http.post('http://localhost:8080/api/usuarios', payload).subscribe({
       next: (response) => {
         console.log("Usuário criado com sucesso!", response);
         this.router.navigate(['/login']);
@@ -143,8 +136,43 @@ export class RegisterComponent {
     return resto === parseInt(cpf.substring(10, 11));
   }
 
+  private cpfValidator(): ValidatorFn{
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value.replace(/\D/g, '');
+      if (!value) return null;
+      return this.validaCPF(value) ? null : { invalidCPF: true };
+    };
+  }
+
+  private strongPasswordValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+      if (!value) return null;
+
+      const strongPasswordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+      return strongPasswordRegex.test(value) ? null : { weakPassword: true };
+    };
+  }
+
+  private minimumAgeValidator(minAge: number): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+      if (!value) return null;
+
+      const birthDate = new Date(value);
+      const today = new Date();
+      const age = today.getFullYear() - birthDate.getFullYear();
+      const hasHadBirthdayPassed = 
+        today.getMonth() > birthDate.getMonth() ||
+        (today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate());
+
+      const actualAge = hasHadBirthdayPassed ? age : age - 1;
+      return actualAge >= minAge ? null : { underage: true };
+    };
+  }
+
   get nomeCompleto() { return this.registerForm.get('nomeCompleto'); }
-  get telefone() { return this.registerForm.get('telefone');} 
+  get telefone() { return this.registerForm.get('telefone'); }
   get email() { return this.registerForm.get('email'); }
   get cpf() { return this.registerForm.get('cpf'); }
   get dataNascimento() { return this.registerForm.get('dataNascimento'); }
@@ -154,5 +182,6 @@ export class RegisterComponent {
   get bairro() { return this.registerForm.get('bairro'); }
   get localidade() { return this.registerForm.get('localidade'); }
   get uf() { return this.registerForm.get('uf'); }
+  get senha() { return this.registerForm.get('senha'); }
 
 }

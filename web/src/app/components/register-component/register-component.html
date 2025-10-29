@@ -7,7 +7,6 @@
     class="w-full max-w-3xl p-8 space-y-5 text-center">
     
     <h1 class="text-3xl font-bold mb-1">Crie sua conta</h1>
-    <p>O futuro das suas finanças começa aqui.</p>
 
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
 
@@ -54,26 +53,6 @@
         }
       </div>
 
-      <!-- Email -->
-      <div class="col-span-1">
-        <label for="email" class="block text-sm font-medium mb-2">E-mail</label>
-        <input
-          id="email"
-          type="email"
-          formControlName="email"
-          class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primaryfocus:border-transparent transition-all duration-200 bg-white"
-          placeholder="Digite seu e-mail"
-          [class.border-gray-300]="!email?.touched || !email?.invalid"
-          [class.border-red-500]="email?.touched && email?.invalid"
-        />
-        @if (email?.touched && email?.invalid) {
-          <div class="mt-1 text-sm text-red-600">
-              @if (email?.errors?.['required']) { <span>Email é obrigatório</span> }
-              @if (email?.errors?.['email']) { <span>Email inválido</span> }
-          </div>    
-        }
-      </div>
-
       <!-- CPF -->
       <div class="col-span-1">
         <label for="cpf" class="block text-sm font-medium mb-2">CPF</label>
@@ -113,7 +92,48 @@
         @if (dataNascimento?.touched && dataNascimento?.invalid) {
           <div class="mt-1 text-sm text-red-600">
               @if (dataNascimento?.errors?.['required']) { <span>Data de nascimento é obrigatório</span> }
+              @if (dataNascimento?.errors?.['underage']) { <span>Você deve ter pelo menos 18 anos</span> }
           </div>    
+        }
+      </div>
+
+      <!-- Email -->
+      <div class="col-span-1">
+        <label for="email" class="block text-sm font-medium mb-2">E-mail</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primaryfocus:border-transparent transition-all duration-200 bg-white"
+          placeholder="Digite seu e-mail"
+          [class.border-gray-300]="!email?.touched || !email?.invalid"
+          [class.border-red-500]="email?.touched && email?.invalid"
+        />
+        @if (email?.touched && email?.invalid) {
+          <div class="mt-1 text-sm text-red-600">
+              @if (email?.errors?.['required']) { <span>Email é obrigatório</span> }
+              @if (email?.errors?.['email']) { <span>Email inválido</span> }
+          </div>    
+        }
+      </div>
+
+      <!-- Senha -->
+      <div class="col-span-1">
+        <label for="senha" class="block text-sm font-medium mb-2">Senha</label>
+        <input
+          id="senha"
+          type="password"
+          formControlName="senha"
+          class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 bg-white"
+          placeholder="Digite sua senha"
+          [class.border-gray-300]="!senha?.touched || !senha?.invalid"
+          [class.border-red-500]="senha?.touched && senha?.invalid"
+        />
+        @if (senha?.touched && senha?.invalid) {
+          <div class="mt-1 text-sm text-red-600">
+            @if (senha?.errors?.['required']) { <span>Senha é obrigatória</span> }
+            @if (senha?.errors?.['weakPassword']) { <span>Senha deve ter no mínimo 8 caracteres, 1 maiúscula, 1 número e 1 caractere especial</span> }
+          </div>
         }
       </div>
 
