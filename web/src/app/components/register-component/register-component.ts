@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { environment } from '../../../environments/environment';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgxMaskDirective, provideNgxMask  } from 'ngx-mask';
@@ -66,7 +67,7 @@ export class RegisterComponent {
 
     console.log("Payload para envio:", payload);
 
-    this.http.post('http://localhost:8080/api/usuarios', payload).subscribe({
+    this.http.post(`${environment.apiBase}/usuarios`, payload).subscribe({
       next: (response) => {
         console.log("Usuário criado com sucesso!", response);
         this.router.navigate(['/login']);

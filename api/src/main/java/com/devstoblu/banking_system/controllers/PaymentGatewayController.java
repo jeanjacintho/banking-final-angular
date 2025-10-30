@@ -144,6 +144,77 @@ public class PaymentGatewayController {
             ));
         }
     }
+
+    @PostMapping("/card/validate")
+    public ResponseEntity<?> validateCard(@RequestBody Map<String, Object> payload) {
+        try {
+            String cardNumber = String.valueOf(payload.getOrDefault("cardNumber", "")).trim();
+            String ownerCpf = String.valueOf(payload.getOrDefault("ownerCpf", "")).trim();
+            String ownerName = String.valueOf(payload.getOrDefault("ownerName", "")).trim();
+            // Support both expMonth/expYear and expirationMonth/expirationYear keys
+            String expMonthStr = String.valueOf(
+                    payload.getOrDefault("expMonth", payload.getOrDefault("expirationMonth", ""))
+            ).trim();
+            String expYearStr = String.valueOf(
+                    payload.getOrDefault("expYear", payload.getOrDefault("expirationYear", ""))
+            ).trim();
+
+            if (cardNumber.isEmpty() || ownerCpf.isEmpty() || ownerName.isEmpty() || expMonthStr.isEmpty() || expYearStr.isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of(
+                        "success", false,
+                        "message", "Campos obrigatórios: cardNumber, ownerCpf, ownerName, expMonth/expirationMonth, expYear/expirationYear"
+                ));
+            }
+
+            Integer expMonth;
+            Integer expYear;
+            try {
+                expMonth = Integer.parseInt(expMonthStr);
+                expYear = Integer.parseInt(expYearStr);
+            } catch (NumberFormatException nfe) {
+                return ResponseEntity.badRequest().body(Map.of(
+                        "success", false,
+                        "message", "expMonth/expYear devem ser numéricos"
+                ));
+            }
+
+            var card = creditCardService.getByCardNumber(cardNumber);
+
+            boolean activeOk = Boolean.TRUE.equals(card.getActive());
+            boolean ownerLinked = card.getUsuario() != null;
+
+            String normalizedCpfInput = ownerCpf.replaceAll("[^0-9]", "");
+            String normalizedCpfCard = ownerLinked ? card.getUsuario().getCpf().replaceAll("[^0-9]", "") : "";
+
+            String normalizedNameInput = ownerName.toLowerCase().replaceAll("\\s+", " ").trim();
+            String normalizedNameCard = ownerLinked ? card.getUsuario().getNomeCompleto().toLowerCase().replaceAll("\\s+", " ").trim() : "";
+
+            boolean cpfOk = ownerLinked && normalizedCpfCard.equals(normalizedCpfInput);
+            boolean nameOk = ownerLinked && normalizedNameCard.equals(normalizedNameInput);
+            boolean expiryOk = card.getExpMonth() != null && card.getExpYear() != null
+                    && card.getExpMonth().intValue() == expMonth
+                    && card.getExpYear().intValue() == expYear;
+
+            boolean valid = activeOk && ownerLinked && cpfOk && nameOk && expiryOk;
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("valid", valid);
+            response.put("reasons", Map.of(
+                    "active", activeOk,
+                    "ownerLinked", ownerLinked,
+                    "cpfMatch", cpfOk,
+                    "nameMatch", nameOk,
+                    "expiryMatch", expiryOk
+            ));
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "success", false,
+                    "message", "Erro ao validar cartão: " + e.getMessage()
+            ));
+        }
+    }
 }
 
 
