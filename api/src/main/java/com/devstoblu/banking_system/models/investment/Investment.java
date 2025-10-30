@@ -13,7 +13,8 @@ public abstract class Investment {
   private long id;
 
   // CDI atual 10% a.a
-  public static final double CDI = 0.1;
+  @Column(nullable = false)
+  public static double CDI = 0.1;
 
   private double yield;
   private double investmentTerm;
