@@ -13,6 +13,7 @@ export class CreditCardComponent {
   @Input() card!: CreditCard;
   @Input() selected = false;
   @Output() select = new EventEmitter<CreditCard>();
+  showNumber = false;
 
   onClick() {
     if (this.card) {
@@ -43,5 +44,18 @@ export class CreditCardComponent {
     const month = this.card.expMonth ? String(this.card.expMonth).padStart(2, '0') : '00';
     const year = this.card.expYear ? String(this.card.expYear).slice(-2) : '00';
     return `${month}/${year}`;
+  }
+
+  formatFull(num: string): string {
+    if (!num) return '•••• •••• •••• ••••';
+    return String(num)
+      .replace(/\s+/g, '')
+      .replace(/(.{4})/g, '$1 ')
+      .trim();
+  }
+
+  toggleShowNumber(event?: Event) {
+    if (event) event.stopPropagation();
+    this.showNumber = !this.showNumber;
   }
 }

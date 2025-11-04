@@ -35,6 +35,7 @@ export class CreditCardDashboardComponent implements OnInit {
   cards: CreditCard[] = [];
   totalLimit: number = 0;
   currentCardIndex = 0;
+  showFullNumber = false;
 
   selectedCard: CreditCard | null = null;
   invoiceLoading = false;
@@ -161,6 +162,18 @@ export class CreditCardDashboardComponent implements OnInit {
     if (!cardNumber) return '**** **** **** ****';
     const last4 = cardNumber.slice(-4);
     return `**** ${last4}`;
+  }
+
+  formatFullCardNumber(cardNumber: string): string {
+    if (!cardNumber) return '**** **** **** ****';
+    return String(cardNumber)
+      .replace(/\s+/g, '')
+      .replace(/(.{4})/g, '$1 ')
+      .trim();
+  }
+
+  toggleShowNumber() {
+    this.showFullNumber = !this.showFullNumber;
   }
 
   formatCurrency(value: number): string {

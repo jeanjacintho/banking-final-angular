@@ -15,9 +15,22 @@
       <div class="w-12 h-8 rounded-md shadow-inner bg-white/20"></div>
     </div>
 
-    <!-- Card Number -->
-    <div class="text-center text-2xl tracking-widest font-mono">
-      {{ maskCardNumber(card.maskedPan || card.cardNumber || '') }}
+    <!-- Card Number + Reveal Button -->
+    <div class="text-center text-2xl tracking-widest font-mono flex items-center justify-center gap-3">
+      <span>
+        {{ showNumber
+          ? formatFull(card.cardNumber || card.maskedPan || '')
+          : maskCardNumber(card.maskedPan || card.cardNumber || '') }}
+      </span>
+      <button
+        class="text-[10px] font-medium px-2 py-1 rounded bg-white/15 hover:bg-white/25 transition"
+        type="button"
+        (click)="toggleShowNumber($event)"
+        [attr.aria-pressed]="showNumber"
+        [title]="showNumber ? 'Ocultar número' : 'Mostrar número'"
+      >
+        {{ showNumber ? 'Ocultar' : 'Mostrar' }}
+      </button>
     </div>
 
     <!-- Bottom Row -->
