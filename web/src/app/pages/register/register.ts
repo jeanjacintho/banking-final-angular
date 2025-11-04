@@ -55,8 +55,27 @@ export class Register {
     console.log("Form válido!")
     this.isSubmiting = true;
 
-    const { logradouro, bairro, localidade, uf, cep, ...rest } = this.registerForm.value;
-    const enderecoCompleto = [logradouro, bairro, localidade ? `${localidade} - ${uf}` : uf, `CEP: ${cep}`].filter(Boolean).join(', ');
+    // Usar getRawValue() para incluir campos desabilitados
+    const formValues = this.registerForm.getRawValue();
+    const { logradouro, bairro, localidade, uf, cep, ...rest } = formValues;
+    
+    // Montar endereço completo com todos os campos
+    const enderecoParts = [];
+    if (logradouro) enderecoParts.push(logradouro);
+    if (bairro) enderecoParts.push(bairro);
+    if (localidade && uf) {
+      enderecoParts.push(`${localidade} - ${uf}`);
+    } else if (localidade) {
+      enderecoParts.push(localidade);
+    } else if (uf) {
+      enderecoParts.push(uf);
+    }
+    if (cep) {
+      const cepFormatado = cep.replace(/\D/g, '').replace(/(\d{5})(\d{3})/, '$1-$2');
+      enderecoParts.push(`CEP: ${cepFormatado}`);
+    }
+    
+    const enderecoCompleto = enderecoParts.join(', ');
 
     const payload = {
       ...rest,
@@ -96,20 +115,24 @@ export class Register {
   }
 
   public buscarCEP(): void {
-    const cep = this.cep?.value?.replace(/\D/g, '');
-    if (cep.length !== 8) return;
-    this.http.get<any>(`https://viacep.com.br/ws/${cep}/json/`).subscribe({
+    const cepValue = this.cep?.value?.replace(/\D/g, '');
+    if (!cepValue || cepValue.length !== 8) {
+      return;
+    }
+    
+    this.http.get<any>(`https://viacep.com.br/ws/${cepValue}/json/`).subscribe({
       next: (data) => {
         if (data.erro) {
           console.error('CEP não encontrado');
           return;
         }
+        // patchValue funciona mesmo com campos desabilitados
         this.registerForm.patchValue({
-          logradouro: data.logradouro,
-          bairro: data.bairro,
-          localidade: data.localidade,
-          uf: data.uf
-        });
+          logradouro: data.logradouro || '',
+          bairro: data.bairro || '',
+          localidade: data.localidade || '',
+          uf: data.uf || ''
+        }, { emitEvent: false });
       },
       error: (error) => {
         console.error('Erro ao buscar CEP', error);
