@@ -35,6 +35,7 @@ export interface CreditCardRequestResponse {
   maskedPan?: string;       // ex: **** **** **** 1234
   cardToken?: string;       // token seguro para operações futuras
   dataVencimentoFatura?: string; // dia/mês ou ISO
+  cvv?: string;            // CVV do cartão (apenas na criação)
   pendencias?: string[];    // documentos pendentes, etc.
   mensagem?: string;
 }

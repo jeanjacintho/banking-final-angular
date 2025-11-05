@@ -1,5 +1,6 @@
 package com.devstoblu.banking_system.services.credit_card;
 
+import com.devstoblu.banking_system.services.EncryptionService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
@@ -10,6 +11,11 @@ import java.util.UUID;
 @Service
 public class CardIssuanceService {
     private final SecureRandom random = new SecureRandom();
+    private final EncryptionService encryptionService;
+
+    public CardIssuanceService(EncryptionService encryptionService) {
+        this.encryptionService = encryptionService;
+    }
 
     private int luhnCheckDigit(String number) {
         int sum = 0; boolean alt = true;
@@ -49,7 +55,8 @@ public class CardIssuanceService {
         String token = UUID.randomUUID().toString();
         String cvv = generateCvv();
         String cvvHash = DigestUtils.md5DigestAsHex(cvv.getBytes());
+        String cvvEncrypted = encryptionService.encrypt(cvv);
         int[] exp = expiryPlusYears(3);
-        return new IssuedCard(brand, masked, token, pan, cvvHash, holder, exp[0], exp[1]);
+        return new IssuedCard(brand, masked, token, pan, cvv, cvvHash, cvvEncrypted, holder, exp[0], exp[1]);
     }
 }

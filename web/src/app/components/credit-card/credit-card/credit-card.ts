@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { CreditCard } from '../../../models/credit-card.model';
+import { CreditCardService } from '../../../services/credit-card-service';
 
 @Component({
   selector: 'app-credit-card',
@@ -14,6 +15,11 @@ export class CreditCardComponent {
   @Input() selected = false;
   @Output() select = new EventEmitter<CreditCard>();
   showNumber = false;
+  showCvv = false;
+  loadingCvv = false;
+  cvvError: string | null = null;
+  
+  private creditCardService = inject(CreditCardService);
 
   onClick() {
     if (this.card) {
@@ -57,5 +63,45 @@ export class CreditCardComponent {
   toggleShowNumber(event?: Event) {
     if (event) event.stopPropagation();
     this.showNumber = !this.showNumber;
+    
+    // Se está mostrando o número e ainda não tem CVV, buscar o CVV
+    if (this.showNumber && !this.card.cvv && !this.loadingCvv && !this.cvvError) {
+      this.loadCvv();
+    }
+    
+    // Se está ocultando, limpar o CVV e erro
+    if (!this.showNumber) {
+      this.card.cvv = undefined;
+      this.cvvError = null;
+      this.showCvv = false;
+    }
+  }
+
+  private loadCvv() {
+    if (!this.card.id) return;
+    
+    this.loadingCvv = true;
+    this.creditCardService.getCvv(this.card.id).subscribe({
+      next: (response) => {
+        if (response.cvv) {
+          this.card.cvv = response.cvv;
+          this.showCvv = true;
+        } else if (response.error) {
+          // CVV não disponível para cartões antigos
+          this.card.cvv = undefined;
+          this.cvvError = response.error;
+        }
+        this.loadingCvv = false;
+      },
+      error: (error) => {
+        console.error('Erro ao buscar CVV:', error);
+        if (error.status === 404) {
+          this.cvvError = 'CVV não disponível para este cartão';
+        } else {
+          this.cvvError = 'Erro ao buscar CVV';
+        }
+        this.loadingCvv = false;
+      }
+    });
   }
 }

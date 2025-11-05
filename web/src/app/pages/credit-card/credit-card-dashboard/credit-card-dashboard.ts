@@ -36,6 +36,8 @@ export class CreditCardDashboardComponent implements OnInit {
   totalLimit: number = 0;
   currentCardIndex = 0;
   showFullNumber = false;
+  loadingCvv = false;
+  cvvError: string | null = null;
 
   selectedCard: CreditCard | null = null;
   invoiceLoading = false;
@@ -174,6 +176,50 @@ export class CreditCardDashboardComponent implements OnInit {
 
   toggleShowNumber() {
     this.showFullNumber = !this.showFullNumber;
+    
+    // Se está mostrando o número e ainda não tem CVV, buscar o CVV
+    const currentCard = this.currentCard;
+    if (this.showFullNumber && currentCard && !currentCard.cvv && !this.loadingCvv && !this.cvvError) {
+      this.loadCvv(currentCard);
+    }
+    
+    // Se está ocultando, limpar o CVV e erro
+    if (!this.showFullNumber) {
+      if (currentCard) {
+        currentCard.cvv = undefined;
+      }
+      this.cvvError = null;
+      this.loadingCvv = false;
+    }
+  }
+
+  private loadCvv(card: CreditCard) {
+    if (!card.id) return;
+    
+    this.loadingCvv = true;
+    this.cvvError = null;
+    
+    this.creditCardService.getCvv(card.id).subscribe({
+      next: (response) => {
+        if (response.cvv) {
+          card.cvv = response.cvv;
+        } else if (response.error) {
+          card.cvv = undefined;
+          this.cvvError = response.error;
+        }
+        this.loadingCvv = false;
+      },
+      error: (error) => {
+        console.error('Erro ao buscar CVV:', error);
+        if (error.status === 404) {
+          this.cvvError = 'CVV não disponível para este cartão';
+        } else {
+          this.cvvError = 'Erro ao buscar CVV';
+        }
+        card.cvv = undefined;
+        this.loadingCvv = false;
+      }
+    });
   }
 
   formatCurrency(value: number): string {

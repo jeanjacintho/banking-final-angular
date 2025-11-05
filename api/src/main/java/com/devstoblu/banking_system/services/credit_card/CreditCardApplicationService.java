@@ -31,7 +31,7 @@ public class CreditCardApplicationService {
     public CreditCardRequestResponseDTO processApplication(CreditCardRequestDTO dto, Long userId) {
         if (!Boolean.TRUE.equals(dto.acceptTerms()) || !Boolean.TRUE.equals(dto.authorizationCreditConsultation())) {
             return new CreditCardRequestResponseDTO("recusado", null, null,
-                    null, null, null, java.util.List.of("Consentimentos obrigatórios não marcados"), "Solicitação recusada.");
+                    null, null, null, null, java.util.List.of("Consentimentos obrigatórios não marcados"), "Solicitação recusada.");
         }
 
         Usuario user = usuarioRepository.findById(userId)
@@ -42,7 +42,7 @@ public class CreditCardApplicationService {
 
         if (score < 450) {
             return new CreditCardRequestResponseDTO(
-                    "recusado", null, null, null, null, null,
+                    "recusado", null, null, null, null, null, null,
                     java.util.List.of("Score insuficiente"), "Solicitação recusada."
             );
         }
@@ -60,6 +60,7 @@ public class CreditCardApplicationService {
         card.setAvailableLimit(limite);
         card.setMaskedPan(issued.maskedPan());
         card.setCvvHash(issued.cvvHash());
+        card.setCvvEncrypted(issued.cvvEncrypted());
         card.setPanToken(issued.token());
         card.setUsuario(user);
 
@@ -68,7 +69,7 @@ public class CreditCardApplicationService {
         String venc = String.format("%02d/%04d", issued.expMonth(), issued.expYear());
         return new CreditCardRequestResponseDTO(
                 "aprovado", limite, brand, issued.maskedPan(), issued.token(),
-                venc, null, "Cartão aprovado."
+                venc, issued.cvv(), java.util.List.of(), "Cartão aprovado."
         );
     }
 }

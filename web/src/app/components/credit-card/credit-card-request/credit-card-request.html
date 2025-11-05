@@ -328,6 +328,12 @@
         <p class="text-xs text-muted-foreground">
           Vencimento: <span class="font-medium text-text">{{ r.dataVencimentoFatura }}</span>
         </p>
+        @if (r.cvv) {
+          <p class="text-xs text-muted-foreground md:col-span-2">
+            CVV: <span class="font-medium text-text font-mono">{{ r.cvv }}</span>
+            <span class="text-[10px] ml-2 text-muted-foreground">(Guarde este número com segurança)</span>
+          </p>
+        }
       </div>
       }
 

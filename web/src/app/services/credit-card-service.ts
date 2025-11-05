@@ -43,4 +43,8 @@ export class CreditCardService {
   createTransaction(cardId: number, req: CreateCreditCardTransactionRequest): Observable<CreditCardTransaction> {
     return this.http.post<CreditCardTransaction>(`${this.apiUrl}/${cardId}/transactions`, req);
   }
+
+  getCvv(cardId: number): Observable<{ cvv: string | null; error?: string }> {
+    return this.http.get<{ cvv: string | null; error?: string }>(`${this.apiUrl}/${cardId}/cvv`);
+  }
 }

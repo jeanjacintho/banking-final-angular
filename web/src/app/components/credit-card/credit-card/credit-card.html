@@ -41,11 +41,35 @@
           {{ card.cardHolderName || 'NOME DO TITULAR' }}
         </div>
       </div>
-      <div>
-        <div class="uppercase text-xs opacity-75">EXPIRES</div>
-        <div class="font-semibold tracking-wide">
-          {{ formatExpiryDate() }}
+      <div class="flex flex-col items-end gap-1">
+        <div>
+          <div class="uppercase text-xs opacity-75">EXPIRES</div>
+          <div class="font-semibold tracking-wide">
+            {{ formatExpiryDate() }}
+          </div>
         </div>
+        @if (showNumber && card.cvv) {
+          <div>
+            <div class="uppercase text-xs opacity-75">CVV</div>
+            <div class="font-semibold tracking-wide">
+              {{ card.cvv }}
+            </div>
+          </div>
+        } @else if (showNumber && loadingCvv) {
+          <div>
+            <div class="uppercase text-xs opacity-75">CVV</div>
+            <div class="font-semibold tracking-wide text-xs">
+              Carregando...
+            </div>
+          </div>
+        } @else if (showNumber && cvvError) {
+          <div>
+            <div class="uppercase text-xs opacity-75">CVV</div>
+            <div class="font-semibold tracking-wide text-xs opacity-60" title="{{ cvvError }}">
+              Não disponível
+            </div>
+          </div>
+        }
       </div>
     </div>
   </div>

@@ -71,6 +71,35 @@ public class CreditCardController {
         return ResponseEntity.ok(service.update(id, updatedCard));
     }
 
+    @GetMapping("/{id}/cvv")
+    public ResponseEntity<CvvResponse> getCvv(@PathVariable Long id, @AuthenticationPrincipal UserDetails principal) {
+        String cpf = principal.getUsername();
+        Usuario user = (Usuario) usuarioRepository.findByCpf(cpf);
+        if (user == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        
+        CreditCard card = service.getById(id);
+        // Verificar se o cartão pertence ao usuário
+        if (card.getUsuario() == null || !card.getUsuario().getId().equals(user.getId())) {
+            return ResponseEntity.status(403).build();
+        }
+        
+        // Verificar se o CVV está disponível (cartões antigos podem não ter)
+        if (card.getCvvEncrypted() == null || card.getCvvEncrypted().isEmpty()) {
+            return ResponseEntity.status(404).body(new CvvResponse(null, "CVV não disponível para este cartão. Este cartão foi criado antes da implementação do sistema de CVV."));
+        }
+        
+        try {
+            String cvv = service.getDecryptedCvv(id);
+            return ResponseEntity.ok(new CvvResponse(cvv, null));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(new CvvResponse(null, "Erro ao descriptografar CVV"));
+        }
+    }
+    
+    public record CvvResponse(String cvv, String error) {}
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
         return ResponseEntity.ok(service.delete(id));

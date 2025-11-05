@@ -10,6 +10,7 @@ public record CreditCardRequestResponseDTO (
         String maskedPan,
         String cardToken,
         String dataVencimentoFatura,
+        String cvv,
         List<String> pendencias,
         String mensagem
 ) {

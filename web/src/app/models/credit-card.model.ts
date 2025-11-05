@@ -5,6 +5,7 @@ export interface CreditCard {
     expMonth: number;
     expYear: number;
     cvvHash: string;
+    cvv?: string; // CVV descriptografado (apenas quando recuperado)
     maskedPan: string;
     panToken: string;
     brand: string;

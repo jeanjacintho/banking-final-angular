@@ -33,6 +33,9 @@ public class CreditCard {
     @Column(nullable = false, length = 64)
     private String cvvHash;
 
+    @Column(name = "cvv_encrypted", length = 255)
+    private String cvvEncrypted;
+
     @Column(nullable = false)
     private String maskedPan;
 
@@ -64,13 +67,14 @@ public class CreditCard {
     public CreditCard() {
     }
 
-    public CreditCard(Long id, String cardNumber, String cardHolderName, Integer expMonth, Integer expYear, String cvvHash, String maskedPan, String panToken, String brand, BigDecimal creditLimit, BigDecimal availableLimit, Boolean isActive, LocalDateTime createdAt, LocalDateTime updatedAt, Usuario usuario) {
+    public CreditCard(Long id, String cardNumber, String cardHolderName, Integer expMonth, Integer expYear, String cvvHash, String cvvEncrypted, String maskedPan, String panToken, String brand, BigDecimal creditLimit, BigDecimal availableLimit, Boolean isActive, LocalDateTime createdAt, LocalDateTime updatedAt, Usuario usuario) {
         this.id = id;
         this.cardNumber = cardNumber;
         this.cardHolderName = cardHolderName;
         this.expMonth = expMonth;
         this.expYear = expYear;
         this.cvvHash = cvvHash;
+        this.cvvEncrypted = cvvEncrypted;
         this.maskedPan = maskedPan;
         this.panToken = panToken;
         this.brand = brand;
@@ -128,6 +132,14 @@ public class CreditCard {
 
     public void setCvvHash(String cvvHash) {
         this.cvvHash = cvvHash;
+    }
+
+    public String getCvvEncrypted() {
+        return cvvEncrypted;
+    }
+
+    public void setCvvEncrypted(String cvvEncrypted) {
+        this.cvvEncrypted = cvvEncrypted;
     }
 
     public String getMaskedPan() {

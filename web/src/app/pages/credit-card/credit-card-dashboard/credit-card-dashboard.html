@@ -100,8 +100,24 @@
                         <div class="text-xs opacity-80 mb-0.5">Limite Disponível</div>
                         <div class="text-xs font-bold">{{ formatCurrency(card.availableLimit) }}</div>
                       </div>
-                      <div class="text-right">
+                      <div class="text-right flex flex-col items-end gap-1">
                         <div class="text-xs font-bold">{{ getCardLogo(card.brand) }}</div>
+                        @if (showFullNumber && card.cvv) {
+                          <div>
+                            <div class="text-[10px] opacity-75 uppercase">CVV</div>
+                            <div class="text-xs font-semibold">{{ card.cvv }}</div>
+                          </div>
+                        } @else if (showFullNumber && loadingCvv && i === currentCardIndex) {
+                          <div>
+                            <div class="text-[10px] opacity-75 uppercase">CVV</div>
+                            <div class="text-xs opacity-60">Carregando...</div>
+                          </div>
+                        } @else if (showFullNumber && cvvError && i === currentCardIndex) {
+                          <div>
+                            <div class="text-[10px] opacity-75 uppercase">CVV</div>
+                            <div class="text-xs opacity-60" [title]="cvvError">Não disponível</div>
+                          </div>
+                        }
                       </div>
                     </div>
                   </div>

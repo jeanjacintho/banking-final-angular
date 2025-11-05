@@ -3,6 +3,7 @@ package com.devstoblu.banking_system.services.credit_card;
 import com.devstoblu.banking_system.models.CreditCard;
 import com.devstoblu.banking_system.models.Usuario;
 import com.devstoblu.banking_system.repositories.CreditCardRepository;
+import com.devstoblu.banking_system.services.EncryptionService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +13,11 @@ import java.util.Optional;
 @Service
 public class CreditCardService {
     private final CreditCardRepository repository;
+    private final EncryptionService encryptionService;
 
-    public CreditCardService(CreditCardRepository repository) {
+    public CreditCardService(CreditCardRepository repository, EncryptionService encryptionService) {
         this.repository = repository;
+        this.encryptionService = encryptionService;
     }
 
     public List<CreditCard> getAll() {
@@ -52,6 +55,14 @@ public class CreditCardService {
         if (card.isEmpty()) throw new EntityNotFoundException("Cartão não encontrado");
         repository.delete(card.get());
         return "Cartão excluído com sucesso!";
+    }
+
+    public String getDecryptedCvv(Long id) {
+        CreditCard card = getById(id);
+        if (card.getCvvEncrypted() == null || card.getCvvEncrypted().isEmpty()) {
+            throw new IllegalStateException("CVV não disponível para este cartão");
+        }
+        return encryptionService.decrypt(card.getCvvEncrypted());
     }
 
 }
