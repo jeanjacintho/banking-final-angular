@@ -1,4 +1,4 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, Input, inject, OnInit } from '@angular/core';
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { LucideAngularModule } from 'lucide-angular';
@@ -12,7 +12,7 @@ import { filter } from 'rxjs/operators';
   templateUrl: './layout.html',
   styleUrl: './layout.css'
 })
-export class Layout {
+export class Layout implements OnInit {
   @Input() pageTitle: string = 'Dashboard';
   
   private readonly router = inject(Router);
@@ -38,7 +38,7 @@ export class Layout {
   }
 
   isActiveRoute(route: string): boolean {
-    return this.currentRoute === route;
+    return this.currentRoute === route || this.currentRoute.startsWith(route + '/');
   }
 
   private loadUserInfo() {

@@ -67,6 +67,20 @@
                             <lucide-icon name="ChevronDown" size="16" class="text-muted-foreground"></lucide-icon>
                         </div>
                         <div
+                            [class.bg-primary/5]="isActiveRoute('/loans')"
+                            [class.border-l-4]="isActiveRoute('/loans')"
+                            [class.border-primary]="isActiveRoute('/loans')"
+                            class="py-3 flex items-center justify-between cursor-pointer hover:bg-gray-50 rounded-lg px-2"
+                            routerLink="/loans">
+                            <div class="flex items-center gap-3">
+                                <span class="bg-muted rounded-full p-2">
+                                    <lucide-icon name="BanknoteArrowDown" size="18" class="text-primary"></lucide-icon>
+                                </span>
+                                <span [class.text-primary]="isActiveRoute('/loans')" [class.font-semibold]="isActiveRoute('/loans')" class="text-sm text-muted-foreground">Empréstimo</span>
+                            </div>
+                            <lucide-icon name="ChevronDown" size="16" class="text-muted-foreground"></lucide-icon>
+                        </div>
+                        <div
                             class="py-3 flex items-center justify-between cursor-pointer hover:bg-gray-50 rounded-lg px-2">
                             <div class="flex items-center gap-3">
                                 <span class="bg-muted rounded-full p-2">
