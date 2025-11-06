@@ -18,11 +18,12 @@
 ## Índice
 
 - [Sobre o Projeto](#sobre-o-projeto)
+- [Equipe](#equipe)
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
 - [Funcionalidades](#funcionalidades)
-- [Equipe](#equipe)
 - [Sprints](#sprints)
 - [Gráfico de GANTT](#gráfico-de-gantt)
+- [Acesso ao Sistema](#acesso-ao-sistema)
 - [Como Executar](#como-executar)
 - [Estrutura do Projeto](#estrutura-do-projeto)
 
@@ -38,6 +39,18 @@ O **Bankr** é um sistema completo de Internet Banking desenvolvido como projeto
 - Implementar funcionalidades bancárias essenciais
 - Garantir segurança e performance
 - Oferecer interface moderna e responsiva
+
+---
+
+## Equipe
+
+### Integrantes
+
+- **Jean Jacintho**
+- **Marcelo Calsing**
+- **Nicolas Rotta**
+- **Matheus Citadini**
+- **Ronan Kroeger**
 
 ---
 
@@ -215,17 +228,6 @@ O **Bankr** é um sistema completo de Internet Banking desenvolvido como projeto
 
 ---
 
-## Equipe
-
-### Integrantes
-
-- **Jean Jacintho**
-- **Marcelo Calsing**
-- **Nicolas Rotta**
-- **Matheus Citadini**
-- **Ronan Kroeger**
-
----
 
 ## Sprints
 
@@ -244,6 +246,29 @@ https://sharing.clickup.com/90132558517/b/h/2ky53cnn-513/12e04de695f0349
 O gráfico de GANTT abaixo apresenta a visão geral do cronograma do projeto, mostrando as atividades de cada sprint e suas dependências.
 
 ![Gráfico de GANTT](docs/images/grant.png)
+
+---
+
+## Acesso ao Sistema
+
+### URL de Produção
+
+O sistema está disponível em produção através do seguinte endereço:
+
+**Frontend:** [https://bankr-web.onrender.com/](https://bankr-web.onrender.com/)
+
+### Credenciais de Teste
+
+Para testar o sistema, utilize as seguintes credenciais:
+
+| Campo | Valor |
+|-------|-------|
+| **Nome** | Usuario Teste |
+| **CPF** | 37076094053 |
+| **Email** | teste@bankr.com (CHAVE PIX) |
+| **Senha** | Senha123@ |
+| **Número do Cartão** | 4001302606394832 |
+| **Validade do Cartão** | 10/2028 |
 
 ---
 
